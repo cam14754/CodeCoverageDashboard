@@ -6,11 +6,26 @@
 namespace CodeCoverageDashboard.Services;
 public class RepoDataService : IRepoDataService
 {
-	public async Task<bool> GetRepoDataAsync(string repoUrl)
+	static readonly string repoListPaths = Path.Combine(FileSystem.AppDataDirectory, "repos.txt");
+	public async Task<bool> GetRepoDataAsync()
 	{
 		// Simulate an asynchronous operation
 		await Task.Delay(500);
-		Debug.WriteLine($"Fetched data for repo: {repoUrl}");
+		Debug.WriteLine("Fetching repo data from file");
+
+		if (!File.Exists(repoListPaths))
+		{
+			Debug.WriteLine($"Repo list file not found at {repoListPaths}");
+			return false;
+		}
+
+		var repoUrls = await File.ReadAllLinesAsync(repoListPaths);
+
+		foreach (var url in repoUrls)
+		{
+			Debug.WriteLine($"Found repo URL: {url}");
+		}
+
 		return true;
 	}
 }

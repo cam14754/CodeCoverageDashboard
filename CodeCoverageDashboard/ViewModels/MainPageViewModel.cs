@@ -18,7 +18,7 @@ public partial class MainPageViewModel(IRepoDataService repoDataService) : BaseV
 		{
 			IsBusy = true;
 			Debug.WriteLine("Loading repos...");
-			if (!await repoDataService.GetRepoDataAsync("https://github.com/cam14754/CalculatorExample"))
+			if (!await repoDataService.GetRepoDataAsync())
 			{
 				throw new Exception("Failed to load repo data.");
 			}

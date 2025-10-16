@@ -6,5 +6,5 @@
 namespace CodeCoverageDashboard.Interfaces;
 public interface IRepoDataService
 {
-	Task<bool> GetRepoDataAsync(string repoUrl);
+	Task<bool> GetRepoDataAsync();
 }
