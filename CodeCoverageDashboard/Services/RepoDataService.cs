@@ -3,29 +3,93 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
+using System.Text.Json;
+
 namespace CodeCoverageDashboard.Services;
 public class RepoDataService : IRepoDataService
 {
-	static readonly string repoListPaths = Path.Combine(FileSystem.AppDataDirectory, "repos.txt");
-	public async Task<bool> GetRepoDataAsync()
-	{
-		// Simulate an asynchronous operation
-		await Task.Delay(500);
-		Debug.WriteLine("Fetching repo data from file");
 
-		if (!File.Exists(repoListPaths))
+	static readonly JsonSerializerOptions jsonOptions = new()
+	{
+		WriteIndented = true,
+		PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+	};
+
+	public async Task<List<RepoData>>? GetRepoDataAsync(string repoPathList, CancellationToken ct = default)
+	{
+
+		Debug.WriteLine("Fetching repo url's from file \n");
+
+		if (!File.Exists(repoPathList))
 		{
-			Debug.WriteLine($"Repo list file not found at {repoListPaths}");
-			return false;
+			Debug.WriteLine($"Repo list file not found at {repoPathList}");
+			throw new Exception("Repo list file not found.");
 		}
 
-		var repoUrls = await File.ReadAllLinesAsync(repoListPaths);
+		var repoUrls = await File.ReadAllLinesAsync(repoPathList, ct);
 
 		foreach (var url in repoUrls)
 		{
 			Debug.WriteLine($"Found repo URL: {url}");
 		}
+		Debug.WriteLine("");
 
-		return true;
+		var lines = await File.ReadAllLinesAsync(repoPathList, ct);
+		var workRoot = Path.Combine(FileSystem.AppDataDirectory, "repos");
+		Directory.CreateDirectory(workRoot);
+
+		var list = new List<RepoData>();
+
+		foreach (var raw in lines)
+		{
+			ct.ThrowIfCancellationRequested();
+
+			var data = ParseRepoUrl(raw, workRoot);
+			list.Add(data);
+
+			if (data.IsValid == true)
+			{
+				Debug.WriteLine($"Parsed: \nURL: {data.Url} \nName: {data.Name} \nOrg: {data.Org} \nLocalPath: {data.LocalPath} \nDate Retrieved: {data.DateRetrieved}\n");
+			}
+			else
+			{
+				Debug.WriteLine($"Invalid URL '{raw}': {data.Error}");
+			}
+		}
+
+		return list;
+	}
+
+	static RepoData ParseRepoUrl(string url, string workRoot)
+	{
+		try
+		{
+			Uri.TryCreate(url, UriKind.Absolute, out var uri);
+
+			var segments = uri.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+			var org = segments[^2];
+			var repo = TrimGitSuffix(segments[^1]);
+
+			var local = Path.Combine(workRoot, repo);
+			return new RepoData
+			{
+				Url = url,
+				Name = repo,
+				Org = org,
+				LocalPath = local,
+				IsValid = true,
+				DateRetrieved = DateTime.Now
+			};
+		}
+		catch (Exception ex)
+		{
+			Debug.WriteLine($"Error parsing URL '{url}': {ex.Message}");
+		}
+
+		throw new Exception("Fatal Error");
+
+		static string TrimGitSuffix(string s) =>
+			s.EndsWith(".git", StringComparison.OrdinalIgnoreCase) ? s[..^4] : s;
 	}
 }

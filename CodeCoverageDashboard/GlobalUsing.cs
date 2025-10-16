@@ -5,7 +5,9 @@
 
 global using System.Diagnostics;
 global using CodeCoverageDashboard.Interfaces;
+global using CodeCoverageDashboard.Models;
 global using CodeCoverageDashboard.Services;
+global using CodeCoverageDashboard.ViewModels;
 global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Mvvm.Input;
 global using Microsoft.Extensions.Logging;

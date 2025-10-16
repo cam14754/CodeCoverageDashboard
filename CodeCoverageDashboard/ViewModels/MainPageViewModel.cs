@@ -6,6 +6,10 @@
 namespace CodeCoverageDashboard.ViewModels;
 public partial class MainPageViewModel(IRepoDataService repoDataService) : BaseViewModel
 {
+	readonly string repoPathList = Path.Combine(FileSystem.AppDataDirectory, "repos.txt");
+	readonly string outputJsonPath = Path.Combine(FileSystem.AppDataDirectory, "repoData.json");
+
+	List<RepoData> repoResults = [];
 
 	[RelayCommand]
 	public async Task LoadReposAsync()
@@ -17,11 +21,9 @@ public partial class MainPageViewModel(IRepoDataService repoDataService) : BaseV
 		try
 		{
 			IsBusy = true;
-			Debug.WriteLine("Loading repos...");
-			if (!await repoDataService.GetRepoDataAsync())
-			{
-				throw new Exception("Failed to load repo data.");
-			}
+			Debug.WriteLine("Loading repos... \n");
+
+			repoResults = await repoDataService.GetRepoDataAsync(repoPathList);
 
 			Debug.WriteLine("Repos loaded successfully.");
 		}
