@@ -3,9 +3,6 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
-
-using CodeCoverageDashboard.ViewModels;
-
 namespace CodeCoverageDashboard;
 
 public static class MauiProgram
@@ -28,6 +25,8 @@ public static class MauiProgram
 		builder.Services.AddSingleton<MainPageViewModel>();
 
 		builder.Services.AddSingleton<IRepoDataService, RepoDataService>();
+		builder.Services.AddSingleton<IRepoAnalyzerService, RepoAnalyzerService>();
+		builder.Services.AddSingleton<ICommandRunnerService, CommandRunnerService>();
 
 		return builder.Build();
 	}

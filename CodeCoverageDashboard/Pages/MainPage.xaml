@@ -6,13 +6,24 @@
     xmlns:viewmodels="clr-namespace:CodeCoverageDashboard.ViewModels"
     x:DataType="viewmodels:MainPageViewModel">
 
-    <Grid ColumnDefinitions="Auto, *" RowDefinitions="*, *">
+    <Grid ColumnDefinitions="Auto, Auto, *" RowDefinitions="Auto, *">
         <Button
             Grid.Row="0"
             Grid.Column="0"
             Margin="10"
             Command="{Binding LoadReposCommand}"
-            Text="Load Report" />
+            HeightRequest="35"
+            Text="Load Report"
+            WidthRequest="200" />
+        <Button
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="10"
+            Command="{Binding RefreshCommand}"
+            HeightRequest="35"
+            HorizontalOptions="End"
+            Text="Refresh"
+            WidthRequest="200" />
     </Grid>
 
 

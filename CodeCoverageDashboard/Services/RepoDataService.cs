@@ -15,7 +15,7 @@ public class RepoDataService : IRepoDataService
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 	};
 
-	public List<RepoData>? GetRepoDataAsync(CancellationToken ct = default)
+	public List<RepoData> GetRepoDataAsync(CancellationToken ct = default)
 	{
 		var lines = RepoURLs.Urls;
 		var workRoot = Path.Combine(FileSystem.AppDataDirectory, "repos");
@@ -49,10 +49,10 @@ public class RepoDataService : IRepoDataService
 		{
 			Uri.TryCreate(url, UriKind.Absolute, out var uri);
 
-			var segments = uri.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
+			var segments = uri?.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
 
-			var org = segments[^2];
-			var repo = TrimGitSuffix(segments[^1]);
+			var org = segments?[^2];
+			var repo = TrimGitSuffix(segments?[^1]);
 
 			var local = Path.Combine(workRoot, repo);
 			return new RepoData
