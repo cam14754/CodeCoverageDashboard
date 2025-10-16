@@ -25,9 +25,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<MainPageViewModel>();
 
 		builder.Services.AddSingleton<IRepoDataService, RepoDataService>();
-		builder.Services.AddSingleton<IRepoAnalyzerService, RepoAnalyzerService>();
-		builder.Services.AddSingleton<ICommandRunnerService, CommandRunnerService>();
-
+		builder.Services.AddSingleton<IRepoCoverageAnalyzer, RepoCoverageAnalyzer>();
 		return builder.Build();
 	}
 }

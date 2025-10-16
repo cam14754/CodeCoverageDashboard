@@ -8,10 +8,15 @@ public sealed class RepoData
 {
 	public string? Url { get; set; } = "Unknown URL";
 	public string? Name { get; set; } = "Unknown Name";
-	public string? LocalPath { get; set; } = "Unknown Path";
 	public string? Org { get; set; } = "Unkown Org";
 	public bool? IsValid { get; set; } = false;
 	public string? Error { get; set; } = "Unknown Errors";
+	public double? CoveragePercent { get; set; } = null;
+	public int? CoveredLines { get; set; } = null;
+	public int? TotalLines { get; set; } = null;
+	public int? UncoveredLines { get; set; } = null;
 	public DateTime DateRetrieved { get; set; } = DateTime.Now;
+
+	public Guid ID { get; set; } = Guid.NewGuid();
 
 }

@@ -18,8 +18,6 @@ public class RepoDataService : IRepoDataService
 	public List<RepoData> GetRepoDataAsync(CancellationToken ct = default)
 	{
 		var lines = RepoURLs.Urls;
-		var workRoot = Path.Combine(FileSystem.AppDataDirectory, "repos");
-		Directory.CreateDirectory(workRoot);
 
 		var list = new List<RepoData>();
 
@@ -27,12 +25,12 @@ public class RepoDataService : IRepoDataService
 		{
 			ct.ThrowIfCancellationRequested();
 
-			var data = ParseRepoUrl(raw, workRoot);
+			var data = ParseRepoUrl(raw);
 			list.Add(data);
 
 			if (data.IsValid == true)
 			{
-				Debug.WriteLine($"Parsed: \nURL: {data.Url} \nName: {data.Name} \nOrg: {data.Org} \nLocalPath: {data.LocalPath} \nDate Retrieved: {data.DateRetrieved}\n");
+				Debug.WriteLine($"Parsed: \nURL: {data.Url} \nName: {data.Name} \nOrg: {data.Org} \nDate Retrieved: {data.DateRetrieved}\n");
 			}
 			else
 			{
@@ -43,24 +41,21 @@ public class RepoDataService : IRepoDataService
 		return list;
 	}
 
-	static RepoData ParseRepoUrl(string url, string workRoot)
+	static RepoData ParseRepoUrl(string url)
 	{
 		try
 		{
 			Uri.TryCreate(url, UriKind.Absolute, out var uri);
 
-			var segments = uri?.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
-
+			var segments = (uri?.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries)) ?? throw new Exception("Invalid URL format.");
 			var org = segments?[^2];
 			var repo = TrimGitSuffix(segments?[^1]);
 
-			var local = Path.Combine(workRoot, repo);
 			return new RepoData
 			{
 				Url = url,
 				Name = repo,
 				Org = org,
-				LocalPath = local,
 				IsValid = true,
 				DateRetrieved = DateTime.Now
 			};

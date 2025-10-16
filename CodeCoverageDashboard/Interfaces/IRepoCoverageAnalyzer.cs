@@ -3,9 +3,9 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
-namespace CodeCoverageDashboard.Interfaces;
+namespace CodeCoverageDashboard.Services;
 
-public interface ICommandRunnerService
+public interface IRepoCoverageAnalyzer
 {
-	void RunCommand(string command, string arguments);
+	void AnalyzeRepo();
 }
