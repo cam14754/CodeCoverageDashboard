@@ -15,26 +15,9 @@ public class RepoDataService : IRepoDataService
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 	};
 
-	public async Task<List<RepoData>>? GetRepoDataAsync(string repoPathList, CancellationToken ct = default)
+	public List<RepoData>? GetRepoDataAsync(CancellationToken ct = default)
 	{
-
-		Debug.WriteLine("Fetching repo url's from file \n");
-
-		if (!File.Exists(repoPathList))
-		{
-			Debug.WriteLine($"Repo list file not found at {repoPathList}");
-			throw new Exception("Repo list file not found.");
-		}
-
-		var repoUrls = await File.ReadAllLinesAsync(repoPathList, ct);
-
-		foreach (var url in repoUrls)
-		{
-			Debug.WriteLine($"Found repo URL: {url}");
-		}
-		Debug.WriteLine("");
-
-		var lines = await File.ReadAllLinesAsync(repoPathList, ct);
+		var lines = RepoURLs.Urls;
 		var workRoot = Path.Combine(FileSystem.AppDataDirectory, "repos");
 		Directory.CreateDirectory(workRoot);
 

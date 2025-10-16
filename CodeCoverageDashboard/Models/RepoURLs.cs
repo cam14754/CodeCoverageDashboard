@@ -3,8 +3,11 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
-namespace CodeCoverageDashboard.Interfaces;
-public interface IRepoDataService
+namespace CodeCoverageDashboard.Models;
+public static class RepoURLs
 {
-	List<RepoData> GetRepoDataAsync(CancellationToken ct = default);
+	public static List<string> Urls =
+	[
+		"https://github.com/cam14754/CalculatorExample"
+	];
 }
