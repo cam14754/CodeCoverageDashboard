@@ -1,29 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿// SPDX-License-Identifier: Proprietary
+// © 2025 Cameron Strachan, trading as Cameron's Rock Company. All rights reserved.
+// Created by Cameron Strachan.
+// For personal and educational use only.
 
 
-namespace CodeCoverageDashboard
-{
-	public static class MauiProgram
-	{
-		public static MauiApp CreateMauiApp()
-		{
-			var builder = MauiApp.CreateBuilder();
-			builder
-				.UseMauiApp<App>()
-				.ConfigureFonts(fonts =>
-				{
-					fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-					fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-				});
+using CodeCoverageDashboard.ViewModels;
 
-#if DEBUG
-			builder.Logging.AddDebug();
-#endif
-
-			return builder.Build();
-		}
-	}
-}
 namespace CodeCoverageDashboard;
 
 public static class MauiProgram
@@ -42,6 +24,10 @@ public static class MauiProgram
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
+
+		builder.Services.AddSingleton<MainPageViewModel>();
+
+		builder.Services.AddSingleton<IRepoDataService, RepoDataService>();
 
 		return builder.Build();
 	}

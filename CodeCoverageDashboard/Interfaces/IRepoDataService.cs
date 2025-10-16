@@ -3,12 +3,8 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
-namespace CodeCoverageDashboard;
-
-public partial class AppShell : Shell
+namespace CodeCoverageDashboard.Interfaces;
+public interface IRepoDataService
 {
-	public AppShell()
-	{
-		InitializeComponent();
-	}
+	Task<bool> GetRepoDataAsync(string repoUrl);
 }
