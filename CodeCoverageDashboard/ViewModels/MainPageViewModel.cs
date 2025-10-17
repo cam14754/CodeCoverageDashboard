@@ -3,12 +3,12 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
-using System.Xml.Linq;
+using System.Collections.ObjectModel;
 
 namespace CodeCoverageDashboard.ViewModels;
-public partial class MainPageViewModel(IRepoDataService repoDataService, IRepoCoverageAnalyzer repoCoverageAnlyzer) : BaseViewModel
+public partial class MainPageViewModel(IDataHandlerService dataHandlerService) : BaseViewModel
 {
-	List<RepoData> repoResults = [];
+	public ObservableCollection<RepoData> Repos => dataHandlerService.Repos;
 
 	[RelayCommand]
 	public void LoadRepos()
@@ -22,7 +22,7 @@ public partial class MainPageViewModel(IRepoDataService repoDataService, IRepoCo
 			IsBusy = true;
 			Debug.WriteLine("Loading repos... \n");
 
-			repoResults = repoDataService.GetRepoDataAsync();
+			dataHandlerService.LoadReposAsync();
 
 			Debug.WriteLine("Repos loaded successfully.");
 
@@ -49,11 +49,9 @@ public partial class MainPageViewModel(IRepoDataService repoDataService, IRepoCo
 		{
 			Debug.WriteLine("");
 			Debug.WriteLine("Begining Analysis...");
-			List<XDocument> coverageDocuments = await repoCoverageAnlyzer.AnalyzeRepoAsync();
+			await dataHandlerService.TestReposAsync();
 			Debug.WriteLine("");
 			Debug.WriteLine("Analysis Complete.");
-
-
 		}
 		catch (Exception ex)
 		{

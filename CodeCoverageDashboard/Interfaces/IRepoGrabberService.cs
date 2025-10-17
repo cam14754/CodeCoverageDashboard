@@ -4,7 +4,7 @@
 // For personal and educational use only.
 
 namespace CodeCoverageDashboard.Interfaces;
-public interface IRepoDataService
+public interface IRepoGrabberService
 {
-	List<RepoData> GetRepoDataAsync(CancellationToken ct = default);
+	List<RepoData> GetRepoDataAsync();
 }

@@ -3,28 +3,130 @@
     x:Class="CodeCoverageDashboard.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:CodeCoverageDashboard.Models"
     xmlns:viewmodels="clr-namespace:CodeCoverageDashboard.ViewModels"
     x:DataType="viewmodels:MainPageViewModel">
 
-    <Grid ColumnDefinitions="Auto, Auto, *" RowDefinitions="Auto, *">
-        <Button
+    <Grid ColumnDefinitions="*, 400" RowDefinitions="170, *">
+        <!--  Top left box  -->
+        <Label
             Grid.Row="0"
+            Grid.ColumnSpan="0"
+            BackgroundColor="Red" />
+        <HorizontalStackLayout Grid.Row="0" Grid.ColumnSpan="0">
+            <Button
+                Margin="20"
+                Command="{Binding LoadReposCommand}"
+                HeightRequest="100"
+                Text="Load Repositories"
+                WidthRequest="200" />
+            <Button
+                Margin="20"
+                HeightRequest="100"
+                Text="Test Repositories"
+                WidthRequest="200" />
+        </HorizontalStackLayout>
+
+
+
+        <!--  Bottom left box  -->
+        <Label
+            Grid.Row="1"
             Grid.Column="0"
-            Margin="10"
-            Command="{Binding LoadReposCommand}"
-            HeightRequest="35"
-            Text="Load Report"
-            WidthRequest="200" />
-        <Button
+            BackgroundColor="Aqua" />
+        <CollectionView
+            x:Name="SelectedRepo"
+            Grid.Row="1"
+            Grid.Column="0"
+            ItemsSource="{Binding Repos}">
+            <CollectionView.EmptyView>
+                <Label
+                    Margin="20"
+                    FontSize="50"
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    Text="No Repositories availible, press 'Load Repositories' to load repositories" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:RepoData">
+                    <Border
+                        BackgroundColor="Yellow"
+                        HeightRequest="200"
+                        StrokeThickness="5"
+                        WidthRequest="400">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Name}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+
+
+        <!--  Bottom right box  -->
+        <Label
+            Grid.Row="1"
+            Grid.Column="1"
+            BackgroundColor="Green" />
+
+        <!--  - Top right box  -->
+        <Label
             Grid.Row="0"
             Grid.Column="1"
-            Margin="10"
-            Command="{Binding RefreshCommand}"
-            HeightRequest="35"
-            HorizontalOptions="End"
-            Text="Refresh"
-            WidthRequest="200" />
-    </Grid>
+            BackgroundColor="Yellow" />
+        <Grid
+            Grid.Row="0"
+            Grid.Column="1"
+            ColumnDefinitions="30, *"
+            RowDefinitions="60, auto, auto">
+            <Label
+                Grid.Row="0"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                BackgroundColor="White"
+                FontSize="30"
+                HeightRequest="50"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="Dashboard Settings:"
+                VerticalTextAlignment="Center"
+                WidthRequest="300" />
 
+            <CheckBox
+                Grid.Row="1"
+                Grid.Column="0"
+                HeightRequest="30"
+                WidthRequest="30" />
+            <Label
+                Grid.Row="1"
+                Grid.Column="1"
+                BackgroundColor="White"
+                FontSize="20"
+                HeightRequest="30"
+                HorizontalOptions="Start"
+                HorizontalTextAlignment="Center"
+                Text="Rebuild Repositories"
+                VerticalTextAlignment="Center" />
+
+            <Button
+                Grid.Row="2"
+                Grid.Column="0"
+                HeightRequest="25"
+                WidthRequest="25" />
+
+            <Label
+                Grid.Row="2"
+                Grid.Column="1"
+                BackgroundColor="White"
+                FontSize="20"
+                HorizontalOptions="Start"
+                HorizontalTextAlignment="Center"
+                Text="Select local repository root"
+                VerticalTextAlignment="Center" />
+
+        </Grid>
+    </Grid>
 
 </ContentPage>

@@ -19,7 +19,7 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-    <LangVersion>latest</LangVersion> 
+    <LangVersion>preview</LangVersion> 
 
 		<!-- Display name -->
 		<ApplicationTitle>CodeCoverageDashboard</ApplicationTitle>
@@ -71,6 +71,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Converters\" />
+	  <Folder Include="Resources\Styles\" />
 	</ItemGroup>
 
 </Project>

@@ -6,7 +6,7 @@
 using System.Text.Json;
 
 namespace CodeCoverageDashboard.Services;
-public class RepoDataService : IRepoDataService
+public class RepoGrabberService : IRepoGrabberService
 {
 
 	static readonly JsonSerializerOptions jsonOptions = new()
@@ -15,25 +15,20 @@ public class RepoDataService : IRepoDataService
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 	};
 
-	public List<RepoData> GetRepoDataAsync(CancellationToken ct = default)
+	public List<RepoData> GetRepoDataAsync()
 	{
-		var lines = RepoURLs.Urls;
+		List<string> lines = RepoURLs.Urls;
 
 		var list = new List<RepoData>();
 
 		foreach (var raw in lines)
 		{
-			ct.ThrowIfCancellationRequested();
-
 			var data = ParseRepoUrl(raw);
 			list.Add(data);
 
 			if (data.IsValid == true)
 			{
-				Debug.WriteLine($"Parsed: \nURL: {data.Url} \nName: {data.Name} \nOrg: {data.Org} \nDate Retrieved: {data.DateRetrieved}\n");
-			}
-			else
-			{
+				Debug.WriteLine($"Parsed: \nURL: {data.Url} \nName: {data.Name} \nOrg: {data.Org} \nDate Retrieved: {data.DateRetrieved}\nValid: {data.IsValid}");
 			}
 		}
 
