@@ -3,6 +3,8 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
+using CommunityToolkit.Maui;
+
 namespace CodeCoverageDashboard;
 
 public static class MauiProgram
@@ -12,6 +14,7 @@ public static class MauiProgram
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
+			.UseMauiCommunityToolkit()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

@@ -8,39 +8,53 @@ using System.Xml.Linq;
 namespace CodeCoverageDashboard.Services;
 public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 {
-	public async Task AnalyzeRepoAsync()
+	public async Task<List<XDocument>> AnalyzeRepoAsync()
 	{
+		List<XDocument> coverageDocuments = new List<XDocument>();
+
 		var watch = Stopwatch.StartNew();
 
-		// Path to the test project
+		// Data for test projects
 		string testProjectPath = @"C:\Users\cam14754\Desktop\FirstProjects\CalculatorExample\CalculatorExampleTests\CalculatorExampleTests.csproj";
 		var newRepo = new RepoData() { Name = "CalculatorExample", Url = testProjectPath, ID = Guid.NewGuid() };
-		var runSettingsPath = @"C:\Users\cam14754\Desktop\Unit Testing Intern Project\CodeCoverageDashboard\CodeCoverageDashboard\CodeCoverage.runsettings";
+		var newRepo2 = new RepoData() { Name = "CalculatorExample", Url = testProjectPath, ID = Guid.NewGuid() };
+		List<RepoData> repoList = [newRepo, newRepo2];
 
-		if (!File.Exists(runSettingsPath))
-		{
-			Debug.WriteLine($"Runsettings not found at: {runSettingsPath}");
-			// bail early or create a temp runsettings file
-		}
+		// Run settings for optimizing code coverage collection
+		var runSettingsPath = @"C:\Users\cam14754\Desktop\Unit Testing Intern Project\CodeCoverageDashboard\CodeCoverageDashboard\CodeCoverage.runsettings";
 
 		// Path to the results directory
 		if (!Directory.Exists(Path.Combine(FileSystem.AppDataDirectory, ".coverage")))
 		{
 			Directory.CreateDirectory($"{Path.Combine(FileSystem.AppDataDirectory, ".coverage")}");
 		}
-		string resultDirPath = Path.Combine(FileSystem.AppDataDirectory, ".coverage");
+		string resultsDirectoryPath = Path.Combine(FileSystem.AppDataDirectory, ".coverage");
 
 		// Arguments to run the test
 		string args = $"test \"{testProjectPath}\" " +
 			$"--collect:\"XPlat Code Coverage\" " +
-			$"--results-directory \"{resultDirPath}\" " +
+			$"--results-directory \"{resultsDirectoryPath}\" " +
 			$"--settings:\"{runSettingsPath}\" " +
 			$"--nologo " +
 			$"--no-restore " +
 			$"--no-build";
 
 
-		// Run the command
+		// Run the commands
+		foreach (var repo in repoList)
+		{
+			coverageDocuments.Add(await ExtractData(repo, resultsDirectoryPath, args));
+		}
+
+		watch.Stop();
+		var elapsedMs = watch.ElapsedMilliseconds;
+		Debug.WriteLine($"Analysis completed in {elapsedMs} ms.");
+
+		return coverageDocuments;
+	}
+
+	static async Task<XDocument> ExtractData(RepoData repoData, string resultDirPath, string args)
+	{
 		await Task.Run(() =>
 		{
 			var process = Process.Start(new ProcessStartInfo("dotnet", args)
@@ -49,7 +63,6 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 				RedirectStandardError = true,
 				UseShellExecute = false,
 				CreateNoWindow = true
-
 			});
 
 			process!.WaitForExit();
@@ -57,7 +70,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			// Find the Cobertura coverage file that was generated
 			string coverageFile = Directory.GetFiles(resultDirPath, "coverage.cobertura.xml", SearchOption.AllDirectories)[0];
 
-			string newFilePath = $"{resultDirPath}\\coverage_{newRepo.ID}.cobertura.xml";
+			string newFilePath = $"{resultDirPath}\\coverage_{repoData.ID}.cobertura.xml";
 			File.Move(coverageFile, newFilePath);
 			coverageFile = newFilePath;
 
@@ -77,10 +90,9 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			double percent = lineRate * 100;
 			Debug.WriteLine($"Coverage: {percent:F2}%");
 
-
+			return doc;
 		});
-		watch.Stop();
-		var elapsedMs = watch.ElapsedMilliseconds;
-		Debug.WriteLine($"Analysis completed in {elapsedMs} ms.");
+		return null!;
 	}
 }
+

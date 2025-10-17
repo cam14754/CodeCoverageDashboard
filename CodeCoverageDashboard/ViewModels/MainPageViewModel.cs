@@ -3,6 +3,8 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
+using System.Xml.Linq;
+
 namespace CodeCoverageDashboard.ViewModels;
 public partial class MainPageViewModel(IRepoDataService repoDataService, IRepoCoverageAnalyzer repoCoverageAnlyzer) : BaseViewModel
 {
@@ -47,8 +49,11 @@ public partial class MainPageViewModel(IRepoDataService repoDataService, IRepoCo
 		{
 			Debug.WriteLine("");
 			Debug.WriteLine("Begining Analysis...");
-			await repoCoverageAnlyzer.AnalyzeRepoAsync();
+			List<XDocument> coverageDocuments = await repoCoverageAnlyzer.AnalyzeRepoAsync();
 			Debug.WriteLine("");
+			Debug.WriteLine("Analysis Complete.");
+
+
 		}
 		catch (Exception ex)
 		{
