@@ -4,20 +4,14 @@
 // For personal and educational use only.
 
 namespace CodeCoverageDashboard.Models;
-public class RepoData
+public class MethodData
 {
-	public Guid ID { get; set; } = Guid.NewGuid();
-
-	public string? Url { get; set; } = "Unknown URL";
+	public ClassData ParentClassData { get; set; }
+	public Guid ParentID => ParentClassData.ParentID;
 	public string? Name { get; set; } = "Unknown Name";
-	public string? Org { get; set; } = "Unkown Org";
-	public bool? IsValid { get; set; } = false;
 	public string[]? Errors { get; set; } = ["Unknown Errors"];
 	public double? CoveragePercent { get; set; } = null;
 	public int? CoveredLines { get; set; } = null;
 	public int? TotalLines { get; set; } = null;
 	public int? UncoveredLines { get; set; } = null;
-	public DateTime DateRetrieved { get; set; } = DateTime.Now;
-	public List<ClassData> ListClasses { get; set; } = null;
-
 }

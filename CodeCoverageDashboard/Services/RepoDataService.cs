@@ -34,7 +34,6 @@ public class RepoDataService : IRepoDataService
 			}
 			else
 			{
-				Debug.WriteLine($"Invalid URL '{raw}': {data.Error}");
 			}
 		}
 
