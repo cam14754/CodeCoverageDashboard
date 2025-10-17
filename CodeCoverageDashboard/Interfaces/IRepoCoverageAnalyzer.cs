@@ -7,5 +7,5 @@ namespace CodeCoverageDashboard.Services;
 
 public interface IRepoCoverageAnalyzer
 {
-	void AnalyzeRepo();
+	Task AnalyzeRepoAsync();
 }

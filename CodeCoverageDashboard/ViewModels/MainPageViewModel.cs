@@ -4,7 +4,7 @@
 // For personal and educational use only.
 
 namespace CodeCoverageDashboard.ViewModels;
-public partial class MainPageViewModel(IRepoDataService repoDataService, IRepoCoverageAnalyzer repoCoverageAanlyzer) : BaseViewModel
+public partial class MainPageViewModel(IRepoDataService repoDataService, IRepoCoverageAnalyzer repoCoverageAnlyzer) : BaseViewModel
 {
 	List<RepoData> repoResults = [];
 
@@ -36,7 +36,7 @@ public partial class MainPageViewModel(IRepoDataService repoDataService, IRepoCo
 	}
 
 	[RelayCommand]
-	public void Refresh()
+	public async Task RefreshAsync()
 	{
 		if (IsBusy)
 		{
@@ -47,7 +47,7 @@ public partial class MainPageViewModel(IRepoDataService repoDataService, IRepoCo
 		{
 			Debug.WriteLine("");
 			Debug.WriteLine("Begining Analysis...");
-			repoCoverageAanlyzer.AnalyzeRepo();
+			await repoCoverageAnlyzer.AnalyzeRepoAsync();
 			Debug.WriteLine("");
 		}
 		catch (Exception ex)
