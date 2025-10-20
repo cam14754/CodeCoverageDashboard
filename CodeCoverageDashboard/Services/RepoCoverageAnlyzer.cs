@@ -89,26 +89,8 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 	static async Task ExtractData(RepoData repoData, string resultDirPath, string args)
 	{
 		Debug.WriteLine($"Running test command on {repoData.Name}");
-		await Task.Run(() =>
-		{
-			var process = Process.Start(new ProcessStartInfo("dotnet", args)
-			{
-				RedirectStandardOutput = true,
-				RedirectStandardError = true,
-				UseShellExecute = false,
-				CreateNoWindow = true
-			});
 
-			process!.WaitForExit();
-
-			if (process.ExitCode != 0)
-			{
-				repoData.Errors.Add("dotnet test command failed to execute properly.");
-				Debug.WriteLine($"dotnet test command failed for repo {repoData.Name} with exit code {process.ExitCode}");
-				throw new Exception($"dotnet test command failed with exit code {process.ExitCode}");
-			}
-		});
-
+		await DotnetRunTestAsync(args, repoData);
 
 		// Find the Cobertura coverage file that was generated
 		string coverageFilePath = Directory.GetFiles(resultDirPath, "coverage.cobertura.xml", SearchOption.AllDirectories)[0];
@@ -169,12 +151,35 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			repoData.Errors.Add("Classes Count is 0");
 		}
 
-		if (repoData.ListClasses.Any(c => c.Methods.Count == 0))
+		Debug.WriteLine("Successfully added data to objects");
+	}
+
+	public static async Task DotnetRunTestAsync(string args, RepoData repoData)
+	{
+		var startInfo = new ProcessStartInfo
 		{
-			repoData.Errors.Add("One or more Classes have 0 Methods");
+			FileName = "dotnet",
+			Arguments = args,
+			UseShellExecute = false,
+			CreateNoWindow = true
+		};
+
+		using var process = new Process { StartInfo = startInfo, EnableRaisingEvents = true };
+
+		if (!process.Start())
+		{
+			throw new InvalidOperationException("Failed to start process.");
 		}
 
-		Debug.WriteLine("Successfully added data to objects");
+		await process.WaitForExitAsync();
+
+		if (process.ExitCode != 0)
+		{
+			var msg = $"dotnet test failed for {repoData.Name} (exit code:{process.ExitCode})";
+			Debug.WriteLine(msg);
+			repoData.Errors.Add(msg);
+			throw new Exception(msg);
+		}
 	}
 }
 

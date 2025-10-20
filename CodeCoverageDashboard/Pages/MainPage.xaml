@@ -65,17 +65,18 @@
                             <Label Text="Errors:" />
 
                             <!--  Inner list of strings  -->
-                            <CollectionView ItemsSource="{Binding Errors}">
-                                <CollectionView.EmptyView>
-                                    <Label Text="No Errors :)" />
-                                </CollectionView.EmptyView>
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate x:DataType="x:String">
-                                        <Label Text="{Binding ., StringFormat=' -{0}'}" />
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
-
+                            <ScrollView>
+                                <CollectionView ItemsSource="{Binding Errors}">
+                                    <CollectionView.EmptyView>
+                                        <Label Text="No Errors :)" />
+                                    </CollectionView.EmptyView>
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="x:String">
+                                            <Label Text="{Binding ., StringFormat=' -{0}'}" />
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </ScrollView>
 
                         </VerticalStackLayout>
                     </Border>

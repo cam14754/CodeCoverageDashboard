@@ -40,7 +40,15 @@ public class DataHandlerService(IRepoCoverageAnalyzer repoCoverageAnalyzer, IRep
 
 		foreach (var repo in Repos)
 		{
-			await repoCoverageAnalyzer.AnalyzeRepoAsync(repo);
+			try
+			{
+				await repoCoverageAnalyzer.AnalyzeRepoAsync(repo);
+
+			}
+			catch (Exception ex)
+			{
+				Debug.WriteLine(ex.Message);
+			}
 		}
 	}
 }
