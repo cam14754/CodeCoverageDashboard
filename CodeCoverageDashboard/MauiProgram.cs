@@ -9,6 +9,7 @@ public static class MauiProgram
 {
 	public static MauiApp CreateMauiApp()
 	{
+
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
@@ -29,5 +30,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<IRepoCoverageAnalyzer, RepoCoverageAnalyzer>();
 		builder.Services.AddSingleton<IDataHandlerService, DataHandlerService>();
 		return builder.Build();
+
+
 	}
 }

@@ -11,7 +11,5 @@ public class MethodData
 	public string? Name { get; set; } = "Unknown Name";
 	public string[]? Errors { get; set; } = ["Unknown Errors"];
 	public double? CoveragePercent { get; set; } = null;
-	public int? CoveredLines { get; set; } = null;
-	public int? TotalLines { get; set; } = null;
-	public int? UncoveredLines { get; set; } = null;
+	public double? CoveredLines { get; set; } = null;
 }

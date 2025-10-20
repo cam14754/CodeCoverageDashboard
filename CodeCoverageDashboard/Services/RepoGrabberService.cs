@@ -17,18 +17,34 @@ public class RepoGrabberService : IRepoGrabberService
 
 	public List<RepoData> GetRepoDataAsync()
 	{
-		List<string> lines = RepoURLs.Urls;
+		string? repoDirectory = Environment.GetEnvironmentVariable("REPODIR");
+
+		if (repoDirectory is null)
+		{
+			throw new Exception("Environment variable 'REPODIR' is not set.");
+		}
+
+		List<string> repoDirectories = [.. Directory.GetDirectories(repoDirectory)];
 
 		var list = new List<RepoData>();
 
-		foreach (var raw in lines)
+		foreach (var raw in repoDirectories)
 		{
+			if (RepoIgnore.IgnoreReposList.Contains(raw))
+			{
+				Debug.WriteLine($"Ignoring repo {raw}");
+				continue;
+			}
+
+			if (raw is null)
+			{
+			}
 			var data = ParseRepoUrl(raw);
 			list.Add(data);
 
 			if (data.IsValid == true)
 			{
-				Debug.WriteLine($"Parsed: \nURL: {data.Url} \nName: {data.Name} \nOrg: {data.Org} \nDate Retrieved: {data.DateRetrieved}\nValid: {data.IsValid}");
+				Debug.WriteLine($"Parsed: \nURL: {data.AbsolutePath} \nName: {data.Name} \nDate Retrieved: {data.DateRetrieved}\nValid: {data.IsValid}");
 			}
 		}
 
@@ -42,14 +58,12 @@ public class RepoGrabberService : IRepoGrabberService
 			Uri.TryCreate(url, UriKind.Absolute, out var uri);
 
 			var segments = (uri?.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries)) ?? throw new Exception("Invalid URL format.");
-			var org = segments?[^2];
-			var repo = TrimGitSuffix(segments?[^1]);
+			var repo = TrimGitSuffix(segments[^1]);
 
 			return new RepoData
 			{
-				Url = url,
+				AbsolutePath = url,
 				Name = repo,
-				Org = org,
 				IsValid = true,
 				DateRetrieved = DateTime.Now
 			};

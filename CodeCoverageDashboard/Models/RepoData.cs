@@ -3,21 +3,46 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
+using System.Collections.ObjectModel;
+using System.Xml.Linq;
+
 namespace CodeCoverageDashboard.Models;
-public class RepoData
+public partial class RepoData : ObservableObject
 {
-	public Guid ID { get; set; } = Guid.NewGuid();
 
-	public string? Url { get; set; } = "Unknown URL";
-	public string? Name { get; set; } = "Unknown Name";
-	public string? Org { get; set; } = "Unkown Org";
-	public bool? IsValid { get; set; } = false;
-	public string[]? Errors { get; set; } = ["Unknown Errors"];
-	public double? CoveragePercent { get; set; } = null;
-	public int? CoveredLines { get; set; } = null;
-	public int? TotalLines { get; set; } = null;
-	public int? UncoveredLines { get; set; } = null;
-	public DateTime DateRetrieved { get; set; } = DateTime.Now;
-	public List<ClassData> ListClasses { get; set; } = null;
+	[ObservableProperty]
+	public partial Guid ID { get; set; } = Guid.NewGuid();
 
+	[ObservableProperty]
+	public partial string? AbsolutePath { get; set; } = "Unknown URL";
+
+	[ObservableProperty]
+	public partial string? Name { get; set; } = "Unknown Name";
+
+	[ObservableProperty]
+	public partial bool? IsValid { get; set; } = false;
+
+	[ObservableProperty]
+	private ObservableCollection<string> errors = [];
+
+	[ObservableProperty]
+	public partial double? CoveragePercent { get; set; } = null;
+
+	[ObservableProperty]
+	public partial double? CoveredLines { get; set; } = null;
+
+	[ObservableProperty]
+	public partial double? TotalLines { get; set; } = null;
+
+	[ObservableProperty]
+	public partial double? UncoveredLines { get; set; } = null;
+
+	[ObservableProperty]
+	public partial DateTime DateRetrieved { get; set; } = DateTime.Now;
+
+	[ObservableProperty]
+	public partial List<ClassData> ListClasses { get; set; } = null;
+
+	[ObservableProperty]
+	public partial XDocument XDocument { get; set; } = null;
 }

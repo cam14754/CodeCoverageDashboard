@@ -47,6 +47,7 @@ public partial class MainPageViewModel(IDataHandlerService dataHandlerService) :
 		IsBusy = true;
 		try
 		{
+
 			Debug.WriteLine("");
 			Debug.WriteLine("Begining Analysis...");
 			await dataHandlerService.TestReposAsync();

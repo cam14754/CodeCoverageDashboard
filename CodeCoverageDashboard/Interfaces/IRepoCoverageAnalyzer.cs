@@ -3,11 +3,9 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
-using System.Xml.Linq;
-
 namespace CodeCoverageDashboard.Services;
 
 public interface IRepoCoverageAnalyzer
 {
-	Task<List<XDocument>> AnalyzeRepoAsync();
+	Task<RepoData> AnalyzeRepoAsync(RepoData repoData);
 }
