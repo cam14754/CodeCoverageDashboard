@@ -23,6 +23,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 
 		if (repo.AbsolutePath is null)
 		{
+			repo.Errors.Add("The path for this repo is null");
 			Debug.WriteLine($"Repo URL is null for repo {repo.Name}. Skipping...");
 			return null;
 		}
@@ -38,6 +39,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		if (!Directory.Exists(srcPath))
 		{
 			Debug.WriteLine($"Tests directory not found for repo {repo.Name} at path {srcPath}. Skipping...");
+			repo.Errors.Add("Test directory was not found!");
 			return null;
 		}
 
@@ -46,6 +48,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		if (childDir is null)
 		{
 			Debug.WriteLine($"No child directories found in tests directory for repo {repo.Name} at path {srcPath}. Skipping...");
+			repo.Errors.Add("Test child directory was not found!");
 			return null;
 		}
 
@@ -54,6 +57,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		if (csproj is null)
 		{
 			Debug.WriteLine($"No .csproj file found in {childDir} for repo {repo.Name}. Skipping...");
+			repo.Errors.Add("No .csproj file found in this directory");
 			return null;
 		}
 
@@ -77,7 +81,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 
 		watch.Stop();
 		var elapsedMs = watch.ElapsedMilliseconds;
-		Debug.WriteLine($"Analysis completed in {elapsedMs} ms.");
+		Debug.WriteLine($"Analysis completed in {elapsedMs} ms. \n");
 
 		return repo;
 	}
@@ -96,13 +100,20 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			});
 
 			process!.WaitForExit();
+
+			if (process.ExitCode != 0)
+			{
+				repoData.Errors.Add("dotnet test command failed to execute properly.");
+				Debug.WriteLine($"dotnet test command failed for repo {repoData.Name} with exit code {process.ExitCode}");
+				throw new Exception($"dotnet test command failed with exit code {process.ExitCode}");
+			}
 		});
 
 
 		// Find the Cobertura coverage file that was generated
 		string coverageFilePath = Directory.GetFiles(resultDirPath, "coverage.cobertura.xml", SearchOption.AllDirectories)[0];
 
-		string newFilePath = $"{resultDirPath}\\coverage_{repoData.ID}.cobertura.xml";
+		string newFilePath = $"{resultDirPath}\\coverage_{repoData.Name}.cobertura.xml";
 		File.Move(coverageFilePath, newFilePath);
 		coverageFilePath = newFilePath;
 
@@ -114,7 +125,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		}
 
 		//Load Document
-		XmlSerializer xs = new XmlSerializer(typeof(DTOs.CoverageDto));
+		XmlSerializer xs = new(typeof(DTOs.CoverageDto));
 		using FileStream fs = File.Open(coverageFilePath, FileMode.Open);
 		DTOs.CoverageDto coverage = (DTOs.CoverageDto)xs.Deserialize(fs);
 
@@ -124,7 +135,18 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		repoData.CoveragePercent = coverage.LineRate;
 		repoData.UncoveredLines = repoData.TotalLines - repoData.CoveredLines;
 
-		// first (or only) package
+		if (coverage.Packages is null)
+		{
+			repoData.Errors.Add("Package is null");
+			return;
+		}
+
+		if (coverage.Packages.Count == 0)
+		{
+			repoData.Errors.Add("Packages Count is 0, ensure .csproj reference setup properly.");
+			return;
+		}
+
 		DTOs.PackageDto package = coverage.Packages.FirstOrDefault();
 
 		repoData.ListClasses = package?.Classes
@@ -142,12 +164,17 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			})
 			.ToList() ?? [];
 
-		if (coverage.Packages.Count == 0)
+		if (repoData.ListClasses.Count == 0)
 		{
-			repoData.Errors.Add("Packages Count is 0, ensure .csproj reference setup properly.");
+			repoData.Errors.Add("Classes Count is 0");
 		}
 
-		Debug.WriteLine("Added data to objects");
+		if (repoData.ListClasses.Any(c => c.Methods.Count == 0))
+		{
+			repoData.Errors.Add("One or more Classes have 0 Methods");
+		}
+
+		Debug.WriteLine("Successfully added data to objects");
 	}
 }
 

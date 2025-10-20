@@ -71,7 +71,7 @@
                                 </CollectionView.EmptyView>
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate x:DataType="x:String">
-                                        <Label Text="{Binding .}" />
+                                        <Label Text="{Binding ., StringFormat=' -{0}'}" />
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>
                             </CollectionView>

@@ -36,12 +36,11 @@ public class DataHandlerService(IRepoCoverageAnalyzer repoCoverageAnalyzer, IRep
 			Directory.Delete(resultsDirectoryPath, true); // 'true' means recursive delete
 		}
 		Directory.CreateDirectory(resultsDirectoryPath);
-		Debug.WriteLine("resultsDirectory found/creaed");
+		Debug.WriteLine("resultsDirectory found/created \n");
 
 		foreach (var repo in Repos)
 		{
 			await repoCoverageAnalyzer.AnalyzeRepoAsync(repo);
-			Debug.WriteLine($"Completed analysis for repo: {repo.Name}");
 		}
 	}
 }

@@ -23,7 +23,7 @@ public partial class RepoData : ObservableObject
 	public partial bool? IsValid { get; set; } = false;
 
 	[ObservableProperty]
-	private ObservableCollection<string> errors = [];
+	ObservableCollection<string> errors = [];
 
 	[ObservableProperty]
 	public partial double? CoveragePercent { get; set; } = null;
