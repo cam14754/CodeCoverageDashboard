@@ -4,10 +4,8 @@
 // For personal and educational use only.
 
 namespace CodeCoverageDashboard.Models;
-public class MethodData
+public class LineData
 {
-	public string? Name { get; set; } = "Unknown Name";
-	public string[]? Errors { get; set; } = [];
-	public double? CoveragePercent { get; set; } = null;
-	public List<LineData> ListLines { get; set; } = [];
+	public double? LineNumber { get; set; }
+	public double? Hits { get; set; } = null;
 }

@@ -145,7 +145,12 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 				ListMethods = c.Methods.Select(m => new MethodData
 				{
 					Name = m.Name,
-					CoveragePercent = m.LineRate
+					CoveragePercent = m.LineRate,
+					ListLines = m.Lines.Select(l => new LineData
+					{
+						LineNumber = l.Number,
+						Hits = l.Hits
+					}).ToList() ?? []
 				})
 				.ToList() ?? []
 			})

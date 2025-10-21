@@ -29,10 +29,12 @@ public static class MauiProgram
 		builder.Services.AddSingleton<MainPageViewModel>();
 		builder.Services.AddSingleton<RepoPageViewModel>();
 		builder.Services.AddSingleton<ClassPageViewModel>();
+		builder.Services.AddSingleton<MethodPageViewModel>();
 
 		builder.Services.AddSingleton<MainPage>();
 		builder.Services.AddTransient<RepoPage>();
 		builder.Services.AddTransient<ClassPage>();
+		builder.Services.AddTransient<MethodPage>();
 
 		builder.Services.AddSingleton<IRepoGrabberService, RepoGrabberService>();
 		builder.Services.AddSingleton<IRepoCoverageAnalyzer, RepoCoverageAnalyzer>();

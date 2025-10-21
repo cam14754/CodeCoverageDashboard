@@ -44,13 +44,23 @@ public class DTOs
 
 		[XmlArray("methods")]
 		[XmlArrayItem("method")]
-		public List<MethodDto> Methods { get; set; } = new();
+		public List<MethodDto> Methods { get; set; } = [];
 	}
 
 	public class MethodDto
 	{
 		[XmlAttribute("name")] public string Name { get; set; }
 		[XmlAttribute("line-rate")] public double LineRate { get; set; }
+
+		[XmlArray("lines")]
+		[XmlArrayItem("line")]
+		public List<LineDto> Lines { get; set; } = [];
+	}
+
+	public class LineDto
+	{
+		[XmlAttribute("number")] public double Number { get; set; }
+		[XmlAttribute("hits")] public double Hits { get; set; }
 	}
 
 
