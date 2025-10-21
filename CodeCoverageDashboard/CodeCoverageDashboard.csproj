@@ -75,4 +75,19 @@
 	  <Folder Include="Resources\Styles\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Update="Pages\ClassPage.xaml.cs">
+	    <DependentUpon>ClassPage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Pages\ClassPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\RepoPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
 </Project>

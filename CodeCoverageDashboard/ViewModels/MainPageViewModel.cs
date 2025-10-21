@@ -4,6 +4,7 @@
 // For personal and educational use only.
 
 using System.Collections.ObjectModel;
+using CodeCoverageDashboard.Pages;
 
 namespace CodeCoverageDashboard.ViewModels;
 public partial class MainPageViewModel(IDataHandlerService dataHandlerService) : BaseViewModel
@@ -57,6 +58,35 @@ public partial class MainPageViewModel(IDataHandlerService dataHandlerService) :
 		catch (Exception ex)
 		{
 			Debug.WriteLine($"Error: {ex.Message}.");
+		}
+		finally
+		{
+			IsBusy = false;
+		}
+	}
+
+	[RelayCommand]
+	public async Task GoToRepoPageAsync(RepoData repoData)
+	{
+		if (repoData is null)
+		{
+			return;
+		}
+		if (IsBusy)
+		{
+			return;
+		}
+		IsBusy = true;
+		try
+		{
+			await Shell.Current.GoToAsync(nameof(RepoPage), true, new Dictionary<string, object>
+			{
+				{ "SelectedRepo", repoData }
+			});
+		}
+		catch (Exception ex)
+		{
+			Debug.WriteLine($"Error navigating to RepoPage: {ex.Message}");
 		}
 		finally
 		{

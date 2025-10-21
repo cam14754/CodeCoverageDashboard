@@ -8,10 +8,8 @@ public class ClassData
 {
 	public RepoData ParentRepoData { get; set; } = null!;
 	public Guid ParentID => ParentRepoData.ID;
-
 	public string? Name { get; set; } = "Unknown Name";
-	public string[]? Errors { get; set; } = ["Unknown Errors"];
+	public string[]? Errors { get; set; } = [];
 	public double? CoveragePercent { get; set; } = null;
-	public double? CoveredLines { get; set; } = null;
-	public List<MethodData>? Methods { get; set; } = null;
+	public List<MethodData>? ListMethods { get; set; } = null;
 }

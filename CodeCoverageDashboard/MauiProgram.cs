@@ -3,6 +3,8 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
+using CodeCoverageDashboard.Pages;
+
 namespace CodeCoverageDashboard;
 
 public static class MauiProgram
@@ -25,6 +27,12 @@ public static class MauiProgram
 #endif
 
 		builder.Services.AddSingleton<MainPageViewModel>();
+		builder.Services.AddSingleton<RepoPageViewModel>();
+		builder.Services.AddSingleton<ClassPageViewModel>();
+
+		builder.Services.AddSingleton<MainPage>();
+		builder.Services.AddTransient<RepoPage>();
+		builder.Services.AddTransient<ClassPage>();
 
 		builder.Services.AddSingleton<IRepoGrabberService, RepoGrabberService>();
 		builder.Services.AddSingleton<IRepoCoverageAnalyzer, RepoCoverageAnalyzer>();

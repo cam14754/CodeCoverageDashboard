@@ -71,9 +71,8 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		  .Append("--collect:\"XPlat Code Coverage\" ")
 		  .Append("--results-directory \"").Append(resultsDirectoryPath).Append("\" ")
 		  .Append("--settings:\"").Append(runSettingsPath).Append("\" ")
-		  .Append("--no-restore ")
-		  .Append("--nologo ")
-		  .Append("--no-build");
+		  .Append("--nologo ");
+		//.Append("--no-build");
 
 		string args = sb.ToString();
 
@@ -95,7 +94,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		// Find the Cobertura coverage file that was generated
 		string coverageFilePath = Directory.GetFiles(resultDirPath, "coverage.cobertura.xml", SearchOption.AllDirectories)[0];
 
-		string newFilePath = $"{resultDirPath}\\coverage_{repoData.Name}.cobertura.xml";
+		string newFilePath = $"{resultDirPath}\\{repoData.Name}_CoverageReport.cobertura.xml";
 		File.Move(coverageFilePath, newFilePath);
 		coverageFilePath = newFilePath;
 
@@ -137,7 +136,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 				Name = c.Name,
 				CoveragePercent = c.LineRate,
 
-				Methods = c.Methods.Select(m => new MethodData
+				ListMethods = c.Methods.Select(m => new MethodData
 				{
 					Name = m.Name,
 					CoveragePercent = m.LineRate
@@ -160,6 +159,8 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		{
 			FileName = "dotnet",
 			Arguments = args,
+			RedirectStandardOutput = true,
+			RedirectStandardError = true,
 			UseShellExecute = false,
 			CreateNoWindow = true
 		};
@@ -171,12 +172,19 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			throw new InvalidOperationException("Failed to start process.");
 		}
 
+		var stdOutTask = process.StandardOutput.ReadToEndAsync();
+		var stdErrTask = process.StandardError.ReadToEndAsync();
+
 		await process.WaitForExitAsync();
+
+		var stdout = await stdOutTask;
+		var stderr = await stdErrTask;
 
 		if (process.ExitCode != 0)
 		{
 			var msg = $"dotnet test failed for {repoData.Name} (exit code:{process.ExitCode})";
-			Debug.WriteLine(msg);
+			var errormsg = $"Standard Ouput: {stdout} Error Output: {stderr}";
+			Debug.WriteLine(msg + errormsg);
 			repoData.Errors.Add(msg);
 			throw new Exception(msg);
 		}
