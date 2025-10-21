@@ -6,8 +6,6 @@
 namespace CodeCoverageDashboard.Models;
 public class ClassData
 {
-	public RepoData ParentRepoData { get; set; } = null!;
-	public Guid ParentID => ParentRepoData.ID;
 	public string? Name { get; set; } = "Unknown Name";
 	public string[]? Errors { get; set; } = [];
 	public double? CoveragePercent { get; set; } = null;

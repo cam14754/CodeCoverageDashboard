@@ -6,8 +6,6 @@
 namespace CodeCoverageDashboard.Models;
 public class MethodData
 {
-	public ClassData ParentClassData { get; set; }
-	public Guid ParentID => ParentClassData.ParentID;
 	public string? Name { get; set; } = "Unknown Name";
 	public string[]? Errors { get; set; } = [];
 	public double? CoveragePercent { get; set; } = null;

@@ -128,7 +128,13 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			return;
 		}
 
-		DTOs.PackageDto package = coverage.Packages.FirstOrDefault();
+		DTOs.PackageDto? package = coverage.Packages.FirstOrDefault();
+
+		if (package is null)
+		{
+			repoData.Errors.Add("Package is null");
+			return;
+		}
 
 		repoData.ListClasses = package?.Classes
 			.Select(c => new ClassData
