@@ -45,12 +45,17 @@ public class DTOs
 		[XmlArray("methods")]
 		[XmlArrayItem("method")]
 		public List<MethodDto> Methods { get; set; } = [];
+
+		[XmlArray("lines")]
+		[XmlArrayItem("line")]
+		public List<LineData> Lines { get; set; } = [];
 	}
 
 	public class MethodDto
 	{
-		[XmlAttribute("name")] public string Name { get; set; }
+		[XmlAttribute("name")] public string Name { get; set; } = "";
 		[XmlAttribute("line-rate")] public double LineRate { get; set; }
+		[XmlAttribute("signature")] public string Signature { get; set; } = "()";
 
 		[XmlArray("lines")]
 		[XmlArrayItem("line")]

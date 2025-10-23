@@ -10,4 +10,5 @@ public class MethodData
 	public string[]? Errors { get; set; } = [];
 	public double? CoveragePercent { get; set; } = null;
 	public List<LineData> ListLines { get; set; } = [];
+	public string? Signature { get; set; } = "()";
 }
