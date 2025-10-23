@@ -268,3 +268,6 @@ paket-files/
 
 # Benchmarkdot
 BenchmarkDotNet.Artifacts/
+
+#RepoIgnore
+CodeCoverageDashboard/RepoIgnore.cs
