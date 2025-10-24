@@ -27,16 +27,8 @@ public class DataHandlerService(IRepoCoverageAnalyzer repoCoverageAnalyzer, IRep
 		{
 			throw new Exception("No repositories loaded. Please load repositories before testing.");
 		}
-
-		// Path to the results directory
-		string resultsDirectoryPath = Path.Combine(FileSystem.AppDataDirectory, ".coverage");
-
-		if (Directory.Exists(resultsDirectoryPath))
-		{
-			Directory.Delete(resultsDirectoryPath, true); // 'true' means recursive delete
-		}
-		Directory.CreateDirectory(resultsDirectoryPath);
-		Debug.WriteLine("resultsDirectory found/created \n");
+		Directory.Delete(Path.Combine(FileSystem.AppDataDirectory, "coverage"), true);
+		var watch = Stopwatch.StartNew();
 
 		foreach (var repo in Repos)
 		{
@@ -50,5 +42,8 @@ public class DataHandlerService(IRepoCoverageAnalyzer repoCoverageAnalyzer, IRep
 				Debug.WriteLine(ex.Message);
 			}
 		}
+
+		watch.Stop();
+		Debug.WriteLine($"\nFull analysis finished in {(double)((double)watch.ElapsedMilliseconds / 1000d)} seconds");
 	}
 }

@@ -3,7 +3,6 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
@@ -14,11 +13,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 	{
 		var watch = Stopwatch.StartNew();
 
-		// Run settings for optimizing code coverage collection
-		var runSettingsPath = @"C:\Users\cam14754\Desktop\Unit Testing Intern Project\CodeCoverageDashboard\CodeCoverageDashboard\CodeCoverage.runsettings";
 
-		// Path to the results directory
-		string resultsDirectoryPath = Path.Combine(FileSystem.AppDataDirectory, ".coverage");
 
 		// Run the commands
 
@@ -46,6 +41,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 
 		string? childDir = Directory.GetDirectories(srcPath).First();
 
+
 		if (childDir is null)
 		{
 			Debug.WriteLine($"No child directories found in tests directory for repo {repo.Name} at path {srcPath}. Skipping...");
@@ -54,6 +50,10 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		}
 
 		string? csproj = Directory.GetFiles(childDir, "*.csproj", SearchOption.TopDirectoryOnly).First();
+		string? dllFile = Directory.GetFiles(childDir, "*.UnitTests.dll", SearchOption.AllDirectories).FirstOrDefault();
+		string runSettingsPath = @"C:\Users\cam14754\Desktop\UnitTestingInternProject\CodeCoverageDashboard\CodeCoverageDashboard\CodeCoverage.runsettings";
+		string resultsDirectoryPath = Path.Combine(FileSystem.AppDataDirectory, $"coverage");
+		string testAdapterPath = @"C:\Users\cam14754\.nuget\packages\coverlet.collector\6.0.4\build\netstandard2.0";
 
 		if (csproj is null)
 		{
@@ -62,22 +62,27 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			return null;
 		}
 
+		if (dllFile is null)
+		{
+			Debug.WriteLine($"No UnitTests.dll file found in {childDir} for repo {repo.Name}. Skipping...");
+			repo.Errors.Add("No UnitTests.dll file found in this directory, make sure to run tk test");
+			return null;
+		}
+
 		Debug.WriteLine($"Found .csproj at {csproj}");
+		Debug.WriteLine($"Found .dll at {dllFile}");
 
 		// Build the dotnet test args
-		var sb = new StringBuilder();
-		sb.Append("test \"")
-		  .Append(csproj)
-		  .Append("\" ")
-		  .Append("--collect:\"XPlat Code Coverage\" ")
-		  .Append("--results-directory \"").Append(resultsDirectoryPath).Append("\" ")
-		  .Append("--settings:\"").Append(runSettingsPath).Append("\" ")
-		  .Append("--nologo ")
-		  .Append("--no-build");
+		string args = $"""test "{dllFile}" --nologo --settings "{runSettingsPath}" --results-directory "{resultsDirectoryPath}" --collect:"XPlat Code Coverage" --test-adapter-path "{testAdapterPath}" """;
 
-		string args = sb.ToString();
+		Debug.WriteLine($"Running test command on {repo.Name}");
+		await DotnetRunTestAsync(args, repo);
 
-		await ExtractData(repo, resultsDirectoryPath, args);
+		// Debug.WriteLine($"Moving coverage report file for {repo.Name}");
+		string resultFilePath = MoveCoverageReportFileAndReturnNewPath(repo, resultsDirectoryPath);
+
+		// Debug.WriteLine($"Extracting data for {repo.Name}");
+		ExtractData(repo, resultFilePath);
 
 		watch.Stop();
 		var elapsedMs = watch.ElapsedMilliseconds;
@@ -85,30 +90,27 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 
 		return repo;
 	}
-
-	static async Task ExtractData(RepoData repoData, string resultDirPath, string args)
+	static string MoveCoverageReportFileAndReturnNewPath(RepoData repo, string resultDirPath)
 	{
-		Debug.WriteLine($"Running test command on {repoData.Name}");
-
-		await DotnetRunTestAsync(args, repoData);
-
 		// Find the Cobertura coverage file that was generated
 		string coverageFilePath = Directory.GetFiles(resultDirPath, "coverage.cobertura.xml", SearchOption.AllDirectories)[0];
 
-		string newFilePath = $"{resultDirPath}\\{repoData.Name}_CoverageReport.cobertura.xml";
+		string newFilePath = $"{resultDirPath}\\{repo.Name}CoverageReport.cobertura.xml";
 		File.Move(coverageFilePath, newFilePath);
-		coverageFilePath = newFilePath;
 
-		Debug.WriteLine($"Created Coverage file at: {coverageFilePath}");
+		Debug.WriteLine($"Created Coverage file at: {newFilePath}");
 
 		foreach (var dir in Directory.GetDirectories(resultDirPath))
 		{
 			Directory.Delete(dir, true); // 'true' means recursive delete
 		}
-
+		return newFilePath;
+	}
+	static void ExtractData(RepoData repoData, string resultFilePath)
+	{
 		//Load Document
 		XmlSerializer xs = new(typeof(DTOs.CoverageDto));
-		using FileStream fs = File.Open(coverageFilePath, FileMode.Open);
+		using FileStream fs = File.Open(resultFilePath, FileMode.Open);
 		DTOs.CoverageDto coverage = (DTOs.CoverageDto)xs.Deserialize(fs);
 
 		// root attributes
@@ -158,7 +160,8 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		string AsyncLambdaInsideMethod = "(?:.*?\\.)?(?<parent>[^.]+)\\/<>c__DisplayClass\\d+_\\d+\\/<<(?<method>[^>]+)>b__\\d+>d?$";
 		string ClosureClassAsyncLambda = "(?:.*?\\.)?(?<parent>[^.]+)\\/<>c__DisplayClass\\d+_\\d+\\/<<(?<method>[^>]+)>b__\\d+(?:_\\d+)?>d$";
 		string IteratorStateMachine = "(?:.*?\\.)?(?<parent>[^.]+)\\/<(?<method>[^>]+)>d__\\d+$";
-		string RegularClassName = "(?<=\\.)(?<parent>[^.\\/<+]+)$"; // added + to be safe for nested types
+		string RegularClassName = "(?<=\\.)(?<parent>[^.\\/<+]+)$";
+		string MatchType = "\\.(?<type>[A-Za-z0-9_]+)\\s*(?=[),])";
 
 		foreach (var c in package.Classes)
 		{
@@ -168,7 +171,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			match = Regex.Match(c.Name, AsyncLambdaInsideMethod);
 			if (match.Success)
 			{
-				Debug.WriteLine($"Processing class: {c.Name} as an async lambda inside method");
+				//Debug.WriteLine($"Processing class: {c.Name} as an async lambda inside method");
 				var className = match.Groups["parent"].Value;
 				var methodName = match.Groups["method"].Value + " (Async Lambda)";
 				var parent = GetOrAddClass(className, c.LineRate);
@@ -185,7 +188,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			match = Regex.Match(c.Name, ClosureClassAsyncLambda);
 			if (match.Success)
 			{
-				Debug.WriteLine($"Processing class {c.Name} as an async lambda");
+				//Debug.WriteLine($"Processing class {c.Name} as an async lambda");
 				var className = match.Groups["parent"].Value;
 				var methodName = match.Groups["method"].Value + " (Closure Class Async Lambda)";
 				var parent = GetOrAddClass(className, c.LineRate);
@@ -202,7 +205,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			match = Regex.Match(c.Name, IteratorStateMachine);
 			if (match.Success)
 			{
-				Debug.WriteLine($"Processing class {c.Name} as an iterator state machine");
+				//Debug.WriteLine($"Processing class {c.Name} as an iterator state machine");
 				var className = match.Groups["parent"].Value;
 				var methodName = match.Groups["method"].Value + " (Async Method)";
 				var parent = GetOrAddClass(className, c.LineRate);
@@ -219,7 +222,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			match = Regex.Match(c.Name, RegularClassName);
 			if (match.Success)
 			{
-				Debug.WriteLine($"Processing class: {c.Name} as a regular method");
+				//Debug.WriteLine($"Processing class: {c.Name} as a regular method");
 				var className = match.Groups["parent"].Value;
 				var parent = GetOrAddClass(className, c.LineRate);
 
@@ -236,8 +239,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 						Name = m.Name,
 						CoveragePercent = m.LineRate,
 						ListLines = lines,
-						Signature = m.Signature
-
+						Signature = $"({String.Join(", ", Regex.Matches(m.Signature, MatchType).Cast<Match>().Select(m => m.Groups["type"].Value))})"
 					});
 				}
 			}
@@ -253,6 +255,8 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 
 		Debug.WriteLine("Successfully added data to objects");
 	}
+
+
 
 	public static async Task DotnetRunTestAsync(string args, RepoData repoData)
 	{
