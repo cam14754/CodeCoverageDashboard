@@ -168,6 +168,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			match = Regex.Match(c.Name, AsyncLambdaInsideMethod);
 			if (match.Success)
 			{
+				Debug.WriteLine($"Processing class: {c.Name} as an async lambda inside method");
 				var className = match.Groups["parent"].Value;
 				var methodName = match.Groups["method"].Value + " (Async Lambda)";
 				var parent = GetOrAddClass(className, c.LineRate);
@@ -184,6 +185,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			match = Regex.Match(c.Name, ClosureClassAsyncLambda);
 			if (match.Success)
 			{
+				Debug.WriteLine($"Processing class {c.Name} as an async lambda");
 				var className = match.Groups["parent"].Value;
 				var methodName = match.Groups["method"].Value + " (Closure Class Async Lambda)";
 				var parent = GetOrAddClass(className, c.LineRate);
@@ -200,6 +202,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			match = Regex.Match(c.Name, IteratorStateMachine);
 			if (match.Success)
 			{
+				Debug.WriteLine($"Processing class {c.Name} as an iterator state machine");
 				var className = match.Groups["parent"].Value;
 				var methodName = match.Groups["method"].Value + " (Async Method)";
 				var parent = GetOrAddClass(className, c.LineRate);
@@ -216,6 +219,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			match = Regex.Match(c.Name, RegularClassName);
 			if (match.Success)
 			{
+				Debug.WriteLine($"Processing class: {c.Name} as a regular method");
 				var className = match.Groups["parent"].Value;
 				var parent = GetOrAddClass(className, c.LineRate);
 
