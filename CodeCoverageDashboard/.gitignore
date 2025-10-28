@@ -271,3 +271,7 @@ BenchmarkDotNet.Artifacts/
 
 #RepoIgnore
 CodeCoverageDashboard/RepoIgnore.cs
+
+# Database files
+*.db
+.db
