@@ -28,11 +28,13 @@ public static class MauiProgram
 		builder.Services.AddSingleton<RepoPageViewModel>();
 		builder.Services.AddSingleton<ClassPageViewModel>();
 		builder.Services.AddSingleton<MethodPageViewModel>();
+		builder.Services.AddSingleton<StaticDashboardPageViewModel>();
 
 		builder.Services.AddSingleton<MainPage>();
 		builder.Services.AddTransient<RepoPage>();
 		builder.Services.AddTransient<ClassPage>();
 		builder.Services.AddTransient<MethodPage>();
+		builder.Services.AddSingleton<StaticDashboardPage>();
 
 		builder.Services.AddSingleton<IDataHandlerService, DataHandlerService>();
 		builder.Services.AddSingleton<IDatabaseService, DatabaseService>();

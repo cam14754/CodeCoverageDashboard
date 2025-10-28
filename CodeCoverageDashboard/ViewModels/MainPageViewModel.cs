@@ -64,4 +64,26 @@ public partial class MainPageViewModel(IDataHandlerService dataHandlerService) :
 		}
 	}
 
+	[RelayCommand]
+	public async Task GoToStaticDashboardPage()
+	{
+		if (IsBusy)
+		{
+			return;
+		}
+		IsBusy = true;
+		try
+		{
+			await Shell.Current.GoToAsync(nameof(StaticDashboardPage));
+		}
+		catch (Exception ex)
+		{
+			Debug.WriteLine($"Error navigating to StaticDashboardPage: {ex.Message}");
+		}
+		finally
+		{
+			IsBusy = false;
+		}
+	}
+
 }

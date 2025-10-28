@@ -117,25 +117,10 @@
                 VerticalTextAlignment="Center"
                 WidthRequest="300" />
 
-            <CheckBox
-                Grid.Row="1"
-                Grid.Column="0"
-                HeightRequest="30"
-                WidthRequest="30" />
-            <Label
-                Grid.Row="1"
-                Grid.Column="1"
-                BackgroundColor="White"
-                FontSize="20"
-                HeightRequest="30"
-                HorizontalOptions="Start"
-                HorizontalTextAlignment="Center"
-                Text="Rebuild Repositories"
-                VerticalTextAlignment="Center" />
-
             <Button
                 Grid.Row="2"
                 Grid.Column="0"
+                Command="{Binding GoToStaticDashboardPageCommand}"
                 HeightRequest="25"
                 WidthRequest="25" />
 
@@ -146,7 +131,7 @@
                 FontSize="20"
                 HorizontalOptions="Start"
                 HorizontalTextAlignment="Center"
-                Text="Select local repository root"
+                Text="Switch to Static Dashboard"
                 VerticalTextAlignment="Center" />
 
         </Grid>

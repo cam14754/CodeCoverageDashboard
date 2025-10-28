@@ -11,9 +11,6 @@ public abstract class BaseRecord<T>
 	[PrimaryKey, AutoIncrement]
 	public int Id { get; set; }
 
-	[Column("repo_name")]
-	public string RepoName { get; set; } = string.Empty;
-
 	[Column("date_retrieved")]
 	public DateTime DateRetrieved { get; set; } = DateTime.MinValue;
 

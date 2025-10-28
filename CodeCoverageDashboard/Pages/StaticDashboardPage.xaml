@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="CodeCoverageDashboard.Pages.StaticDashboardPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:CodeCoverageDashboard.Models"
+    xmlns:viewmodels="clr-namespace:CodeCoverageDashboard.ViewModels"
+    Title="StaticDashboardPage"
+    x:DataType="viewmodels:StaticDashboardPageViewModel">
+    <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*,*">
+        <Label
+            Grid.Row="0"
+            Grid.Column="0"
+            BackgroundColor="Red"
+            FontSize="24"
+            HorizontalOptions="Fill"
+            Text="Placeholder 0"
+            VerticalOptions="Fill" />
+        <Label
+            Grid.Row="0"
+            Grid.Column="1"
+            BackgroundColor="Orange"
+            FontSize="24"
+            HorizontalOptions="Fill"
+            Text="Placeholder 1"
+            VerticalOptions="Fill" />
+        <Label
+            Grid.Row="0"
+            Grid.Column="2"
+            BackgroundColor="Yellow"
+            FontSize="24"
+            HorizontalOptions="Fill"
+            Text="Placeholder 2"
+            VerticalOptions="Fill" />
+        <HorizontalStackLayout Grid.Column="2">
+            <Button
+                Command="{Binding GoToMainPageCommand}"
+                HeightRequest="25"
+                WidthRequest="25"
+                ZIndex="1" />
+            <Label
+                BackgroundColor="White"
+                FontSize="20"
+                HeightRequest="30"
+                HorizontalOptions="Start"
+                HorizontalTextAlignment="Center"
+                Text="Switch to Drilldown Dashboard"
+                VerticalTextAlignment="Center"
+                ZIndex="1" />
+        </HorizontalStackLayout>
+
+
+        <Label
+            Grid.Row="1"
+            Grid.Column="0"
+            BackgroundColor="LightGreen"
+            FontSize="24"
+            HorizontalOptions="Fill"
+            Text="Placeholder 3"
+            VerticalOptions="Fill" />
+        <Label
+            Grid.Row="1"
+            Grid.Column="1"
+            BackgroundColor="Green"
+            FontSize="24"
+            HorizontalOptions="Fill"
+            Text="Placeholder 4"
+            VerticalOptions="Fill" />
+        <Label
+            Grid.Row="1"
+            Grid.Column="2"
+            BackgroundColor="LightBlue"
+            FontSize="24"
+            HorizontalOptions="Fill"
+            Text="Placeholder 5"
+            VerticalOptions="Fill" />
+        <Label
+            Grid.Row="2"
+            Grid.Column="0"
+            BackgroundColor="Blue"
+            FontSize="24"
+            HorizontalOptions="Fill"
+            Text="Placeholder 6"
+            VerticalOptions="Fill" />
+        <Label
+            Grid.Row="2"
+            Grid.Column="1"
+            BackgroundColor="Indigo"
+            FontSize="24"
+            HorizontalOptions="Fill"
+            Text="Placeholder 7"
+            VerticalOptions="Fill" />
+        <Label
+            Grid.Row="2"
+            Grid.Column="2"
+            BackgroundColor="Violet"
+            FontSize="24"
+            HorizontalOptions="Fill"
+            Text="Placeholder 8"
+            VerticalOptions="Fill" />
+    </Grid>
+</ContentPage>

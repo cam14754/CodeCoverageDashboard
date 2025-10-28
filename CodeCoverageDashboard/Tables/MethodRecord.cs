@@ -6,4 +6,8 @@
 namespace CodeCoverageDashboard.Tables;
 
 [Table("Methods")]
-public class MethodRecord : BaseRecord<MethodProperties> { }
+public class MethodRecord : BaseRecord<MethodProperties>
+{
+	[Column("repo_name")]
+	public string RepoName { get; set; } = string.Empty;
+}
