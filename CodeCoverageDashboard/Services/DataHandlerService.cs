@@ -7,43 +7,30 @@ using System.Collections.ObjectModel;
 using System.Xml.Linq;
 
 namespace CodeCoverageDashboard.Services;
-public class DataHandlerService(IRepoCoverageAnalyzer repoCoverageAnalyzer, IRepoGrabberService repoGrabberService) : IDataHandlerService
+public class DataHandlerService(IDatabaseService databaseService) : IDataHandlerService
 {
 	public ObservableCollection<RepoData> Repos { get; set; } = [];
-	public List<XDocument> CoverageDocuments { get; set; } = [];
-	public void LoadReposAsync()
+
+	public async Task GetXDocRequest()
 	{
-		List<RepoData> repos = repoGrabberService.GetRepoDataAsync();
 		Repos.Clear();
+		List<XDocument> xDocsFromService = await HTTPService.GetXDocs();
+
+		foreach (var xDoc in xDocsFromService)
+		{
+			RepoData newRepo = new RepoData { XDocument = xDoc };
+			RepoCoverageAnalyzer.AnalyzeRepo(newRepo);
+			Repos.Add(newRepo);
+		}
+
+		await databaseService.SaveMemoryToDB([.. Repos]);
+
+		Repos.Clear();
+
+		var repos = await databaseService.LoadLatestReposList();
 		foreach (var repo in repos)
 		{
 			Repos.Add(repo);
 		}
-	}
-
-	public async Task TestReposAsync()
-	{
-		if (Repos.Count == 0)
-		{
-			throw new Exception("No repositories loaded. Please load repositories before testing.");
-		}
-		Directory.Delete(Path.Combine(FileSystem.AppDataDirectory, "coverage"), true);
-		var watch = Stopwatch.StartNew();
-
-		foreach (var repo in Repos)
-		{
-			try
-			{
-				await repoCoverageAnalyzer.AnalyzeRepoAsync(repo);
-
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine(ex.Message);
-			}
-		}
-
-		watch.Stop();
-		Debug.WriteLine($"\nFull analysis finished in {(double)((double)watch.ElapsedMilliseconds / 1000d)} seconds");
 	}
 }

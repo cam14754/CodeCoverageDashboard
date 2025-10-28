@@ -3,9 +3,11 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
-namespace CodeCoverageDashboard.Services;
+namespace CodeCoverageDashboard.Interfaces;
 
 public interface IRepoCoverageAnalyzer
 {
-	Task<RepoData> AnalyzeRepoAsync(RepoData repoData);
+	static abstract void AnalyzeRepo(RepoData repoData);
+	static abstract bool TryParseRepoMetadata(RepoData repoData, DTOs.CoverageDto? coverage);
+	static abstract bool TryAnalyzeXDocument(RepoData repoData, DTOs.CoverageDto? coverage);
 }

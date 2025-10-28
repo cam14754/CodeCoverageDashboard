@@ -9,40 +9,33 @@ using System.Xml.Linq;
 namespace CodeCoverageDashboard.Models;
 public partial class RepoData : ObservableObject
 {
+	[ObservableProperty]
+	public partial string AbsolutePath { get; set; } = "Unknown Path";
 
 	[ObservableProperty]
-	public partial Guid ID { get; set; } = Guid.NewGuid();
+	public partial string Name { get; set; } = "Unknown Name";
 
 	[ObservableProperty]
-	public partial string? AbsolutePath { get; set; } = "Unknown URL";
+	public partial ObservableCollection<string> ListErrors { get; set; } = [];
 
 	[ObservableProperty]
-	public partial string? Name { get; set; } = "Unknown Name";
+	public partial double CoveragePercent { get; set; } = 0;
 
 	[ObservableProperty]
-	public partial bool? IsValid { get; set; } = false;
+	public partial double CoveredLines { get; set; } = 0;
 
 	[ObservableProperty]
-	ObservableCollection<string> errors = [];
+	public partial double TotalLines { get; set; } = 0;
 
 	[ObservableProperty]
-	public partial double? CoveragePercent { get; set; } = null;
-
-	[ObservableProperty]
-	public partial double? CoveredLines { get; set; } = null;
-
-	[ObservableProperty]
-	public partial double? TotalLines { get; set; } = null;
-
-	[ObservableProperty]
-	public partial double? UncoveredLines { get; set; } = null;
+	public partial double UncoveredLines { get; set; } = 0;
 
 	[ObservableProperty]
 	public partial DateTime DateRetrieved { get; set; } = DateTime.Now;
 
 	[ObservableProperty]
-	public partial List<ClassData> ListClasses { get; set; } = null;
+	public partial List<ClassData> ListClasses { get; set; } = [];
 
 	[ObservableProperty]
-	public partial XDocument XDocument { get; set; } = null;
+	public partial XDocument? XDocument { get; set; } = null;
 }

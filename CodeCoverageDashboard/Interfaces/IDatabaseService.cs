@@ -3,11 +3,9 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
-using System.Collections.ObjectModel;
-
 namespace CodeCoverageDashboard.Interfaces;
-public interface IDataHandlerService
+public interface IDatabaseService
 {
-	ObservableCollection<RepoData> Repos { get; set; }
-	Task GetXDocRequest();
+	abstract Task SaveMemoryToDB(List<RepoData> repoDatas);
+	abstract Task<List<RepoData>> LoadLatestReposList();
 }

@@ -12,7 +12,7 @@ public partial class MainPageViewModel(IDataHandlerService dataHandlerService) :
 	public ObservableCollection<RepoData> Repos => dataHandlerService.Repos;
 
 	[RelayCommand]
-	public void LoadRepos()
+	public async Task RunAsync()
 	{
 		if (IsBusy)
 		{
@@ -23,7 +23,7 @@ public partial class MainPageViewModel(IDataHandlerService dataHandlerService) :
 			IsBusy = true;
 			Debug.WriteLine("Loading repos... \n");
 
-			dataHandlerService.LoadReposAsync();
+			await dataHandlerService.GetXDocRequest();
 
 			Debug.WriteLine("Repos loaded successfully.");
 
@@ -31,33 +31,6 @@ public partial class MainPageViewModel(IDataHandlerService dataHandlerService) :
 		catch (Exception ex)
 		{
 			Debug.WriteLine($"Error loading repos: {ex.Message}");
-		}
-		finally
-		{
-			IsBusy = false;
-		}
-	}
-
-	[RelayCommand]
-	public async Task RefreshAsync()
-	{
-		if (IsBusy)
-		{
-			return;
-		}
-		IsBusy = true;
-		try
-		{
-
-			Debug.WriteLine("");
-			Debug.WriteLine("Begining Analysis...");
-			await dataHandlerService.TestReposAsync();
-			Debug.WriteLine("");
-			Debug.WriteLine("Analysis Complete.");
-		}
-		catch (Exception ex)
-		{
-			Debug.WriteLine($"Error: {ex.Message}.");
 		}
 		finally
 		{
@@ -93,4 +66,5 @@ public partial class MainPageViewModel(IDataHandlerService dataHandlerService) :
 			IsBusy = false;
 		}
 	}
+
 }

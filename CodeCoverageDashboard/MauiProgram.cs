@@ -36,9 +36,9 @@ public static class MauiProgram
 		builder.Services.AddTransient<ClassPage>();
 		builder.Services.AddTransient<MethodPage>();
 
-		builder.Services.AddSingleton<IRepoGrabberService, RepoGrabberService>();
-		builder.Services.AddSingleton<IRepoCoverageAnalyzer, RepoCoverageAnalyzer>();
 		builder.Services.AddSingleton<IDataHandlerService, DataHandlerService>();
+		builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
+
 		return builder.Build();
 
 

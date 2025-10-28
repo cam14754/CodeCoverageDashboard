@@ -9,109 +9,76 @@ using System.Xml.Serialization;
 namespace CodeCoverageDashboard.Services;
 public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 {
-	public async Task<RepoData> AnalyzeRepoAsync(RepoData repo)
+	public static void AnalyzeRepo(RepoData repoData)
 	{
-		var watch = Stopwatch.StartNew();
-
-
-
-		// Run the commands
-
-		if (repo.AbsolutePath is null)
+		ArgumentNullException.ThrowIfNull(repoData);
+		DTOs.CoverageDto? coverage = null;
+		try
 		{
-			repo.Errors.Add("The path for this repo is null");
-			Debug.WriteLine($"Repo URL is null for repo {repo.Name}. Skipping...");
-			return null;
+			// Deserialize from provided XDocument
+			var serializer = new XmlSerializer(typeof(DTOs.CoverageDto));
+			using var reader = repoData.XDocument.CreateReader();
+			coverage = serializer.Deserialize(reader) as DTOs.CoverageDto;
+		}
+		catch (Exception ex)
+		{
+			repoData.ListErrors.Add("Exception during XML deserialization: " + ex.Message);
+			Debug.WriteLine("Exception during XML deserialization for repo: " + repoData.Name + " Exception: " + ex.Message);
+			return;
 		}
 
-		if (RepoIgnore.IgnoreReposList.Contains(repo.AbsolutePath))
+		if (coverage is null)
 		{
-			Debug.WriteLine($"Ignoring repo {repo.Name}. Skipping...");
-			return null;
+			repoData.ListErrors.Add("Deserialized coverage object is null.");
+			Debug.WriteLine("Deserialized coverage object is null for repo: " + repoData.Name);
+			return;
 		}
 
-		string srcPath = Path.Combine(repo.AbsolutePath, "tests");
-
-		if (!Directory.Exists(srcPath))
+		if (!TryParseRepoMetadata(repoData, coverage))
 		{
-			Debug.WriteLine($"Tests directory not found for repo {repo.Name} at path {srcPath}. Skipping...");
-			repo.Errors.Add("Test directory was not found!");
-			return null;
+			Debug.WriteLine("Failed to parse repo metadata for repo: " + repoData.Name);
+			return;
 		}
 
-		string? childDir = Directory.GetDirectories(srcPath).First();
-
-
-		if (childDir is null)
+		if (!TryAnalyzeXDocument(repoData, coverage))
 		{
-			Debug.WriteLine($"No child directories found in tests directory for repo {repo.Name} at path {srcPath}. Skipping...");
-			repo.Errors.Add("Test child directory was not found!");
-			return null;
+			Debug.WriteLine("Failed to analyze XDocument for repo: " + repoData.Name);
+			return;
 		}
 
-		string? csproj = Directory.GetFiles(childDir, "*.csproj", SearchOption.TopDirectoryOnly).First();
-		string? dllFile = Directory.GetFiles(childDir, "*.UnitTests.dll", SearchOption.AllDirectories).FirstOrDefault();
-		string runSettingsPath = @"C:\Users\cam14754\Desktop\UnitTestingInternProject\CodeCoverageDashboard\CodeCoverageDashboard\CodeCoverage.runsettings";
-		string resultsDirectoryPath = Path.Combine(FileSystem.AppDataDirectory, $"coverage");
-		string testAdapterPath = @"C:\Users\cam14754\.nuget\packages\coverlet.collector\6.0.4\build\netstandard2.0";
-
-		if (csproj is null)
-		{
-			Debug.WriteLine($"No .csproj file found in {childDir} for repo {repo.Name}. Skipping...");
-			repo.Errors.Add("No .csproj file found in this directory");
-			return null;
-		}
-
-		if (dllFile is null)
-		{
-			Debug.WriteLine($"No UnitTests.dll file found in {childDir} for repo {repo.Name}. Skipping...");
-			repo.Errors.Add("No UnitTests.dll file found in this directory, make sure to run tk test");
-			return null;
-		}
-
-		Debug.WriteLine($"Found .csproj at {csproj}");
-		Debug.WriteLine($"Found .dll at {dllFile}");
-
-		// Build the dotnet test args
-		string args = $"""test "{dllFile}" --nologo --settings "{runSettingsPath}" --results-directory "{resultsDirectoryPath}" --collect:"XPlat Code Coverage" --test-adapter-path "{testAdapterPath}" """;
-
-		Debug.WriteLine($"Running test command on {repo.Name}");
-		await DotnetRunTestAsync(args, repo);
-
-		// Debug.WriteLine($"Moving coverage report file for {repo.Name}");
-		string resultFilePath = MoveCoverageReportFileAndReturnNewPath(repo, resultsDirectoryPath);
-
-		// Debug.WriteLine($"Extracting data for {repo.Name}");
-		ExtractData(repo, resultFilePath);
-
-		watch.Stop();
-		var elapsedMs = watch.ElapsedMilliseconds;
-		Debug.WriteLine($"Analysis completed in {elapsedMs} ms. \n");
-
-		return repo;
+		Debug.WriteLine("Successfully analyzed repo: " + repoData.Name);
 	}
-	static string MoveCoverageReportFileAndReturnNewPath(RepoData repo, string resultDirPath)
+	public static bool TryParseRepoMetadata(RepoData repoData, DTOs.CoverageDto? coverage)
 	{
-		// Find the Cobertura coverage file that was generated
-		string coverageFilePath = Directory.GetFiles(resultDirPath, "coverage.cobertura.xml", SearchOption.AllDirectories)[0];
-
-		string newFilePath = $"{resultDirPath}\\{repo.Name}CoverageReport.cobertura.xml";
-		File.Move(coverageFilePath, newFilePath);
-
-		Debug.WriteLine($"Created Coverage file at: {newFilePath}");
-
-		foreach (var dir in Directory.GetDirectories(resultDirPath))
+		try
 		{
-			Directory.Delete(dir, true); // 'true' means recursive delete
+			repoData.Name = coverage!.Packages.First().Name;
+			repoData.DateRetrieved = DateTime.Now;
 		}
-		return newFilePath;
+		catch (Exception ex)
+		{
+			repoData.ListErrors.Add("Exception during parsing repo metadata: " + ex.Message);
+			Debug.WriteLine("Exception during parsing repo metadata for repo: " + repoData.Name + " Exception: " + ex.Message);
+			return false;
+		}
+
+		return true;
 	}
-	static void ExtractData(RepoData repoData, string resultFilePath)
+	public static bool TryAnalyzeXDocument(RepoData repoData, DTOs.CoverageDto? coverage)
 	{
-		//Load Document
-		XmlSerializer xs = new(typeof(DTOs.CoverageDto));
-		using FileStream fs = File.Open(resultFilePath, FileMode.Open);
-		DTOs.CoverageDto coverage = (DTOs.CoverageDto)xs.Deserialize(fs);
+		if (repoData.XDocument is null)
+		{
+			repoData.ListErrors.Add("Input XDocument is null");
+			return false;
+		}
+
+
+
+		if (coverage is null)
+		{
+			repoData.ListErrors.Add("Failed to deserialize coverage XML.");
+			return false;
+		}
 
 		// root attributes
 		repoData.CoveredLines = coverage.LinesCovered;
@@ -121,22 +88,22 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 
 		if (coverage.Packages is null)
 		{
-			repoData.Errors.Add("Package is null");
-			return;
+			repoData.ListErrors.Add("Package is null");
+			return false;
 		}
 
 		if (coverage.Packages.Count == 0)
 		{
-			repoData.Errors.Add("Packages Count is 0, ensure .csproj reference setup properly.");
-			return;
+			repoData.ListErrors.Add("Packages Count is 0, ensure .csproj reference setup properly.");
+			return false;
 		}
 
 		DTOs.PackageDto? package = coverage.Packages.FirstOrDefault();
 
 		if (package is null)
 		{
-			repoData.Errors.Add("Package is null");
-			return;
+			repoData.ListErrors.Add("Package is null");
+			return false;
 		}
 
 		var classMap = new Dictionary<string, ClassData>();
@@ -161,7 +128,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		string ClosureClassAsyncLambda = "(?:.*?\\.)?(?<parent>[^.]+)\\/<>c__DisplayClass\\d+_\\d+\\/<<(?<method>[^>]+)>b__\\d+(?:_\\d+)?>d$";
 		string IteratorStateMachine = "(?:.*?\\.)?(?<parent>[^.]+)\\/<(?<method>[^>]+)>d__\\d+$";
 		string RegularClassName = "(?<=\\.)(?<parent>[^.\\/<+]+)$";
-		string MatchType = "\\.(?<type>[A-Za-z0-9_]+)\\s*(?=[),])";
+		//string MatchType = "\\.(?<type>[A-Za-z0-9_]+)\\s*(?=[),])";
 
 		foreach (var c in package.Classes)
 		{
@@ -239,7 +206,8 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 						Name = m.Name,
 						CoveragePercent = m.LineRate,
 						ListLines = lines,
-						Signature = $"({String.Join(", ", Regex.Matches(m.Signature, MatchType).Cast<Match>().Select(m => m.Groups["type"].Value))})"
+						Signature = m.Signature
+
 					});
 				}
 			}
@@ -250,49 +218,11 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 
 		if (repoData.ListClasses.Count == 0)
 		{
-			repoData.Errors.Add("Classes Count is 0");
+			repoData.ListErrors.Add("Classes Count is 0");
 		}
 
 		Debug.WriteLine("Successfully added data to objects");
-	}
-
-
-
-	public static async Task DotnetRunTestAsync(string args, RepoData repoData)
-	{
-		var startInfo = new ProcessStartInfo
-		{
-			FileName = "dotnet",
-			Arguments = args,
-			RedirectStandardOutput = true,
-			RedirectStandardError = true,
-			UseShellExecute = false,
-			CreateNoWindow = true
-		};
-
-		using var process = new Process { StartInfo = startInfo, EnableRaisingEvents = true };
-
-		if (!process.Start())
-		{
-			throw new InvalidOperationException("Failed to start process.");
-		}
-
-		var stdOutTask = process.StandardOutput.ReadToEndAsync();
-		var stdErrTask = process.StandardError.ReadToEndAsync();
-
-		await process.WaitForExitAsync();
-
-		var stdout = await stdOutTask;
-		var stderr = await stdErrTask;
-
-		if (process.ExitCode != 0)
-		{
-			var msg = $"dotnet test failed for {repoData.Name} (exit code:{process.ExitCode})";
-			var errormsg = $"Standard Ouput: {stdout} Error Output: {stderr}";
-			Debug.WriteLine(msg + errormsg);
-			repoData.Errors.Add(msg);
-			throw new Exception(msg);
-		}
+		return true;
 	}
 }
 

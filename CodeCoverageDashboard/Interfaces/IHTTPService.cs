@@ -3,8 +3,10 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
+using System.Xml.Linq;
+
 namespace CodeCoverageDashboard.Interfaces;
-public interface IRepoGrabberService
+interface IHTTPService
 {
-	List<RepoData> GetRepoDataAsync();
+	static abstract Task<List<XDocument>> GetXDocs();
 }

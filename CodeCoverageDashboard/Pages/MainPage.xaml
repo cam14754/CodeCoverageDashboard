@@ -16,16 +16,11 @@
         <HorizontalStackLayout Grid.Row="0" Grid.Column="0">
             <Button
                 Margin="20"
-                Command="{Binding LoadReposCommand}"
+                Command="{Binding RunCommand}"
                 HeightRequest="100"
                 Text="Load Repositories"
                 WidthRequest="200" />
-            <Button
-                Margin="20"
-                Command="{Binding RefreshCommand}"
-                HeightRequest="100"
-                Text="Test Repositories"
-                WidthRequest="200" />
+
         </HorizontalStackLayout>
 
 
@@ -68,11 +63,12 @@
                             <Label Text="{Binding CoveredLines, StringFormat='Covered Lines: {0}'}" />
                             <Label Text="{Binding UncoveredLines, StringFormat='Uncovered Lines: {0}'}" />
                             <Label Text="{Binding TotalLines, StringFormat='Total Lines: {0}'}" />
+
                             <Label Text="Errors:" />
 
                             <!--  Inner list of strings  -->
                             <ScrollView>
-                                <CollectionView ItemsSource="{Binding Errors}">
+                                <CollectionView ItemsSource="{Binding ListErrors}">
                                     <CollectionView.EmptyView>
                                         <Label Text="No Errors :)" />
                                     </CollectionView.EmptyView>
