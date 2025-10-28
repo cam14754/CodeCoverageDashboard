@@ -2,12 +2,6 @@
 // © 2025 Cameron Strachan, trading as Cameron's Rock Company. All rights reserved.
 // Created by Cameron Strachan.
 // For personal and educational use only.
-
-using CodeCoverageDashboard.Converters;
-using CodeCoverageDashboard.Tables;
-using SQLite;
-
-
 namespace CodeCoverageDashboard.Services;
 public class DatabaseService : IDatabaseService
 {
@@ -32,8 +26,8 @@ public class DatabaseService : IDatabaseService
 	async Task CreateTables()
 	{
 		await database.CreateTableAsync<RepoRecord>();
-		await database.CreateTableAsync<MethodTable>();
-		await database.CreateTableAsync<DashboardTable>();
+		await database.CreateTableAsync<MethodRecord>();
+		await database.CreateTableAsync<DashboardRecord>();
 	}
 
 	async Task IDatabaseService.SaveMemoryToDB(List<RepoData> repoDatas)
@@ -46,10 +40,17 @@ public class DatabaseService : IDatabaseService
 		}
 	}
 
+	async Task IDatabaseService.SaveMemoryToDB(RepoData repoData)
+	{
+		await Init();
+		var x = RepoRecordToRepoObject.ConvertBack(repoData);
+		await database.InsertAsync(x);
+	}
+
 	public async Task<List<RepoData>> LoadLatestReposList()
 	{
 		await Init();
-		var RepoRecords = await database.QueryAsync<RepoRecord>(SQLQueries.GetLatestRepoRecordsQuery);
+		var RepoRecords = await database.QueryAsync<RepoRecord>(await ReadSQLAsync("GetLatestRepoRecords.sql"));
 		var RepoObjects = new List<RepoData>();
 		foreach (var RepoRecord in RepoRecords)
 		{
@@ -57,5 +58,19 @@ public class DatabaseService : IDatabaseService
 			RepoObjects.Add(RepoObject);
 		}
 		return RepoObjects;
+	}
+
+	public static async Task<string> ReadSQLAsync(string fileName)
+	{
+		try
+		{
+			using var stream = await FileSystem.OpenAppPackageFileAsync(fileName);
+			using var reader = new StreamReader(stream);
+			return await reader.ReadToEndAsync();
+		}
+		catch (Exception ex)
+		{
+			throw new IOException($"Failed to load SQL file: {fileName}", ex);
+		}
 	}
 }

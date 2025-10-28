@@ -3,11 +3,13 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
+using CodeCoverageDashboard.DTOs;
+
 namespace CodeCoverageDashboard.Interfaces;
 
 public interface IRepoCoverageAnalyzer
 {
 	static abstract void AnalyzeRepo(RepoData repoData);
-	static abstract bool TryParseRepoMetadata(RepoData repoData, DTOs.CoverageDto? coverage);
-	static abstract bool TryAnalyzeXDocument(RepoData repoData, DTOs.CoverageDto? coverage);
+	static abstract bool TryParseRepoMetadata(RepoData repoData, CoverageDTO? coverage);
+	static abstract bool TryAnalyzeXDocument(RepoData repoData, CoverageDTO? coverage);
 }

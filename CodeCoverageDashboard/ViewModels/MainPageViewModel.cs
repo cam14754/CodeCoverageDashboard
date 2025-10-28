@@ -3,9 +3,6 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
-using System.Collections.ObjectModel;
-using CodeCoverageDashboard.Pages;
-
 namespace CodeCoverageDashboard.ViewModels;
 public partial class MainPageViewModel(IDataHandlerService dataHandlerService) : BaseViewModel
 {

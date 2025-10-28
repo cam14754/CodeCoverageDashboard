@@ -4,7 +4,6 @@
 // For personal and educational use only.
 
 namespace CodeCoverageDashboard;
-using System.Diagnostics;
 
 public static class TraceConfig
 {
@@ -18,4 +17,3 @@ public static class TraceConfig
 		Trace.WriteLine("Trace system initialized!");
 	}
 }
-

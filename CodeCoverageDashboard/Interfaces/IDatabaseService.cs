@@ -7,5 +7,7 @@ namespace CodeCoverageDashboard.Interfaces;
 public interface IDatabaseService
 {
 	abstract Task SaveMemoryToDB(List<RepoData> repoDatas);
+	abstract Task SaveMemoryToDB(RepoData repoDatas);
+
 	abstract Task<List<RepoData>> LoadLatestReposList();
 }

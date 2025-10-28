@@ -3,10 +3,8 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
-using System.Collections.ObjectModel;
-using System.Xml.Linq;
-
 namespace CodeCoverageDashboard.Services;
+
 public class DataHandlerService(IDatabaseService databaseService) : IDataHandlerService
 {
 	public ObservableCollection<RepoData> Repos { get; set; } = [];
@@ -20,12 +18,8 @@ public class DataHandlerService(IDatabaseService databaseService) : IDataHandler
 		{
 			RepoData newRepo = new RepoData { XDocument = xDoc };
 			RepoCoverageAnalyzer.AnalyzeRepo(newRepo);
-			Repos.Add(newRepo);
+			await databaseService.SaveMemoryToDB(newRepo);
 		}
-
-		await databaseService.SaveMemoryToDB([.. Repos]);
-
-		Repos.Clear();
 
 		var repos = await databaseService.LoadLatestReposList();
 		foreach (var repo in repos)

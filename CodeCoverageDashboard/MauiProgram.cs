@@ -3,8 +3,6 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
-using CodeCoverageDashboard.Pages;
-
 namespace CodeCoverageDashboard;
 
 public static class MauiProgram
@@ -40,7 +38,5 @@ public static class MauiProgram
 		builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
 
 		return builder.Build();
-
-
 	}
 }

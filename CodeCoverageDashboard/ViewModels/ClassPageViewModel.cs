@@ -3,8 +3,6 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
-using CodeCoverageDashboard.Pages;
-
 namespace CodeCoverageDashboard.ViewModels;
 
 [QueryProperty(nameof(SelectedClass), nameof(SelectedClass))]

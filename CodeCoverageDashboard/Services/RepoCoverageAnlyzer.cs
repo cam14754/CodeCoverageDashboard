@@ -3,22 +3,32 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
-using System.Text.RegularExpressions;
-using System.Xml.Serialization;
-
 namespace CodeCoverageDashboard.Services;
+
 public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 {
 	public static void AnalyzeRepo(RepoData repoData)
 	{
 		ArgumentNullException.ThrowIfNull(repoData);
-		DTOs.CoverageDto? coverage = null;
+
 		try
 		{
 			// Deserialize from provided XDocument
-			var serializer = new XmlSerializer(typeof(DTOs.CoverageDto));
+			var serializer = new XmlSerializer(typeof(CoverageDTO));
 			using var reader = repoData.XDocument.CreateReader();
-			coverage = serializer.Deserialize(reader) as DTOs.CoverageDto;
+			CoverageDTO coverage = serializer.Deserialize(reader) as CoverageDTO;
+
+			if (!TryParseRepoMetadata(repoData, coverage))
+			{
+				Debug.WriteLine("Failed to parse repo metadata for repo: " + repoData.Name);
+				return;
+			}
+
+			if (!TryAnalyzeXDocument(repoData, coverage))
+			{
+				Debug.WriteLine("Failed to analyze XDocument for repo: " + repoData.Name);
+				return;
+			}
 		}
 		catch (Exception ex)
 		{
@@ -27,28 +37,9 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			return;
 		}
 
-		if (coverage is null)
-		{
-			repoData.ListErrors.Add("Deserialized coverage object is null.");
-			Debug.WriteLine("Deserialized coverage object is null for repo: " + repoData.Name);
-			return;
-		}
-
-		if (!TryParseRepoMetadata(repoData, coverage))
-		{
-			Debug.WriteLine("Failed to parse repo metadata for repo: " + repoData.Name);
-			return;
-		}
-
-		if (!TryAnalyzeXDocument(repoData, coverage))
-		{
-			Debug.WriteLine("Failed to analyze XDocument for repo: " + repoData.Name);
-			return;
-		}
-
 		Debug.WriteLine("Successfully analyzed repo: " + repoData.Name);
 	}
-	public static bool TryParseRepoMetadata(RepoData repoData, DTOs.CoverageDto? coverage)
+	public static bool TryParseRepoMetadata(RepoData repoData, CoverageDTO? coverage)
 	{
 		try
 		{
@@ -64,15 +55,13 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 
 		return true;
 	}
-	public static bool TryAnalyzeXDocument(RepoData repoData, DTOs.CoverageDto? coverage)
+	public static bool TryAnalyzeXDocument(RepoData repoData, CoverageDTO? coverage)
 	{
 		if (repoData.XDocument is null)
 		{
 			repoData.ListErrors.Add("Input XDocument is null");
 			return false;
 		}
-
-
 
 		if (coverage is null)
 		{
@@ -98,7 +87,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			return false;
 		}
 
-		DTOs.PackageDto? package = coverage.Packages.FirstOrDefault();
+		PackageDTO package = coverage.Packages.FirstOrDefault();
 
 		if (package is null)
 		{
@@ -142,11 +131,18 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 				var className = match.Groups["parent"].Value;
 				var methodName = match.Groups["method"].Value + " (Async Lambda)";
 				var parent = GetOrAddClass(className, c.LineRate);
+
+				var lines = new List<LineData>();
+				foreach (var l in c.Lines)
+				{
+					lines.Add(new LineData { LineNumber = l.Number, Hits = l.Hits });
+				}
+
 				parent.ListMethods.Add(new MethodData
 				{
 					Name = methodName,
 					CoveragePercent = c.LineRate,
-					ListLines = c.Lines
+					ListLines = lines
 				});
 				continue;
 			}
@@ -159,11 +155,18 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 				var className = match.Groups["parent"].Value;
 				var methodName = match.Groups["method"].Value + " (Closure Class Async Lambda)";
 				var parent = GetOrAddClass(className, c.LineRate);
+
+				var lines = new List<LineData>();
+				foreach (var l in c.Lines)
+				{
+					lines.Add(new LineData { LineNumber = l.Number, Hits = l.Hits });
+				}
+
 				parent.ListMethods.Add(new MethodData
 				{
 					Name = methodName,
 					CoveragePercent = c.LineRate,
-					ListLines = c.Lines
+					ListLines = lines
 				});
 				continue;
 			}
@@ -176,11 +179,18 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 				var className = match.Groups["parent"].Value;
 				var methodName = match.Groups["method"].Value + " (Async Method)";
 				var parent = GetOrAddClass(className, c.LineRate);
+
+				var lines = new List<LineData>();
+				foreach (var l in c.Lines)
+				{
+					lines.Add(new LineData { LineNumber = l.Number, Hits = l.Hits });
+				}
+
 				parent.ListMethods.Add(new MethodData
 				{
 					Name = methodName,
 					CoveragePercent = c.LineRate,
-					ListLines = c.Lines
+					ListLines = lines
 				});
 				continue;
 			}
@@ -225,4 +235,3 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		return true;
 	}
 }
-

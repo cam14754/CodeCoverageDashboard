@@ -4,6 +4,7 @@
 // For personal and educational use only.
 
 namespace CodeCoverageDashboard;
+
 public static class Constants
 {
 	public const string DatabaseFilename = "CodeCoverageDataBase.db";
@@ -18,4 +19,3 @@ public static class Constants
 
 	public static string DatabasePath => $"C:\\Users\\cam14754\\Desktop\\UnitTestingInternProject\\CodeCoverageDashboard\\CodeCoverageDashboard\\{DatabaseFilename}";
 }
-

@@ -4,18 +4,17 @@
 // For personal and educational use only.
 
 namespace CodeCoverageDashboard.ViewModels;
-
 public partial class BaseViewModel : ObservableObject
 {
 	[ObservableProperty]
 	[NotifyPropertyChangedFor(nameof(IsNotBusy))]
-	bool isBusy;
+	public partial bool IsBusy { get; set; }
 
 	[ObservableProperty]
-	string? title;
+	public partial string? Title { get; set; }
 
 	[ObservableProperty]
-	bool isRefreshing;
+	public partial bool IsRefreshing { get; set; }
 
-	public bool IsNotBusy => !isBusy;
+	public bool IsNotBusy => !IsBusy;
 }

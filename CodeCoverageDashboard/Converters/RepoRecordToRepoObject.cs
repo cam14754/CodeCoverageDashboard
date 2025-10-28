@@ -3,9 +3,8 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
-using CodeCoverageDashboard.Tables;
-
 namespace CodeCoverageDashboard.Converters;
+
 public static class RepoRecordToRepoObject
 {
 	public static object? Convert(object? value)
@@ -22,6 +21,7 @@ public static class RepoRecordToRepoObject
 		x.TotalLines = properties.NumLines;
 		x.CoveragePercent = properties.CoveragePercent;
 		x.UncoveredLines = properties.UncoveredLines;
+		x.ListClasses = properties.Classes;
 
 		return x;
 	}
@@ -33,14 +33,15 @@ public static class RepoRecordToRepoObject
 
 		x.RepoName = repoData.Name;
 		x.DateRetrieved = repoData.DateRetrieved;
-		x.Properties = new DTOs.RepoProperties
+		x.Properties = new RepoProperties
 		{
 			RepoName = repoData.Name,
 			DateRetrieved = repoData.DateRetrieved,
 			CoveredLines = repoData.CoveredLines,
 			NumLines = repoData.TotalLines,
 			CoveragePercent = repoData.CoveragePercent,
-			UncoveredLines = repoData.UncoveredLines
+			UncoveredLines = repoData.UncoveredLines,
+			Classes = repoData.ListClasses
 		};
 
 		return x;

@@ -74,12 +74,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="SQLQueries\" />
 	  <Folder Include="Resources\Styles\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="SQLQueries.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -104,7 +99,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="SQLQueries\GetLatestRepoRecords.sql">
+	  <None Update="Resources\Raw\GetLatestRepoRecords.sql">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>
