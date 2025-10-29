@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+    <RunConfiguration>
+        <ResultsDirectory>C:\Users\cam14754\Desktop\Reports</ResultsDirectory>
+        <TestSessionTimeout>300000</TestSessionTimeout>
+    </RunConfiguration>
+
+    <DataCollectionRunSettings>
+        <DataCollectors>
+            <DataCollector friendlyName="XPlat Code Coverage" enabled="True">
+                <Configuration>
+                    <Format>cobertura</Format>
+                </Configuration>
+            </DataCollector>
+        </DataCollectors>
+    </DataCollectionRunSettings>
+</RunSettings>
