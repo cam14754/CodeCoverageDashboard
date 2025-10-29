@@ -6,15 +6,29 @@
 namespace CodeCoverageDashboard.Models;
 public partial class StaticDashboardData : ObservableObject
 {
-	[ObservableProperty] public partial double TotalLines { get; set; } = 0;
-	[ObservableProperty] public partial double TotalCoveredLines { get; set; } = 0;
-	[ObservableProperty] public partial double AverageCoverage { get; set; } = 0;
-	[ObservableProperty] public partial double AverageBranchCoverage { get; set; } = 0;
-	[ObservableProperty] public partial double TotalRepos { get; set; } = 0;
-	[ObservableProperty] public partial double TotalClasses { get; set; } = 0;
-	[ObservableProperty] public partial double TotalMethods { get; set; } = 0;
-	[ObservableProperty] public partial DateTime DateRetrieved { get; set; } = DateTime.MinValue;
-
+	//Calculated properties
+	[ObservableProperty] public partial double TotalLinesCoveredCount { get; set; } = 0;
+	[ObservableProperty] public partial double TotalLinesUncoveredCount { get; set; } = 0;
+	[ObservableProperty] public partial double TotalReposCount { get; set; } = 0;
+	[ObservableProperty] public partial double TotalClassesCount { get; set; } = 0;
+	[ObservableProperty] public partial double TotalMethodsCount { get; set; } = 0;
+	[ObservableProperty] public partial double TotalLinesCount { get; set; } = 0;
+	[ObservableProperty] public partial double AverageLineCoveragePercent { get; set; } = 0;
+	[ObservableProperty] public partial double AverageBranchCoveragePercent { get; set; } = 0;
+	[ObservableProperty] public partial double TotalBracnhesCoveredCount { get; set; } = 0;
+	[ObservableProperty] public partial double TotalComplexMethodsCount { get; set; } = 0;
+	[ObservableProperty] public partial double AverageComplexMethodPercent { get; set; } = 0;
 	public ObservableCollection<RepoData> HotRepos { get; set; } = [];
-	public ObservableCollection<RepoData> ComplexMethods { get; set; } = [];
+	public ObservableCollection<MethodData> ComplexMethods { get; set; } = [];
+	public ObservableCollection<RepoData> HealthyRepos { get; set; } = [];
+	public ObservableCollection<RepoData> UnhealthyRepos { get; set; } = [];
+
+	//Given properties
+	[ObservableProperty] public partial DateTime DateRetrieved { get; set; } = DateTime.MinValue;
+	[ObservableProperty] public partial string CoverletVersion { get; set; } = string.Empty;
+	[ObservableProperty] public partial string DashboardVersion { get; set; } = string.Empty;
+	public ObservableCollection<RepoData> ListRepos { get; set; } = [];
+	public ObservableCollection<MethodData> ListMethods { get; set; } = [];
+
+	public int TotalRepos => ListRepos.Count;
 }

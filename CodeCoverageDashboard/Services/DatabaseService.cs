@@ -26,7 +26,6 @@ public class DatabaseService : IDatabaseService
 	async Task CreateTables()
 	{
 		await database.CreateTableAsync<RepoRecord>();
-		await database.CreateTableAsync<MethodRecord>();
 		await database.CreateTableAsync<DashboardRecord>();
 	}
 
