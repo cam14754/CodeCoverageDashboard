@@ -16,6 +16,7 @@
             HorizontalOptions="Fill"
             Text="Placeholder 0"
             VerticalOptions="Fill" />
+
         <Label
             Grid.Row="0"
             Grid.Column="1"
