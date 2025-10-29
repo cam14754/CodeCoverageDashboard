@@ -15,7 +15,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		var watch = Stopwatch.StartNew();
 
 		// Run settings for optimizing code coverage collection
-		var runSettingsPath = @"C:\Users\cam14754\Desktop\Unit Testing Intern Project\CodeCoverageDashboard\CodeCoverageDashboard\CodeCoverage.runsettings";
+		var runSettingsPath = @"C:\Users\cam14754\Desktop\UnitTestingInternProject\CodeCoverageDashboard\CodeCoverageDashboard\CodeCoverage.runsettings";
 
 		// Path to the results directory
 		string resultsDirectoryPath = Path.Combine(FileSystem.AppDataDirectory, ".coverage");
