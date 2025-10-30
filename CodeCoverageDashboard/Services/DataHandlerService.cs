@@ -16,7 +16,7 @@ public class DataHandlerService(IDatabaseService databaseService) : IDataHandler
 
 		foreach (var xDoc in xDocsFromService)
 		{
-			RepoData newRepo = new RepoData { XDocument = xDoc };
+			RepoData newRepo = new() { XDocument = xDoc };
 			RepoCoverageAnalyzer.AnalyzeRepo(newRepo);
 			await databaseService.SaveMemoryToDB(newRepo);
 		}

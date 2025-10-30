@@ -98,7 +98,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		var classMap = new Dictionary<string, ClassData>();
 
 		// Helper to get or create the parent class
-		ClassData GetOrAddClass(string name, double? coverage)
+		ClassData GetOrAddClass(string name, double? coverage, string? filePath)
 		{
 			if (!classMap.TryGetValue(name, out var cd))
 			{
@@ -106,6 +106,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 				{
 					Name = name,
 					CoveragePercent = coverage,
+					FilePath = filePath,
 					ListMethods = []
 				};
 				classMap[name] = cd;
@@ -130,7 +131,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 				//Debug.WriteLine($"Processing class: {c.Name} as an async lambda inside method");
 				var className = match.Groups["parent"].Value;
 				var methodName = match.Groups["method"].Value + " (Async Lambda)";
-				var parent = GetOrAddClass(className, c.LineRate);
+				var parent = GetOrAddClass(className, c.LineRate, c.FileName);
 
 				var lines = new List<LineData>();
 				foreach (var l in c.Lines)
@@ -155,7 +156,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 				//Debug.WriteLine($"Processing class {c.Name} as an async lambda");
 				var className = match.Groups["parent"].Value;
 				var methodName = match.Groups["method"].Value + " (Closure Class Async Lambda)";
-				var parent = GetOrAddClass(className, c.LineRate);
+				var parent = GetOrAddClass(className, c.LineRate, c.FileName);
 
 				var lines = new List<LineData>();
 				foreach (var l in c.Lines)
@@ -180,7 +181,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 				//Debug.WriteLine($"Processing class {c.Name} as an iterator state machine");
 				var className = match.Groups["parent"].Value;
 				var methodName = match.Groups["method"].Value + " (Async Method)";
-				var parent = GetOrAddClass(className, c.LineRate);
+				var parent = GetOrAddClass(className, c.LineRate, c.FileName);
 
 				var lines = new List<LineData>();
 				foreach (var l in c.Lines)
@@ -204,7 +205,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			{
 				//Debug.WriteLine($"Processing class: {c.Name} as a regular method");
 				var className = match.Groups["parent"].Value;
-				var parent = GetOrAddClass(className, c.LineRate);
+				var parent = GetOrAddClass(className, c.LineRate, c.FileName);
 
 				foreach (var m in c.Methods)
 				{
@@ -220,7 +221,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 						CoveragePercent = m.LineRate,
 						ListLines = lines,
 						Signature = m.Signature,
-						Complexity = c.Complexity,
+						Complexity = m.Complexity,
 					});
 				}
 			}
