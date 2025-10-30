@@ -10,7 +10,7 @@
             <DataCollector friendlyName="XPlat Code Coverage" enabled="True">
                 <Configuration>
                     <Format>cobertura</Format>
-                    <ExcludeByFile>**/obj/**/*,**/bin/**/*,</ExcludeByFile>
+                    <ExcludeByFile>**/obj/**/*,**/bin/**/*,**/App.xaml.cs,**/AppShell.xaml.cs,**/MauiProgram.cs,</ExcludeByFile>
                     <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
 
                 </Configuration>
