@@ -6,6 +6,7 @@
 using System.Collections.ObjectModel;
 using System.Xml.Linq;
 
+
 namespace CodeCoverageDashboard.Services;
 public class DataHandlerService(IRepoCoverageAnalyzer repoCoverageAnalyzer, IRepoGrabberService repoGrabberService) : IDataHandlerService
 {
@@ -37,6 +38,10 @@ public class DataHandlerService(IRepoCoverageAnalyzer repoCoverageAnalyzer, IRep
 		}
 		Directory.CreateDirectory(resultsDirectoryPath);
 		Debug.WriteLine("resultsDirectory found/created \n");
+		
+		
+		var watch = Stopwatch.StartNew();
+
 
 		foreach (var repo in Repos)
 		{
@@ -48,7 +53,12 @@ public class DataHandlerService(IRepoCoverageAnalyzer repoCoverageAnalyzer, IRep
 			catch (Exception ex)
 			{
 				Debug.WriteLine(ex.Message);
+				
 			}
 		}
+
+		watch.Stop();
+		var elapsedMs = watch.ElapsedMilliseconds;
+		Debug.WriteLine($"Total time taken: {elapsedMs} ms");
 	}
 }

@@ -15,10 +15,10 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		var watch = Stopwatch.StartNew();
 
 		// Run settings for optimizing code coverage collection
-		var runSettingsPath = @"C:\Users\cam14754\Desktop\UnitTestingInternProject\CodeCoverageDashboard\CodeCoverageDashboard\CodeCoverage.runsettings";
+		var runSettingsPath = "C:\\Users\\cam14754\\Desktop\\UnitTestingInternProject\\CodeCoverageDashboard\\CodeCoverageDashboard\\.runsettings";
 
 		// Path to the results directory
-		string resultsDirectoryPath = Path.Combine(FileSystem.AppDataDirectory, ".coverage");
+		string resultsDirectoryPath = "C:\\Users\\cam14754\\Desktop\\Reports";
 
 		// Run the commands
 
@@ -70,10 +70,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		  .Append(csproj)
 		  .Append("\" ")
 		  .Append("--collect:\"XPlat Code Coverage\" ")
-		  .Append("--results-directory \"").Append(resultsDirectoryPath).Append("\" ")
-		  .Append("--settings:\"").Append(runSettingsPath).Append("\" ")
-		  .Append("--nologo ")
-		  .Append("--no-build");
+		  .Append("--settings:\"").Append(runSettingsPath).Append("\" ");
 
 		string args = sb.ToString();
 
@@ -93,7 +90,14 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		await DotnetRunTestAsync(args, repoData);
 
 		// Find the Cobertura coverage file that was generated
-		string coverageFilePath = Directory.GetFiles(resultDirPath, "coverage.cobertura.xml", SearchOption.AllDirectories)[0];
+		string coverageFilePath = Directory.GetFiles(resultDirPath, "coverage.cobertura.xml", SearchOption.AllDirectories).FirstOrDefault();
+
+		if(coverageFilePath is null)
+		{
+			repoData.Errors.Add("Coverage file not found");
+			Debug.WriteLine($"Coverage file not found for repo {repoData.Name}. Skipping...");
+			return;
+		}
 
 		string newFilePath = $"{resultDirPath}\\{repoData.Name}_CoverageReport.cobertura.xml";
 		File.Move(coverageFilePath, newFilePath);
