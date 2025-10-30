@@ -10,6 +10,7 @@ public partial class App : Application
 	public App()
 	{
 		InitializeComponent();
+		Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjGyl/Vkd+XU9FcVRDXHxLdkx0RWFcb1Z6dFBMYlhBJAtUQF1hTH9TdExhWX9YdXdURmJVWkd3");
 	}
 
 	protected override Window CreateWindow(IActivationState? activationState)

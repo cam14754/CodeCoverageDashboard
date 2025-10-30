@@ -8,7 +8,8 @@ public class MethodData
 {
 	public string? Name { get; set; } = "Unknown Name";
 	public string[]? Errors { get; set; } = [];
-	public double? CoveragePercent { get; set; } = null;
+	public double CoveragePercent { get; set; } = 0;
+	public double Complexity { get; set; } = 0;
 	public List<LineData> ListLines { get; set; } = [];
 	public string? Signature { get; set; } = "()";
 }

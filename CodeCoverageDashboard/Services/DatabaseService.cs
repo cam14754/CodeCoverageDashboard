@@ -3,6 +3,8 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 namespace CodeCoverageDashboard.Services;
+
+using CodeCoverageDashboard.Converters;
 public class DatabaseService : IDatabaseService
 {
 	public DatabaseService()
@@ -46,6 +48,23 @@ public class DatabaseService : IDatabaseService
 		await database.InsertAsync(x);
 	}
 
+	async Task IDatabaseService.SaveMemoryToDB(List<StaticDashboardData> staticDashboardDatas)
+	{
+		await Init();
+		foreach (var repo in staticDashboardDatas)
+		{
+			var x = StaticDashboardRecordToStaticDashboardObject.ConvertBack(repo);
+			await database.InsertAsync(x);
+		}
+	}
+
+	async Task IDatabaseService.SaveMemoryToDB(StaticDashboardData staticDashboardData)
+	{
+		await Init();
+		var x = StaticDashboardRecordToStaticDashboardObject.ConvertBack(staticDashboardData);
+		await database.InsertAsync(x);
+	}
+
 	public async Task<List<RepoData>> LoadLatestReposList()
 	{
 		await Init();
@@ -57,6 +76,14 @@ public class DatabaseService : IDatabaseService
 			RepoObjects.Add(RepoObject);
 		}
 		return RepoObjects;
+	}
+
+	public async Task<StaticDashboardData> LoadXWeekOldDashboardData(int x)
+	{
+		await Init();
+		var DashboardData = await database.QueryAsync<DashboardRecord>(await ReadSQLAsync("GetXWeekOldDashboardRecords.sql"), x);
+		return (StaticDashboardData)StaticDashboardRecordToStaticDashboardObject.Convert(DashboardData);
+		
 	}
 
 	public static async Task<string> ReadSQLAsync(string fileName)

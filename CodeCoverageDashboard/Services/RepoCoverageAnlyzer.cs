@@ -142,6 +142,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 				{
 					Name = methodName,
 					CoveragePercent = c.LineRate,
+					Complexity = c.Complexity,
 					ListLines = lines
 				});
 				continue;
@@ -166,6 +167,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 				{
 					Name = methodName,
 					CoveragePercent = c.LineRate,
+					Complexity = c.Complexity,
 					ListLines = lines
 				});
 				continue;
@@ -190,6 +192,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 				{
 					Name = methodName,
 					CoveragePercent = c.LineRate,
+					Complexity = c.Complexity,
 					ListLines = lines
 				});
 				continue;
@@ -216,8 +219,8 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 						Name = m.Name,
 						CoveragePercent = m.LineRate,
 						ListLines = lines,
-						Signature = m.Signature
-
+						Signature = m.Signature,
+						Complexity = c.Complexity,
 					});
 				}
 			}

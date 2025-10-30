@@ -5,5 +5,5 @@
 
 namespace CodeCoverageDashboard.Tables;
 
-[Table("Dashboard")]
+[Table("Dashboards")]
 public class DashboardRecord : BaseRecord<DashboardProperties> { }

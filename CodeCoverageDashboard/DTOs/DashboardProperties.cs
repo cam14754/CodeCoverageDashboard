@@ -7,7 +7,7 @@ namespace CodeCoverageDashboard.DTOs;
 
 public class DashboardProperties
 {
-	[JsonPropertyName("TotalLinesCovered")] public double TotalLinesCovered { get; set; } = 0;
+	[JsonPropertyName("TotalLinesCoveredCount")] public double TotalLinesCoveredCount { get; set; } = 0;
 	[JsonPropertyName("TotalReposCount")] public double TotalReposCount { get; set; } = 0;
 	[JsonPropertyName("TotalClassesCount")] public double TotalClassesCount { get; set; } = 0;
 	[JsonPropertyName("TotalMethodsCount")] public double TotalMethodsCount { get; set; } = 0;
@@ -17,11 +17,19 @@ public class DashboardProperties
 	[JsonPropertyName("TotalBracnhesCoveredCount")] public double TotalBracnhesCoveredCount { get; set; } = 0;
 	[JsonPropertyName("TotalComplexMethodsCount")] public double TotalComplexMethodsCount { get; set; } = 0;
 	[JsonPropertyName("AverageComplexMethodPercent")] public double AverageComplexMethodPercent { get; set; } = 0;
-	[JsonPropertyName("DateRetrieved")] public DateTime DateRetrieved { get; set; } = DateTime.MinValue;
-	[JsonPropertyName("CoverletVersion")] public string CoverletVersion { get; set; } = string.Empty;
-	[JsonPropertyName("DashboardVersion")] public string DashboardVersion { get; set; } = string.Empty;
 	[JsonPropertyName("HotRepos")] public ObservableCollection<RepoData> HotRepos { get; set; } = [];
 	[JsonPropertyName("ComplexMethods")] public ObservableCollection<MethodData> ComplexMethods { get; set; } = [];
 	[JsonPropertyName("HealthyRepos")] public ObservableCollection<RepoData> HealthyRepos { get; set; } = [];
 	[JsonPropertyName("UnhealthyRepos")] public ObservableCollection<RepoData> UnhealthyRepos { get; set; } = [];
+
+	//Given properties
+	[JsonPropertyName("DateRetrieved")] public DateTime DateRetrieved { get; set; } = DateTime.MinValue;
+	[JsonPropertyName("CoverletVersion")] public string CoverletVersion { get; set; } = string.Empty;
+	[JsonPropertyName("DashboardVersion")] public string DashboardVersion { get; set; } = string.Empty;
+	[JsonPropertyName("ListRepos")] public ObservableCollection<RepoData> ListRepos { get; set; } = [];
+	[JsonPropertyName("ListMethods")] public ObservableCollection<MethodData> ListMethods { get; set; } = [];
+
+	// Calculated inferred properties
+	//public int TotalRepos => ListRepos.Count;
+	[JsonPropertyName("TotalLinesUncoveredCount")] public double TotalLinesUncoveredCount;
 }
