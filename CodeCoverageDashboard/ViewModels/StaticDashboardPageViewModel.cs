@@ -78,12 +78,15 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 
 
 		double AverageCoveragePercentSum = 0;
+		double AverageBranchCoveragePercentSum = 0;
 
 		foreach (RepoData repo in repoDatas)
 		{
 			dashboardData.ListRepos.Add(repo);
 			AverageCoveragePercentSum += repo.CoveragePercent;
-			if(repo.CoveragePercent < 0.80)
+			AverageBranchCoveragePercentSum += repo.BranchRate;
+			dashboardData.TotalBracnhesCoveredCount += repo.TotalCoveredBranches;
+			if (repo.CoveragePercent < 0.80)
 			{
 				dashboardData.UnhealthyRepos.Add(repo);
 			}
@@ -115,13 +118,13 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 		}
 
 		var topComplexMethods = dashboardData.ComplexMethods.OrderByDescending(x => x.Complexity).Take(5).ToList();
-		dashboardData.ComplexMethods.Clear();
 		foreach (var method in topComplexMethods)
 		{
-			dashboardData.ComplexMethods.Add(method);
+			dashboardData.TopComplexMethods.Add(method);
 		}
 
 		dashboardData.AverageLineCoveragePercent = AverageCoveragePercentSum / repoDatas.Count;
+		dashboardData.AverageBranchCoveragePercent = AverageBranchCoveragePercentSum / repoDatas.Count;
 
 		return dashboardData;
 	}

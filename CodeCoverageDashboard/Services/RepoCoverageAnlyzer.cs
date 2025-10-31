@@ -75,6 +75,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		repoData.CoveragePercent = coverage.LineRate;
 		repoData.BranchRate = coverage.BranchRate;
 		repoData.TotalBranches = coverage.BranchesValid;
+		repoData.TotalCoveredBranches = coverage.BranchesCovered;
 		repoData.UncoveredLines = repoData.TotalLines - repoData.CoveredLines;
 
 		if (coverage.Packages is null)

@@ -21,6 +21,7 @@ public partial class StaticDashboardData : ObservableObject
 	[ObservableProperty] public partial double TotalBracnhesCoveredCount { get; set; } = 0;
 	
 	public ObservableCollection<RepoData> HotRepos { get; set; } = [];
+	public ObservableCollection<MethodData> TopComplexMethods { get; set; } = []; //
 	public ObservableCollection<MethodData> ComplexMethods { get; set; } = []; //
 	public ObservableCollection<RepoData> HealthyRepos { get; set; } = [];
 	public ObservableCollection<RepoData> UnhealthyRepos { get; set; } = [];

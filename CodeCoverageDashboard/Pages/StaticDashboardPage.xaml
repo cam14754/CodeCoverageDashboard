@@ -132,7 +132,7 @@
                     AutoGenerateColumnsMode="None"
                     ColumnWidthMode="Fill"
                     HorizontalOptions="Fill"
-                    ItemsSource="{Binding LatestData.ComplexMethods}"
+                    ItemsSource="{Binding LatestData.TopComplexMethods}"
                     RowHeight="43">
                     <table:SfDataGrid.Columns>
                         <table:DataGridTextColumn HeaderText="Method Name" MappingName="Name" />
@@ -276,10 +276,11 @@
                     </progressBar:SfCircularProgressBar.Content>
 
                     <progressBar:SfCircularProgressBar.GradientStops>
-                        <progressBar:ProgressGradientStop Color="Red" Value="0" />
-                        <progressBar:ProgressGradientStop Color="Orange" Value="0.2" />
-                        <progressBar:ProgressGradientStop Color="Yellow" Value="0.6" />
-                        <progressBar:ProgressGradientStop Color="Green" Value="0.8" />
+                        <progressBar:ProgressGradientStop Color="Green" Value="0.1" />
+                        <progressBar:ProgressGradientStop Color="Yellow" Value="0.2" />
+                        <progressBar:ProgressGradientStop Color="Orange" Value="0.3" />
+
+                        <progressBar:ProgressGradientStop Color="Red" Value="0.4" />
                     </progressBar:SfCircularProgressBar.GradientStops>
                 </progressBar:SfCircularProgressBar>
                 <Label

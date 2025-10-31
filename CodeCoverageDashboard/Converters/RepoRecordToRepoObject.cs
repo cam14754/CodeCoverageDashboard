@@ -18,6 +18,9 @@ public static class RepoRecordToRepoObject
 		x.CoveragePercent = properties.CoveragePercent;
 		x.ListClasses = properties.Classes;
 		x.CoveragePercentPercentIncrease = properties.CoveragePercentPercentIncrease;
+		x.BranchRate = properties.BranchRate;
+		x.TotalBranches = properties.TotalBranches;
+		x.TotalCoveredBranches = properties.TotalCoveredBranches;
 
 		return x;
 	}
@@ -39,7 +42,10 @@ public static class RepoRecordToRepoObject
 			CoveragePercent = repoData.CoveragePercent,
 			UncoveredLines = repoData.UncoveredLines,
 			Classes = repoData.ListClasses,
-			CoveragePercentPercentIncrease = repoData.CoveragePercentPercentIncrease
+			CoveragePercentPercentIncrease = repoData.CoveragePercentPercentIncrease,
+			BranchRate = repoData.BranchRate,
+			TotalBranches = repoData.TotalBranches,
+			TotalCoveredBranches = repoData.TotalCoveredBranches
 		};
 
 		return x;

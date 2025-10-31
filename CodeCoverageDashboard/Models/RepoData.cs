@@ -34,6 +34,8 @@ public partial class RepoData : ObservableObject
 	[ObservableProperty]
 	public partial double TotalBranches { get; set; } = 0;
 	[ObservableProperty]
+	public partial double TotalCoveredBranches { get; set; } = 0;
+	[ObservableProperty]
 	public partial double BranchRate { get; set; } = 0;
 
 	[ObservableProperty]
