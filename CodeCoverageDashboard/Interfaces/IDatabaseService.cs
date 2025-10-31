@@ -12,6 +12,8 @@ public interface IDatabaseService
 	abstract Task SaveMemoryToDB(StaticDashboardData staticDashboardData);
 
 	abstract Task<List<RepoData>> LoadLatestReposList();
+	abstract Task<RepoData> LoadLatestRepoByName(string repoName);
+
 	abstract Task<StaticDashboardData> LoadXWeekOldDashboardData(int x);
 
 }

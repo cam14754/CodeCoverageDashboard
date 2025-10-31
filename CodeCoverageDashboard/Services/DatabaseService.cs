@@ -86,6 +86,18 @@ public class DatabaseService : IDatabaseService
 		
 	}
 
+	public async Task<RepoData> LoadLatestRepoByName(string repoName)
+	{
+		await Init();
+		var RepoRecords = await database.QueryAsync<RepoRecord>(await ReadSQLAsync("GetLatestRepoByName.sql"), repoName);
+		if (RepoRecords.Count == 0)
+		{
+			return null;
+		}
+		var RepoObject = (RepoData)RepoRecordToRepoObject.Convert(RepoRecords[0]);
+		return RepoObject;
+	}
+
 	public static async Task<string> ReadSQLAsync(string fileName)
 	{
 		try

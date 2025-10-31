@@ -9,9 +9,9 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 {
 	readonly IDatabaseService databaseService = databaseService;
 
-
 	// Stores 6 Data points. Get the past 12 weeks of data, every 2 weeks.
 	public ObservableCollection<StaticDashboardData> Data { get; set; } = [];
+	public StaticDashboardData? LatestData => Data.FirstOrDefault();
 
 	[RelayCommand]
 	public async Task GetRepoData()
@@ -29,18 +29,33 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 			var currentReposDataList = await databaseService.LoadLatestReposList();
 
 			//Calculate the dashboard data from the current repos, and add to memory collection
-			Data.Add(PopulateCalculatedFields(currentReposDataList));
+			StaticDashboardData y = PopulateCalculatedFields(currentReposDataList);
+
+			Data.Add(y);
 
 			//Get the past 5 dashboard data points from the database, for every 2 weeks
+			//Simulate data for now
 			for (int i = 1; i < 6; i++)
 			{
-				Data.Add(await databaseService.LoadXWeekOldDashboardData(i));
-				if (Data[i] is null)
+				var x = await databaseService.LoadXWeekOldDashboardData(i);
+				if (x is null)
 				{
-					Data[i] = new StaticDashboardData();
-					Data[i].DateRetrieved = DateTime.Now.AddDays(-14 * i);
+					Random rnd = new Random();
+					x = new StaticDashboardData();
+					x.DateRetrieved = DateTime.Now.AddDays(-14 * i);
+					x.TotalLinesCoveredCount = (Data[0].TotalLinesCoveredCount - 100 * i * (double)rnd.Next(0, 100)/100);
+					x.AverageLineCoveragePercent = (Data[0].AverageLineCoveragePercent - 0.01 * i * (double)rnd.Next(0, 100) / 100);
+					x.ListRepos = y.ListRepos;
+					foreach(RepoData repo in x.ListRepos)
+					{
+						repo.CoveragePercent -= 0.01 * i * (double)rnd.Next(0, 100) / 100;
+					}
 				}
+				Data.Add(x);
 			}
+
+			//Calculate changes with current data
+			PopulateChangesFields(y);
 		}
 		catch (Exception ex)
 		{
@@ -49,6 +64,7 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 		finally
 		{
 			IsBusy = false;
+			OnPropertyChanged(nameof(LatestData));
 		}
 	}
 
@@ -56,7 +72,11 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 	{
 		var dashboardData = new StaticDashboardData();
 		dashboardData.TotalReposCount = repoDatas.Count;
-		
+		dashboardData.DateRetrieved = DateTime.Now;
+		dashboardData.CoverletVersion = "6.0.2";
+		dashboardData.DashboardVersion = "0.1";
+
+
 		double AverageCoveragePercentSum = 0;
 
 		foreach (RepoData repo in repoDatas)
@@ -94,9 +114,30 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 			}
 		}
 
+		var topComplexMethods = dashboardData.ComplexMethods.OrderByDescending(x => x.Complexity).Take(5).ToList();
+		dashboardData.ComplexMethods.Clear();
+		foreach (var method in topComplexMethods)
+		{
+			dashboardData.ComplexMethods.Add(method);
+		}
+
 		dashboardData.AverageLineCoveragePercent = AverageCoveragePercentSum / repoDatas.Count;
 
 		return dashboardData;
+	}
+
+	public void PopulateChangesFields(StaticDashboardData dashboardData)
+	{
+		Random rnd = new Random();
+		var list = new List<(RepoData repo, double change)>();
+
+		foreach (RepoData repo in dashboardData.ListRepos)
+		{
+			repo.CoveragePercentPercentIncrease = rnd.Next(0, 100);
+			list.Add((repo, repo.CoveragePercentPercentIncrease));
+		}
+
+		dashboardData.HotRepos = new ObservableCollection<RepoData>(list.OrderByDescending(x => x.change).Take(5).Select(x => x.repo));
 	}
 
 	[RelayCommand]

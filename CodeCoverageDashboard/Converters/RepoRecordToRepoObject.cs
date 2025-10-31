@@ -17,6 +17,7 @@ public static class RepoRecordToRepoObject
 		x.TotalLines = properties.NumLines;
 		x.CoveragePercent = properties.CoveragePercent;
 		x.ListClasses = properties.Classes;
+		x.CoveragePercentPercentIncrease = properties.CoveragePercentPercentIncrease;
 
 		return x;
 	}
@@ -37,7 +38,8 @@ public static class RepoRecordToRepoObject
 			NumLines = repoData.TotalLines,
 			CoveragePercent = repoData.CoveragePercent,
 			UncoveredLines = repoData.UncoveredLines,
-			Classes = repoData.ListClasses
+			Classes = repoData.ListClasses,
+			CoveragePercentPercentIncrease = repoData.CoveragePercentPercentIncrease
 		};
 
 		return x;
