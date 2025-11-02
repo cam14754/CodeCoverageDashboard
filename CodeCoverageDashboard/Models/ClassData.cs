@@ -7,6 +7,8 @@ namespace CodeCoverageDashboard.Models;
 public class ClassData
 {
 	public string? Name { get; set; } = "Unknown Name";
+	public string? Filename { get; set; } = "Unknown Filename";
+
 	public string[]? Errors { get; set; } = [];
 	public double? CoveragePercent { get; set; } = null;
 	public List<MethodData> ListMethods { get; set; } = [];

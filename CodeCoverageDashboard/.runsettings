@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RunSettings>
     <RunConfiguration>
-        <ResultsDirectory>C:\Users\cam14754\Desktop\Reports</ResultsDirectory>
+        <ResultsDirectory>C:\Users\cam14754\Desktop\TestReports</ResultsDirectory>
         <TestSessionTimeout>300000</TestSessionTimeout>
     </RunConfiguration>
 

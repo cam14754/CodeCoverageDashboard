@@ -11,6 +11,9 @@ public partial class MainPageViewModel(IDataHandlerService dataHandlerService) :
 {
 	public ObservableCollection<RepoData> Repos => dataHandlerService.Repos;
 
+	[ObservableProperty]
+	public partial bool DeleteExistingReports { get; set; }
+
 	[RelayCommand]
 	public void LoadRepos()
 	{
@@ -48,6 +51,18 @@ public partial class MainPageViewModel(IDataHandlerService dataHandlerService) :
 		IsBusy = true;
 		try
 		{
+
+			if(DeleteExistingReports)
+			{
+				Debug.WriteLine("Deleting existing coverage reports...");
+				// Path to the results directory
+				string path = "C:\\Users\\cam14754\\Desktop\\TestReports";
+				if (Directory.Exists(path))
+				{
+					Directory.Delete(path, true); // 'true' means recursive delete
+					Debug.WriteLine("Existing coverage reports deleted.");
+				}
+			}
 
 			Debug.WriteLine("");
 			Debug.WriteLine("Begining Analysis...");

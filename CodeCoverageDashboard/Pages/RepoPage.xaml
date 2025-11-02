@@ -58,6 +58,7 @@
                         </Border.GestureRecognizers>
                         <VerticalStackLayout>
                             <Label Text="{Binding Name, StringFormat='Name: {0}'}" />
+                            <Label Text="{Binding FilePath, StringFormat='Filename: {0}'}" />
                             <Label Text="{Binding CoveragePercent, StringFormat='Coverage Percent: {0:P2}'}" />
                             <Label Text="Errors:" />
 

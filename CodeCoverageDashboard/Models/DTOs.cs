@@ -40,6 +40,8 @@ public class DTOs
 	public class ClassDto
 	{
 		[XmlAttribute("name")] public string Name { get; set; }
+		[XmlAttribute("filename")] public string Filename { get; set; }
+
 		[XmlAttribute("line-rate")] public double LineRate { get; set; }
 
 		[XmlArray("methods")]
