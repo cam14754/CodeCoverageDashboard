@@ -8,12 +8,10 @@ public interface IDatabaseService
 {
 	abstract Task SaveMemoryToDB(List<RepoData> repoDatas);
 	abstract Task SaveMemoryToDB(RepoData repoData);
-	abstract Task SaveMemoryToDB(List<StaticDashboardData> staticDashboardDatas);
 	abstract Task SaveMemoryToDB(StaticDashboardData staticDashboardData);
 
 	abstract Task<List<RepoData>> LoadLatestReposList();
 	abstract Task<RepoData> LoadLatestRepoByName(string repoName);
-
 	abstract Task<StaticDashboardData> LoadXWeekOldDashboardData(int x);
 
 }

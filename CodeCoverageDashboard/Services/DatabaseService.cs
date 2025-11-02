@@ -48,16 +48,6 @@ public class DatabaseService : IDatabaseService
 		await database.InsertAsync(x);
 	}
 
-	async Task IDatabaseService.SaveMemoryToDB(List<StaticDashboardData> staticDashboardDatas)
-	{
-		await Init();
-		foreach (var repo in staticDashboardDatas)
-		{
-			var x = StaticDashboardRecordToStaticDashboardObject.ConvertBack(repo);
-			await database.InsertAsync(x);
-		}
-	}
-
 	async Task IDatabaseService.SaveMemoryToDB(StaticDashboardData staticDashboardData)
 	{
 		await Init();
