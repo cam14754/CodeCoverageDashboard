@@ -74,6 +74,7 @@
 		<PackageReference Include="SQLite" Version="3.13.0" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
 		<PackageReference Include="SQuan.Helpers.Maui.Mvvm" Version="9.0.41" />
+		<PackageReference Include="Telerik.UI.for.Maui" Version="11.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>
