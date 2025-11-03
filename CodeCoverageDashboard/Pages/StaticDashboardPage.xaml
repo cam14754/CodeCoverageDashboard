@@ -3,50 +3,14 @@
     x:Class="CodeCoverageDashboard.Pages.StaticDashboardPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
     xmlns:models="clr-namespace:CodeCoverageDashboard.Models"
-    xmlns:progressBar="clr-namespace:Syncfusion.Maui.ProgressBar;assembly=Syncfusion.Maui.ProgressBar"
-    xmlns:table="clr-namespace:Syncfusion.Maui.DataGrid;assembly=Syncfusion.Maui.DataGrid"
     xmlns:viewmodels="clr-namespace:CodeCoverageDashboard.ViewModels"
     Title="StaticDashboardPage"
     x:DataType="viewmodels:StaticDashboardPageViewModel">
     <Grid ColumnDefinitions="*" RowDefinitions="*,*,*">
 
         <Grid ColumnDefinitions="*, *, *" RowDefinitions="*">
-            <chart:SfCartesianChart Title="Lines Covered" Grid.Column="0">
 
-                <chart:SfCartesianChart.XAxes>
-                    <chart:DateTimeAxis />
-                </chart:SfCartesianChart.XAxes>
-                <chart:SfCartesianChart.YAxes>
-                    <chart:NumericalAxis />
-                </chart:SfCartesianChart.YAxes>
-
-
-                <chart:LineSeries
-                    ItemsSource="{Binding Data}"
-                    XBindingPath="DateRetrieved"
-                    YBindingPath="TotalLinesCoveredCount" />
-            </chart:SfCartesianChart>
-
-            <chart:SfCartesianChart Title="Line Coverage Percentage" Grid.Column="1">
-
-                <chart:SfCartesianChart.XAxes>
-                    <chart:DateTimeAxis />
-                </chart:SfCartesianChart.XAxes>
-                <chart:SfCartesianChart.YAxes>
-                    <chart:NumericalAxis
-                        Maximum="1"
-                        Minimum="0"
-                        MinorTicksPerInterval="4" />
-                </chart:SfCartesianChart.YAxes>
-
-
-                <chart:LineSeries
-                    ItemsSource="{Binding Data}"
-                    XBindingPath="DateRetrieved"
-                    YBindingPath="AverageLineCoveragePercent" />
-            </chart:SfCartesianChart>
 
             <Border
                 Grid.Column="2"
@@ -77,48 +41,7 @@
                     FontSize="Large"
                     HorizontalOptions="Center"
                     Text="Hot Repos 🔥🔥🔥" />
-                <table:SfDataGrid
-                    AutoGenerateColumnsMode="None"
-                    ColumnWidthMode="Fill"
-                    HorizontalOptions="Fill"
-                    ItemsSource="{Binding LatestData.HotRepos}"
-                    RowHeight="43">
 
-                    <table:SfDataGrid.DefaultStyle>
-                        <table:DataGridStyle
-                            AlternateRowBackground="White"
-                            HeaderRowBackground="#d3d3d3"
-                            HeaderRowFontSize="20"
-                            RowBackground="#e6e6e6" />
-                    </table:SfDataGrid.DefaultStyle>
-
-                    <table:SfDataGrid.Columns>
-                        <table:DataGridTextColumn HeaderText="Repo Name" MappingName="Name" />
-                        <table:DataGridTemplateColumn
-                            Width="200"
-                            HeaderText="Coverage Percent Increase"
-                            MappingName="CoveragePercentPercentIncrease">
-                            <table:DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="models:RepoData">
-                                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
-                                        <Label Text="{Binding CoveragePercentPercentIncrease, StringFormat='👆{0:0.##}%'}" />
-                                    </VerticalStackLayout>
-                                </DataTemplate>
-                            </table:DataGridTemplateColumn.CellTemplate>
-                        </table:DataGridTemplateColumn>
-                    </table:SfDataGrid.Columns>
-
-                    <table:SfDataGrid.SortColumnDescriptions>
-                        <table:SortColumnDescription ColumnName="CoveragePercentPercentIncrease" SortDirection="Descending" />
-                    </table:SfDataGrid.SortColumnDescriptions>
-
-                    <table:SfDataGrid.SortIconTemplate>
-                        <DataTemplate>
-                            <Image HeightRequest="0" WidthRequest="0" />
-                        </DataTemplate>
-                    </table:SfDataGrid.SortIconTemplate>
-
-                </table:SfDataGrid>
             </VerticalStackLayout>
 
 
@@ -127,36 +50,7 @@
                     FontSize="Large"
                     HorizontalOptions="Center"
                     Text="Complex Methods 😵‍💫😵‍💫😵‍💫" />
-                <table:SfDataGrid
-                    Grid.Column="0"
-                    AutoGenerateColumnsMode="None"
-                    ColumnWidthMode="Fill"
-                    HorizontalOptions="Fill"
-                    ItemsSource="{Binding LatestData.TopComplexMethods}"
-                    RowHeight="43">
-                    <table:SfDataGrid.Columns>
-                        <table:DataGridTextColumn HeaderText="Method Name" MappingName="Name" />
-                        <table:DataGridNumericColumn HeaderText="Complexity" MappingName="Complexity" />
-                    </table:SfDataGrid.Columns>
 
-                    <table:SfDataGrid.SortColumnDescriptions>
-                        <table:SortColumnDescription ColumnName="Complexity" SortDirection="Descending" />
-                    </table:SfDataGrid.SortColumnDescriptions>
-
-                    <table:SfDataGrid.DefaultStyle>
-                        <table:DataGridStyle
-                            AlternateRowBackground="White"
-                            HeaderRowBackground="#d3d3d3"
-                            HeaderRowFontSize="20"
-                            RowBackground="#e6e6e6" />
-                    </table:SfDataGrid.DefaultStyle>
-
-                    <table:SfDataGrid.SortIconTemplate>
-                        <DataTemplate>
-                            <Image HeightRequest="0" WidthRequest="0" />
-                        </DataTemplate>
-                    </table:SfDataGrid.SortIconTemplate>
-                </table:SfDataGrid>
             </VerticalStackLayout>
 
         </Grid>
@@ -166,40 +60,7 @@
             RowDefinitions="*">
 
             <Grid Grid.Column="0" RowDefinitions="*, auto">
-                <progressBar:SfCircularProgressBar
-                    Grid.Row="0"
-                    BackgroundColor="Transparent"
-                    HorizontalOptions="Fill"
-                    Maximum="1"
-                    Minimum="0"
-                    Progress="{Binding LatestData.AverageLineCoveragePercent}"
-                    ProgressThickness="20"
-                    TrackThickness="20">
-                    <progressBar:SfCircularProgressBar.Content>
-                        <VerticalStackLayout>
-                            <Label
-                                FontSize="Large"
-                                HorizontalOptions="Center"
-                                Text="{Binding LatestData.AverageLineCoveragePercent, StringFormat='{0:P2}'}"
-                                VerticalOptions="Center" />
-                            <Label
-                                FontSize="Medium"
-                                HorizontalOptions="Center"
-                                Text="{Binding LatestData.TotalLinesCoveredCount, StringFormat='({0})'}"
-                                VerticalOptions="Center" />
 
-                        </VerticalStackLayout>
-                    </progressBar:SfCircularProgressBar.Content>
-
-                    <progressBar:SfCircularProgressBar.GradientStops>
-                        <progressBar:ProgressGradientStop Color="Red" Value="0" />
-                        <progressBar:ProgressGradientStop Color="Orange" Value="0.2" />
-                        <progressBar:ProgressGradientStop Color="Yellow" Value="0.6" />
-
-
-                        <progressBar:ProgressGradientStop Color="Green" Value="0.8" />
-                    </progressBar:SfCircularProgressBar.GradientStops>
-                </progressBar:SfCircularProgressBar>
                 <Label
                     Grid.Row="1"
                     FontSize="Medium"
@@ -209,38 +70,7 @@
             </Grid>
 
             <Grid Grid.Column="1" RowDefinitions="*, auto">
-                <progressBar:SfCircularProgressBar
-                    Grid.Row="0"
-                    BackgroundColor="Transparent"
-                    HorizontalOptions="Fill"
-                    Maximum="1"
-                    Minimum="0"
-                    Progress="{Binding LatestData.AverageBranchCoveragePercent}"
-                    ProgressThickness="20"
-                    TrackThickness="20">
-                    <progressBar:SfCircularProgressBar.Content>
-                        <VerticalStackLayout>
-                            <Label
-                                FontSize="Large"
-                                HorizontalOptions="Center"
-                                Text="{Binding LatestData.AverageBranchCoveragePercent, StringFormat='{0:P2}'}"
-                                VerticalOptions="Center" />
-                            <Label
-                                FontSize="Medium"
-                                HorizontalOptions="Center"
-                                Text="{Binding LatestData.TotalBracnhesCoveredCount, StringFormat='({0})'}"
-                                VerticalOptions="Center" />
 
-                        </VerticalStackLayout>
-                    </progressBar:SfCircularProgressBar.Content>
-
-                    <progressBar:SfCircularProgressBar.GradientStops>
-                        <progressBar:ProgressGradientStop Color="Red" Value="0" />
-                        <progressBar:ProgressGradientStop Color="Orange" Value="0.2" />
-                        <progressBar:ProgressGradientStop Color="Yellow" Value="0.6" />
-                        <progressBar:ProgressGradientStop Color="Green" Value="0.8" />
-                    </progressBar:SfCircularProgressBar.GradientStops>
-                </progressBar:SfCircularProgressBar>
                 <Label
                     Grid.Row="1"
                     FontSize="Medium"
@@ -250,39 +80,7 @@
             </Grid>
 
             <Grid Grid.Column="2" RowDefinitions="*, auto">
-                <progressBar:SfCircularProgressBar
-                    Grid.Row="0"
-                    BackgroundColor="Transparent"
-                    HorizontalOptions="Fill"
-                    Maximum="1"
-                    Minimum="0"
-                    Progress="{Binding LatestData.AverageComplexMethodPercent, Converter={StaticResource InvertPercentConverter}}"
-                    ProgressThickness="20"
-                    TrackThickness="20">
-                    <progressBar:SfCircularProgressBar.Content>
-                        <VerticalStackLayout>
-                            <Label
-                                FontSize="Large"
-                                HorizontalOptions="Center"
-                                Text="{Binding LatestData.AverageComplexMethodPercent, StringFormat='{0:P2}'}"
-                                VerticalOptions="Center" />
-                            <Label
-                                FontSize="Medium"
-                                HorizontalOptions="Center"
-                                Text="{Binding LatestData.ComplexMethods.Count, StringFormat='({0})'}"
-                                VerticalOptions="Center" />
 
-                        </VerticalStackLayout>
-                    </progressBar:SfCircularProgressBar.Content>
-
-                    <progressBar:SfCircularProgressBar.GradientStops>
-                        <progressBar:ProgressGradientStop Color="Red" Value="0" />
-                        <progressBar:ProgressGradientStop Color="Orange" Value="0.2" />
-                        <progressBar:ProgressGradientStop Color="Yellow" Value="0.8" />
-                        <progressBar:ProgressGradientStop Color="Green" Value="0.95" />
-                    </progressBar:SfCircularProgressBar.GradientStops>
-
-                </progressBar:SfCircularProgressBar>
                 <Label
                     Grid.Row="1"
                     FontSize="Medium"

@@ -23,7 +23,4 @@ global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Mvvm.Input;
 global using Microsoft.Extensions.Logging;
 global using SQLite;
-global using Syncfusion.Maui.Core.Hosting;
-global using Syncfusion.Maui.ProgressBar;
-global using Syncfusion.Maui.Charts;
 global using System.Globalization;
