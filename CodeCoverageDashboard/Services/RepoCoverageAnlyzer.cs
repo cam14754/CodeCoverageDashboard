@@ -134,7 +134,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			return;
 		}
 
-		DTOs.PackageDto? package = coverage.Packages.FirstOrDefault();
+		DTOs.PackageDto package = coverage.Packages.FirstOrDefault();
 
 		if (package is null)
 		{
@@ -142,116 +142,37 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			return;
 		}
 
-		var classMap = new Dictionary<string, ClassData>();
-
-		// Helper to get or create the parent class
-		ClassData GetOrAddClass(string name, double? coverage, string filename)
-		{
-			if (!classMap.TryGetValue(name, out var cd))
-			{
-				cd = new ClassData
-				{
-					Name = name,
-					CoveragePercent = coverage,
-					ListMethods = [],
-					Filename = filename
-
-				};
-				classMap[name] = cd;
-			}
-			return cd;
-		}
-
-		string AsyncLambdaInsideMethod = "(?:.*?\\.)?(?<parent>[^.]+)\\/<>c__DisplayClass\\d+_\\d+\\/<<(?<method>[^>]+)>b__\\d+>d?$";
-		string ClosureClassAsyncLambda = "(?:.*?\\.)?(?<parent>[^.]+)\\/<>c__DisplayClass\\d+_\\d+\\/<<(?<method>[^>]+)>b__\\d+(?:_\\d+)?>d$";
-		string IteratorStateMachine = "(?:.*?\\.)?(?<parent>[^.]+)\\/<(?<method>[^>]+)>d__\\d+$";
-		string RegularClassName = "(?<=\\.)(?<parent>[^.\\/<+]+)$"; // added + to be safe for nested types
-
+		var ListClasses = new List<ClassData>();
 		foreach (var c in package.Classes)
 		{
-			Match match;
-
-			// 1) Async lambda inside method
-			match = Regex.Match(c.Name, AsyncLambdaInsideMethod);
-			if (match.Success)
+			var ListMethods = new List<MethodData>();
+			foreach (var m in c.Methods)
 			{
-				Debug.WriteLine($"Processing class: {c.Name} as an async lambda inside method");
-				var className = match.Groups["parent"].Value;
-				var methodName = match.Groups["method"].Value + " (Async Lambda)";
-				var parent = GetOrAddClass(className, c.LineRate, c.Filename);
-				parent.ListMethods.Add(new MethodData
+				var lines = new List<LineData>();
+				foreach (var l in m.Lines)
 				{
-					Name = methodName,
-					CoveragePercent = c.LineRate,
-					ListLines = c.Lines
-				});
-				continue;
-			}
-
-			// 2) Closure class async lambda
-			match = Regex.Match(c.Name, ClosureClassAsyncLambda);
-			if (match.Success)
-			{
-				Debug.WriteLine($"Processing class {c.Name} as an async lambda");
-				var className = match.Groups["parent"].Value;
-				var methodName = match.Groups["method"].Value + " (Closure Class Async Lambda)";
-				var parent = GetOrAddClass(className, c.LineRate, c.Filename);
-				parent.ListMethods.Add(new MethodData
-				{
-					Name = methodName,
-					CoveragePercent = c.LineRate,
-					ListLines = c.Lines
-				});
-				continue;
-			}
-
-			// 3) Iterator/async state machine
-			match = Regex.Match(c.Name, IteratorStateMachine);
-			if (match.Success)
-			{
-				Debug.WriteLine($"Processing class {c.Name} as an iterator state machine");
-				var className = match.Groups["parent"].Value;
-				var methodName = match.Groups["method"].Value + " (Async Method)";
-				var parent = GetOrAddClass(className, c.LineRate, c.Filename);
-				parent.ListMethods.Add(new MethodData
-				{
-					Name = methodName,
-					CoveragePercent = c.LineRate,
-					ListLines = c.Lines
-				});
-				continue;
-			}
-
-			// 4) Regular class with real methods
-			match = Regex.Match(c.Name, RegularClassName);
-			if (match.Success)
-			{
-				Debug.WriteLine($"Processing class: {c.Name} as a regular method");
-				var className = match.Groups["parent"].Value;
-				var parent = GetOrAddClass(className, c.LineRate, c.Filename);
-
-				foreach (var m in c.Methods)
-				{
-					var lines = new List<LineData>();
-					foreach (var l in m.Lines)
-					{
-						lines.Add(new LineData { LineNumber = l.Number, Hits = l.Hits });
-					}
-
-					parent.ListMethods.Add(new MethodData
-					{
-						Name = m.Name,
-						CoveragePercent = m.LineRate,
-						ListLines = lines,
-						Signature = m.Signature,
-
-					});
+					lines.Add(new LineData { LineNumber = l.Number, Hits = l.Hits });
 				}
-			}
-			// else: discard other synthesized noise
-		}
 
-		repoData.ListClasses = [.. classMap.Values];
+				ListMethods.Add(new MethodData
+				{
+					Name = m.Name,
+					CoveragePercent = m.LineRate,
+					ListLines = lines,
+					Signature = m.Signature,
+				});
+			}
+
+			ListClasses.Add(new ClassData
+			{
+				Name = c.Name,
+				Filename = c.Filename,
+				CoveragePercent = c.LineRate,
+				ListMethods = ListMethods,
+			});
+
+			repoData.ListClasses = ListClasses;
+		}
 
 		if (repoData.ListClasses.Count == 0)
 		{

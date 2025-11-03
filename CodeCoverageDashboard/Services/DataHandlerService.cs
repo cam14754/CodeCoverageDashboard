@@ -12,7 +12,7 @@ public class DataHandlerService(IRepoCoverageAnalyzer repoCoverageAnalyzer, IRep
 {
 	public ObservableCollection<RepoData> Repos { get; set; } = [];
 	public List<XDocument> CoverageDocuments { get; set; } = [];
-	public void LoadReposAsync()
+	public void LoadRepos()
 	{
 		List<RepoData> repos = repoGrabberService.GetRepoDataAsync();
 		Repos.Clear();

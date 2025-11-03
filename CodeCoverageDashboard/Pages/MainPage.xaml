@@ -39,7 +39,7 @@
             x:Name="SelectedRepo"
             Grid.Row="1"
             Grid.Column="0"
-            ItemsSource="{Binding Repos}">
+            ItemsSource="{Binding Classes}">
             <CollectionView.EmptyView>
                 <Label
                     Margin="20"
@@ -50,7 +50,7 @@
             </CollectionView.EmptyView>
 
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:RepoData">
+                <DataTemplate x:DataType="models:ClassData">
                     <Border
                         BackgroundColor="Yellow"
                         HeightRequest="200"
@@ -64,15 +64,14 @@
                         </Border.GestureRecognizers>
                         <VerticalStackLayout>
                             <Label Text="{Binding Name, StringFormat='Name: {0}'}" />
-                            <Label Text="{Binding CoveragePercent, StringFormat='Coverage Percent: {0:P2}'}" />
-                            <Label Text="{Binding CoveredLines, StringFormat='Covered Lines: {0}'}" />
-                            <Label Text="{Binding UncoveredLines, StringFormat='Uncovered Lines: {0}'}" />
-                            <Label Text="{Binding TotalLines, StringFormat='Total Lines: {0}'}" />
+                            <Label Text="{Binding Filename, StringFormat='Filename: {0}'}" />
+
+
                             <Label Text="Errors:" />
 
                             <!--  Inner list of strings  -->
                             <ScrollView>
-                                <CollectionView ItemsSource="{Binding ListErrors}">
+                                <CollectionView ItemsSource="{Binding Errors}">
                                     <CollectionView.EmptyView>
                                         <Label Text="No Errors :)" />
                                     </CollectionView.EmptyView>

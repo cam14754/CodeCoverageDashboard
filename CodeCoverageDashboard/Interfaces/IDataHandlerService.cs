@@ -9,6 +9,6 @@ namespace CodeCoverageDashboard.Interfaces;
 public interface IDataHandlerService
 {
 	ObservableCollection<RepoData> Repos { get; set; }
-	void LoadReposAsync();
+	void LoadRepos();
 	Task TestReposAsync();
 }

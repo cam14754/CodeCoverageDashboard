@@ -10,9 +10,11 @@ namespace CodeCoverageDashboard.ViewModels;
 public partial class MainPageViewModel(IDataHandlerService dataHandlerService) : BaseViewModel
 {
 	public ObservableCollection<RepoData> Repos => dataHandlerService.Repos;
+	public ObservableCollection<ClassData> Classes => classes;
+	ObservableCollection<ClassData> classes = new(dataHandlerService.Repos.SelectMany(r => r.ListClasses));
 
 	[ObservableProperty]
-	public partial bool DeleteExistingReports { get; set; }
+	public partial bool DeleteExistingReports { get; set; } = true;
 
 	[RelayCommand]
 	public void LoadRepos()
@@ -26,7 +28,7 @@ public partial class MainPageViewModel(IDataHandlerService dataHandlerService) :
 			IsBusy = true;
 			Debug.WriteLine("Loading repos... \n");
 
-			dataHandlerService.LoadReposAsync();
+			dataHandlerService.LoadRepos();
 
 			Debug.WriteLine("Repos loaded successfully.");
 
@@ -76,6 +78,8 @@ public partial class MainPageViewModel(IDataHandlerService dataHandlerService) :
 		}
 		finally
 		{
+			classes = new ObservableCollection<ClassData>(dataHandlerService.Repos.SelectMany(r => r.ListClasses));
+			OnPropertyChanged(nameof(Classes));
 			IsBusy = false;
 		}
 	}

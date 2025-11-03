@@ -4,12 +4,21 @@
 // For personal and educational use only.
 
 namespace CodeCoverageDashboard.Models;
-public class ClassData
+public partial class ClassData : ObservableObject
 {
-	public string? Name { get; set; } = "Unknown Name";
-	public string? Filename { get; set; } = "Unknown Filename";
+	[ObservableProperty]
+	public partial string? Name { get; set; } = "Unknown Name";
+	[ObservableProperty]
 
-	public string[]? Errors { get; set; } = [];
-	public double? CoveragePercent { get; set; } = null;
+	public partial string? Filename { get; set; } = "Unknown Filename";
+
+	[ObservableProperty]
+
+	public partial string[]? Errors { get; set; } = [];
+	[ObservableProperty]
+
+	public partial double? CoveragePercent { get; set; } = null;
+	
+
 	public List<MethodData> ListMethods { get; set; } = [];
 }
