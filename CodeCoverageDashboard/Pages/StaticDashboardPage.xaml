@@ -180,7 +180,7 @@
                             <Label
                                 FontSize="Large"
                                 HorizontalOptions="Center"
-                                Text="{Binding LatestData.AverageLineCoveragePercent, StringFormat='{0:0.##}%'}"
+                                Text="{Binding LatestData.AverageLineCoveragePercent, StringFormat='{0:P2}'}"
                                 VerticalOptions="Center" />
                             <Label
                                 FontSize="Medium"
@@ -223,7 +223,7 @@
                             <Label
                                 FontSize="Large"
                                 HorizontalOptions="Center"
-                                Text="{Binding LatestData.AverageBranchCoveragePercent, StringFormat='{0:0.##}%'}"
+                                Text="{Binding LatestData.AverageBranchCoveragePercent, StringFormat='{0:P2}'}"
                                 VerticalOptions="Center" />
                             <Label
                                 FontSize="Medium"
@@ -256,7 +256,7 @@
                     HorizontalOptions="Fill"
                     Maximum="1"
                     Minimum="0"
-                    Progress="{Binding LatestData.AverageComplexMethodPercent}"
+                    Progress="{Binding LatestData.AverageComplexMethodPercent, Converter={StaticResource InvertPercentConverter}}"
                     ProgressThickness="20"
                     TrackThickness="20">
                     <progressBar:SfCircularProgressBar.Content>
@@ -264,7 +264,7 @@
                             <Label
                                 FontSize="Large"
                                 HorizontalOptions="Center"
-                                Text="{Binding LatestData.AverageComplexMethodPercent, StringFormat='{0:0.##}%'}"
+                                Text="{Binding LatestData.AverageComplexMethodPercent, StringFormat='{0:P2}'}"
                                 VerticalOptions="Center" />
                             <Label
                                 FontSize="Medium"
@@ -276,12 +276,12 @@
                     </progressBar:SfCircularProgressBar.Content>
 
                     <progressBar:SfCircularProgressBar.GradientStops>
-                        <progressBar:ProgressGradientStop Color="Green" Value="0.1" />
-                        <progressBar:ProgressGradientStop Color="Yellow" Value="0.2" />
-                        <progressBar:ProgressGradientStop Color="Orange" Value="0.3" />
-
-                        <progressBar:ProgressGradientStop Color="Red" Value="0.4" />
+                        <progressBar:ProgressGradientStop Color="Red" Value="0" />
+                        <progressBar:ProgressGradientStop Color="Orange" Value="0.2" />
+                        <progressBar:ProgressGradientStop Color="Yellow" Value="0.8" />
+                        <progressBar:ProgressGradientStop Color="Green" Value="0.95" />
                     </progressBar:SfCircularProgressBar.GradientStops>
+
                 </progressBar:SfCircularProgressBar>
                 <Label
                     Grid.Row="1"

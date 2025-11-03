@@ -1,0 +1,15 @@
+﻿
+namespace CodeCoverageDashboard.Converters;
+
+public class DecimalPercentToWholePercentConverter : IValueConverter
+{
+	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+	{
+		return value is double d ? d * 100 : (object)0;
+	}
+
+	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+	{
+		return value is double d ? d / 100 : (object)0;
+	}
+}

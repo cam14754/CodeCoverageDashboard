@@ -26,3 +26,4 @@ global using SQLite;
 global using Syncfusion.Maui.Core.Hosting;
 global using Syncfusion.Maui.ProgressBar;
 global using Syncfusion.Maui.Charts;
+global using System.Globalization;
