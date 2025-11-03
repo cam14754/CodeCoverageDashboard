@@ -12,6 +12,47 @@
 
         <Grid ColumnDefinitions="*, *, *" RowDefinitions="*">
 
+            <telerik:RadCartesianChart>
+
+                <telerik:RadCartesianChart.HorizontalAxis>
+                    <telerik:DateTimeContinuousAxis MajorStep="2" MajorStepUnit="Week" />
+                </telerik:RadCartesianChart.HorizontalAxis>
+
+                <telerik:RadCartesianChart.VerticalAxis>
+                    <telerik:NumericalAxis MajorStep="2500" Minimum="0" />
+                </telerik:RadCartesianChart.VerticalAxis>
+
+                <telerik:RadCartesianChart.Series>
+                    <telerik:LineSeries
+                        CategoryBinding="DateRetrieved"
+                        ItemsSource="{Binding Data}"
+                        ValueBinding="TotalLinesCoveredCount" />
+                </telerik:RadCartesianChart.Series>
+
+            </telerik:RadCartesianChart>
+
+            <telerik:RadCartesianChart Grid.Column="1">
+
+                <telerik:RadCartesianChart.HorizontalAxis>
+                    <telerik:DateTimeContinuousAxis MajorStep="2" MajorStepUnit="Week" />
+                </telerik:RadCartesianChart.HorizontalAxis>
+
+                <telerik:RadCartesianChart.VerticalAxis>
+                    <telerik:NumericalAxis
+                        LabelFormat="P2"
+                        MajorStep="0.25"
+                        Maximum="1"
+                        Minimum="0" />
+                </telerik:RadCartesianChart.VerticalAxis>
+
+                <telerik:RadCartesianChart.Series>
+                    <telerik:LineSeries
+                        CategoryBinding="DateRetrieved"
+                        ItemsSource="{Binding Data}"
+                        ValueBinding="AverageLineCoveragePercent" />
+                </telerik:RadCartesianChart.Series>
+
+            </telerik:RadCartesianChart>
 
             <Border
                 Grid.Column="2"
@@ -43,6 +84,57 @@
                     HorizontalOptions="Center"
                     Text="Hot Repos 🔥🔥🔥" />
 
+                <telerik:RadDataGrid
+                    AutoGenerateColumns="False"
+                    InputTransparent="True"
+                    ItemsSource="{Binding Top5Hottest}"
+                    ShowGroupFooters="False"
+                    UserEditMode="None"
+                    UserGroupMode="Disabled">
+
+                    <telerik:RadDataGrid.Columns>
+                        <telerik:DataGridTextColumn
+                            CanUserFilter="False"
+                            HeaderText="Repository Name"
+                            PropertyName="Name">
+                            <telerik:DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="telerik:DataGridColumnHeaderAppearance">
+                                    <Setter Property="BackgroundColor" Value="Gray" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                </Style>
+                            </telerik:DataGridTextColumn.HeaderStyle>
+                        </telerik:DataGridTextColumn>
+
+                        <telerik:DataGridNumericalColumn
+                            CanUserFilter="False"
+                            HeaderText="Percent Increase"
+                            PropertyName="CoveragePercentPercentIncrease">
+                            <telerik:DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="telerik:DataGridColumnHeaderAppearance">
+                                    <Setter Property="BackgroundColor" Value="Gray" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                </Style>
+                            </telerik:DataGridTextColumn.HeaderStyle>
+                        </telerik:DataGridNumericalColumn>
+                    </telerik:RadDataGrid.Columns>
+
+                    <telerik:RadDataGrid.SortDescriptors>
+                        <telerik:PropertySortDescriptor PropertyName="CoveragePercentPercentIncrease" SortOrder="Descending" />
+                    </telerik:RadDataGrid.SortDescriptors>
+
+                    <telerik:RadDataGrid.AlternateRowBackgroundStyle>
+                        <Style TargetType="telerik:DataGridRowBackgroundAppearance">
+                            <Setter Property="BackgroundColor" Value="LightGray" />
+                        </Style>
+                    </telerik:RadDataGrid.AlternateRowBackgroundStyle>
+
+                    <telerik:RadDataGrid.RowBackgroundStyle>
+                        <Style TargetType="telerik:DataGridRowBackgroundAppearance">
+                            <Setter Property="BackgroundColor" Value="White" />
+                        </Style>
+                    </telerik:RadDataGrid.RowBackgroundStyle>
+                </telerik:RadDataGrid>
+
             </VerticalStackLayout>
 
 
@@ -51,6 +143,58 @@
                     FontSize="Large"
                     HorizontalOptions="Center"
                     Text="Complex Methods 😵‍💫😵‍💫😵‍💫" />
+
+                <telerik:RadDataGrid
+                    AutoGenerateColumns="False"
+                    InputTransparent="True"
+                    ItemsSource="{Binding Top5Complex}"
+                    ShowGroupFooters="False"
+                    UserEditMode="None"
+                    UserGroupMode="Disabled">
+
+                    <telerik:RadDataGrid.Columns>
+                        <telerik:DataGridTextColumn
+                            CanUserFilter="False"
+                            HeaderText="Repository Name"
+                            PropertyName="Name">
+                            <telerik:DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="telerik:DataGridColumnHeaderAppearance">
+                                    <Setter Property="BackgroundColor" Value="Gray" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                </Style>
+                            </telerik:DataGridTextColumn.HeaderStyle>
+                        </telerik:DataGridTextColumn>
+
+                        <telerik:DataGridNumericalColumn
+                            CanUserFilter="False"
+                            HeaderText="Percent Increase"
+                            PropertyName="Complexity">
+                            <telerik:DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="telerik:DataGridColumnHeaderAppearance">
+                                    <Setter Property="BackgroundColor" Value="Gray" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                </Style>
+                            </telerik:DataGridTextColumn.HeaderStyle>
+                        </telerik:DataGridNumericalColumn>
+                    </telerik:RadDataGrid.Columns>
+
+                    <telerik:RadDataGrid.SortDescriptors>
+                        <telerik:PropertySortDescriptor PropertyName="Complexity" SortOrder="Descending" />
+                    </telerik:RadDataGrid.SortDescriptors>
+
+
+                    <telerik:RadDataGrid.AlternateRowBackgroundStyle>
+                        <Style TargetType="telerik:DataGridRowBackgroundAppearance">
+                            <Setter Property="BackgroundColor" Value="LightGray" />
+                        </Style>
+                    </telerik:RadDataGrid.AlternateRowBackgroundStyle>
+
+                    <telerik:RadDataGrid.RowBackgroundStyle>
+                        <Style TargetType="telerik:DataGridRowBackgroundAppearance">
+                            <Setter Property="BackgroundColor" Value="White" />
+                        </Style>
+                    </telerik:RadDataGrid.RowBackgroundStyle>
+                </telerik:RadDataGrid>
 
             </VerticalStackLayout>
 
@@ -62,6 +206,40 @@
 
             <Grid Grid.Column="0" RowDefinitions="*, auto">
 
+                <telerik:RadRadialGauge>
+                    <telerik:RadRadialGauge.Axis>
+                        <telerik:GaugeLinearAxis
+                            Maximum="1"
+                            Minimum="0"
+                            Step="0.1" />
+                    </telerik:RadRadialGauge.Axis>
+
+                    <telerik:RadRadialGauge.Ranges>
+                        <telerik:GaugeRangesDefinition>
+                            <telerik:GaugeGradientRange From="0" To="1">
+                                <telerik:RadGradientStop Offset="0.9" Color="Green" />
+                                <telerik:RadGradientStop Offset="0.8" Color="GreenYellow" />
+                                <telerik:RadGradientStop Offset="0.67" Color="Yellow" />
+
+                                <telerik:RadGradientStop Offset="0.5" Color="Orange" />
+
+
+                                <telerik:RadGradientStop Offset="0.1" Color="Red" />
+                                <telerik:RadGradientStop Offset="0" Color="Red" />
+
+                            </telerik:GaugeGradientRange>
+                        </telerik:GaugeRangesDefinition>
+                    </telerik:RadRadialGauge.Ranges>
+
+                    <telerik:RadRadialGauge.Indicators>
+                        <telerik:GaugeNeedleIndicator Offset="0" Value="{Binding LatestData.AverageLineCoveragePercent}" />
+                    </telerik:RadRadialGauge.Indicators>
+
+
+                </telerik:RadRadialGauge>
+
+
+
                 <Label
                     Grid.Row="1"
                     FontSize="Medium"
@@ -72,6 +250,39 @@
 
             <Grid Grid.Column="1" RowDefinitions="*, auto">
 
+                <telerik:RadRadialGauge>
+                    <telerik:RadRadialGauge.Axis>
+                        <telerik:GaugeLinearAxis
+                            Maximum="1"
+                            Minimum="0"
+                            Step="0.1" />
+                    </telerik:RadRadialGauge.Axis>
+
+                    <telerik:RadRadialGauge.Ranges>
+                        <telerik:GaugeRangesDefinition>
+                            <telerik:GaugeGradientRange From="0" To="1">
+                                <telerik:RadGradientStop Offset="0.9" Color="Green" />
+                                <telerik:RadGradientStop Offset="0.8" Color="GreenYellow" />
+                                <telerik:RadGradientStop Offset="0.67" Color="Yellow" />
+
+                                <telerik:RadGradientStop Offset="0.5" Color="Orange" />
+
+
+                                <telerik:RadGradientStop Offset="0.1" Color="Red" />
+                                <telerik:RadGradientStop Offset="0" Color="Red" />
+
+                            </telerik:GaugeGradientRange>
+                        </telerik:GaugeRangesDefinition>
+                    </telerik:RadRadialGauge.Ranges>
+
+                    <telerik:RadRadialGauge.Indicators>
+                        <telerik:GaugeNeedleIndicator Value="{Binding LatestData.AverageBranchCoveragePercent}" />
+                    </telerik:RadRadialGauge.Indicators>
+
+
+                </telerik:RadRadialGauge>
+
+
                 <Label
                     Grid.Row="1"
                     FontSize="Medium"
@@ -81,6 +292,39 @@
             </Grid>
 
             <Grid Grid.Column="2" RowDefinitions="*, auto">
+
+                <telerik:RadRadialGauge>
+                    <telerik:RadRadialGauge.Axis>
+                        <telerik:GaugeLinearAxis
+                            Maximum="1"
+                            Minimum="0"
+                            Step="0.1" />
+                    </telerik:RadRadialGauge.Axis>
+
+                    <telerik:RadRadialGauge.Ranges>
+                        <telerik:GaugeRangesDefinition>
+                            <telerik:GaugeGradientRange From="0" To="1">
+                                <telerik:RadGradientStop Offset="0.005" Color="Green" />
+                                <telerik:RadGradientStop Offset="0.05" Color="GreenYellow" />
+                                <telerik:RadGradientStop Offset="0.1" Color="Yellow" />
+
+                                <telerik:RadGradientStop Offset="0.4" Color="Orange" />
+
+
+                                <telerik:RadGradientStop Offset="0.5" Color="Red" />
+                                <telerik:RadGradientStop Offset="1" Color="Red" />
+
+                            </telerik:GaugeGradientRange>
+                        </telerik:GaugeRangesDefinition>
+                    </telerik:RadRadialGauge.Ranges>
+
+                    <telerik:RadRadialGauge.Indicators>
+                        <telerik:GaugeNeedleIndicator Offset="0" Value="{Binding LatestData.AverageComplexMethodPercent}" />
+                    </telerik:RadRadialGauge.Indicators>
+
+
+                </telerik:RadRadialGauge>
+
 
                 <Label
                     Grid.Row="1"
