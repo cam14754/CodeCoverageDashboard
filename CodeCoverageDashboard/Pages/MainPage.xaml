@@ -63,6 +63,12 @@
                             <Label Text="{Binding CoveredLines, StringFormat='Covered Lines: {0}'}" />
                             <Label Text="{Binding UncoveredLines, StringFormat='Uncovered Lines: {0}'}" />
                             <Label Text="{Binding TotalLines, StringFormat='Total Lines: {0}'}" />
+                            <Label Text="{Binding CoveragePercentPercentIncrease, StringFormat='Percent Increase: {0}'}" />
+                            <Label Text="{Binding BranchRate, StringFormat='Branch Rate: {0}'}" />
+                            <Label Text="{Binding TotalBranches, StringFormat='Total Branches: {0}'}" />
+
+
+
 
                             <Label Text="Errors:" />
 

@@ -9,5 +9,6 @@ public class ClassData
 	public string? Name { get; set; } = "Unknown Name";
 	public string[]? Errors { get; set; } = [];
 	public double? CoveragePercent { get; set; } = null;
+	public string? FilePath { get; set; } = "Unknown FilePath";
 	public List<MethodData> ListMethods { get; set; } = [];
 }

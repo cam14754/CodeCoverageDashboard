@@ -21,10 +21,20 @@ public class RepoProperties
 
 	[JsonPropertyName("CoveragePercent")]
 	public double CoveragePercent { get; set; } = 0;
+	[JsonPropertyName("CoveragePercentPercentIncrease")]
+	public double CoveragePercentPercentIncrease { get; set; } = 0;
 
 	[JsonPropertyName("UncoveredLines")]
 	public double UncoveredLines { get; set; } = 0;
+	[JsonPropertyName("TotalBranches")]
+	public double TotalBranches { get; set; } = 0;
+	[JsonPropertyName("TotalCoveredBranches")]
+	public double TotalCoveredBranches { get; set; } = 0;
+
+	[JsonPropertyName("BranchRate")]
+	public double BranchRate { get; set; } = 0;
 
 	[JsonPropertyName("Classes")]
 	public List<ClassData> Classes { get; set; } = [];
+
 }

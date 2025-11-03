@@ -20,6 +20,8 @@ public partial class RepoData : ObservableObject
 
 	[ObservableProperty]
 	public partial double CoveragePercent { get; set; } = 0;
+	[ObservableProperty]
+	public partial double CoveragePercentPercentIncrease { get; set; } = 0;
 
 	[ObservableProperty]
 	public partial double CoveredLines { get; set; } = 0;
@@ -29,6 +31,12 @@ public partial class RepoData : ObservableObject
 
 	[ObservableProperty]
 	public partial double UncoveredLines { get; set; } = 0;
+	[ObservableProperty]
+	public partial double TotalBranches { get; set; } = 0;
+	[ObservableProperty]
+	public partial double TotalCoveredBranches { get; set; } = 0;
+	[ObservableProperty]
+	public partial double BranchRate { get; set; } = 0;
 
 	[ObservableProperty]
 	public partial DateTime DateRetrieved { get; set; } = DateTime.Now;

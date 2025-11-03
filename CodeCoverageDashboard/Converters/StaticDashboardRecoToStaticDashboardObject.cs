@@ -5,45 +5,91 @@
 
 namespace CodeCoverageDashboard.Converters;
 
-public static class RepoRecordToRepoObject
+public static class StaticDashboardRecordToStaticDashboardObject
 {
+	// Convert DashboardRecord -> StaticDashboardData (observable object)
 	public static object? Convert(object? value)
 	{
-		var x = new RepoData();
-		var repoRecord = (RepoRecord)value ?? throw new NullReferenceException("RepoRecord is null in RepoRecordToRepoObject converter.");
+		if (value is null)
+		{
+			return null;
+		}
 
-		x.Name = repoRecord.RepoName;
-		x.DateRetrieved = repoRecord.DateRetrieved;
+		if (value is not DashboardRecord dashboard)
+		{
+			return null;
+		}
 
-		var properties = repoRecord.Properties ?? throw new NullReferenceException("RepoRecord.Properties is null in RepoRecordToRepoObject converter.");
+		if(dashboard.Properties is null)
+		{
+			return null;
+		}
 
-		x.CoveredLines = properties.CoveredLines;
-		x.TotalLines = properties.NumLines;
-		x.CoveragePercent = properties.CoveragePercent;
-		x.UncoveredLines = properties.UncoveredLines;
-		x.ListClasses = properties.Classes;
-
-		return x;
+		var model = new StaticDashboardData
+		{
+			// Properties
+			TotalLinesCoveredCount = dashboard.Properties.TotalLinesCoveredCount,
+			TotalReposCount = dashboard.Properties.TotalReposCount,
+			TotalClassesCount = dashboard.Properties.TotalClassesCount,
+			TotalMethodsCount = dashboard.Properties.TotalMethodsCount,
+			TotalLinesCount = dashboard.Properties.TotalLinesCount,
+			AverageLineCoveragePercent = dashboard.Properties.AverageLineCoveragePercent,
+			AverageBranchCoveragePercent = dashboard.Properties.AverageBranchCoveragePercent,
+			TotalBracnhesCoveredCount = dashboard.Properties.TotalBracnhesCoveredCount,
+			DateRetrieved = dashboard.Properties.DateRetrieved,
+			CoverletVersion = dashboard.Properties.CoverletVersion,
+			DashboardVersion = dashboard.Properties.DashboardVersion,
+			// Collections
+			HotRepos = new ObservableCollection<RepoData>(dashboard.Properties.HotRepos),
+			ComplexMethods = new ObservableCollection<MethodData>(dashboard.Properties.ComplexMethods),
+			HealthyRepos = new ObservableCollection<RepoData>(dashboard.Properties.HealthyRepos),
+			UnhealthyRepos = new ObservableCollection<RepoData>(dashboard.Properties.UnhealthyRepos),
+			ListRepos = new ObservableCollection<RepoData>(dashboard.Properties.ListRepos),
+		};
+		return model;
 	}
 
+	// Convert StaticDashboardData -> DashboardRecord
 	public static object? ConvertBack(object? value)
 	{
-		var x = new RepoRecord();
-		var repoData = (RepoData)value ?? throw new NullReferenceException("RepoData is null in RepoRecordToRepoObject converter.");
-
-		x.RepoName = repoData.Name;
-		x.DateRetrieved = repoData.DateRetrieved;
-		x.Properties = new RepoProperties
+		if (value is null)
 		{
-			RepoName = repoData.Name,
-			DateRetrieved = repoData.DateRetrieved,
-			CoveredLines = repoData.CoveredLines,
-			NumLines = repoData.TotalLines,
-			CoveragePercent = repoData.CoveragePercent,
-			UncoveredLines = repoData.UncoveredLines,
-			Classes = repoData.ListClasses
+			return null;
+		}
+
+		if (value is not StaticDashboardData data)
+		{
+			return null;
+		}
+
+		var props = new DashboardProperties
+		{
+			TotalLinesCoveredCount = data.TotalLinesCoveredCount,
+			TotalReposCount = data.TotalReposCount,
+			TotalClassesCount = data.TotalClassesCount,
+			TotalMethodsCount = data.TotalMethodsCount,
+			TotalLinesCount = data.TotalLinesCount,
+			AverageLineCoveragePercent = data.AverageLineCoveragePercent,
+			AverageBranchCoveragePercent = data.AverageBranchCoveragePercent,
+			TotalBracnhesCoveredCount = data.TotalBracnhesCoveredCount,
+			AverageComplexMethodPercent = data.AverageComplexMethodPercent,
+			DateRetrieved = data.DateRetrieved,
+			CoverletVersion = data.CoverletVersion,
+			DashboardVersion = data.DashboardVersion,
+			HotRepos = new ObservableCollection<RepoData>(data.HotRepos),
+			ComplexMethods = new ObservableCollection<MethodData>(data.ComplexMethods),
+			HealthyRepos = new ObservableCollection<RepoData>(data.HealthyRepos),
+			UnhealthyRepos = new ObservableCollection<RepoData>(data.UnhealthyRepos),
+			ListRepos = new ObservableCollection<RepoData>(data.ListRepos),
+			TotalLinesUncoveredCount = data.TotalLinesUncoveredCount
 		};
 
-		return x;
+		var record = new DashboardRecord
+		{
+			DateRetrieved = data.DateRetrieved,
+			Properties = props
+		};
+
+		return record;
 	}
 }

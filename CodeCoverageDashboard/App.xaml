@@ -3,10 +3,13 @@
     x:Class="CodeCoverageDashboard.App"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:CodeCoverageDashboard.Converters"
     xmlns:local="clr-namespace:CodeCoverageDashboard">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries />
+            <converters:InvertPercentConverter x:Key="InvertPercentConverter" />
+            <converters:DecimalPercentToWholePercentConverter x:Key="DecimalPercentConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
