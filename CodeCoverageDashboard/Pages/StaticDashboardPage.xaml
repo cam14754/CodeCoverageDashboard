@@ -220,13 +220,9 @@
                                 <telerik:RadGradientStop Offset="0.9" Color="Green" />
                                 <telerik:RadGradientStop Offset="0.8" Color="GreenYellow" />
                                 <telerik:RadGradientStop Offset="0.67" Color="Yellow" />
-
                                 <telerik:RadGradientStop Offset="0.5" Color="Orange" />
-
-
                                 <telerik:RadGradientStop Offset="0.1" Color="Red" />
                                 <telerik:RadGradientStop Offset="0" Color="Red" />
-
                             </telerik:GaugeGradientRange>
                         </telerik:GaugeRangesDefinition>
                     </telerik:RadRadialGauge.Ranges>
@@ -235,10 +231,7 @@
                         <telerik:GaugeNeedleIndicator Offset="0" Value="{Binding LatestData.AverageLineCoveragePercent}" />
                     </telerik:RadRadialGauge.Indicators>
 
-
                 </telerik:RadRadialGauge>
-
-
 
                 <Label
                     Grid.Row="1"
@@ -264,13 +257,9 @@
                                 <telerik:RadGradientStop Offset="0.9" Color="Green" />
                                 <telerik:RadGradientStop Offset="0.8" Color="GreenYellow" />
                                 <telerik:RadGradientStop Offset="0.67" Color="Yellow" />
-
                                 <telerik:RadGradientStop Offset="0.5" Color="Orange" />
-
-
                                 <telerik:RadGradientStop Offset="0.1" Color="Red" />
                                 <telerik:RadGradientStop Offset="0" Color="Red" />
-
                             </telerik:GaugeGradientRange>
                         </telerik:GaugeRangesDefinition>
                     </telerik:RadRadialGauge.Ranges>
@@ -307,13 +296,9 @@
                                 <telerik:RadGradientStop Offset="0.005" Color="Green" />
                                 <telerik:RadGradientStop Offset="0.05" Color="GreenYellow" />
                                 <telerik:RadGradientStop Offset="0.1" Color="Yellow" />
-
                                 <telerik:RadGradientStop Offset="0.4" Color="Orange" />
-
-
                                 <telerik:RadGradientStop Offset="0.5" Color="Red" />
                                 <telerik:RadGradientStop Offset="1" Color="Red" />
-
                             </telerik:GaugeGradientRange>
                         </telerik:GaugeRangesDefinition>
                     </telerik:RadRadialGauge.Ranges>

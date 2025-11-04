@@ -121,7 +121,6 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 		dashboardData.CoverletVersion = "6.0.2";
 		dashboardData.DashboardVersion = "0.1";
 
-
 		double AverageCoveragePercentSum = 0;
 		double AverageBranchCoveragePercentSum = 0;
 
@@ -137,10 +136,8 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 				dashboardData.TotalClassesCount++;
 				foreach (MethodData methodData in classData.ListMethods)
 				{
-					if (methodData.Complexity > 10)
-					{
-						dashboardData.ListMethods.Add(methodData);
-					}
+					dashboardData.ListMethods.Add(methodData);
+					
 					dashboardData.TotalMethodsCount++;
 					foreach (LineData lineData in methodData.ListLines)
 					{
@@ -161,7 +158,7 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 
 	public void PopulateChangesFields(StaticDashboardData dashboardData)
 	{
-		Random rnd = new Random();
+		Random rnd = new();
 		var list = new List<(RepoData repo, double change)>();
 
 		foreach (RepoData repo in dashboardData.ListRepos)
