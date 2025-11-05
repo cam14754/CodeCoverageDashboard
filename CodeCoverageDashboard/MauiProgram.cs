@@ -3,6 +3,8 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
+using Telerik.Maui.Controls.Compatibility;
+
 namespace CodeCoverageDashboard;
 
 public static class MauiProgram
@@ -14,7 +16,7 @@ public static class MauiProgram
 		builder
 			.UseMauiApp<App>()
 			.UseMauiCommunityToolkit()
-			.ConfigureSyncfusionCore()
+			.UseTelerik()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

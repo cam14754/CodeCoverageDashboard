@@ -21,6 +21,8 @@ public static class RepoRecordToRepoObject
 		x.BranchRate = properties.BranchRate;
 		x.TotalBranches = properties.TotalBranches;
 		x.TotalCoveredBranches = properties.TotalCoveredBranches;
+		x.CoveredLinesIncrease = properties.CoveredLinesIncrease;
+		
 
 		return x;
 	}
@@ -45,7 +47,8 @@ public static class RepoRecordToRepoObject
 			CoveragePercentPercentIncrease = repoData.CoveragePercentPercentIncrease,
 			BranchRate = repoData.BranchRate,
 			TotalBranches = repoData.TotalBranches,
-			TotalCoveredBranches = repoData.TotalCoveredBranches
+			TotalCoveredBranches = repoData.TotalCoveredBranches,
+			CoveredLinesIncrease = repoData.CoveredLinesIncrease
 		};
 
 		return x;

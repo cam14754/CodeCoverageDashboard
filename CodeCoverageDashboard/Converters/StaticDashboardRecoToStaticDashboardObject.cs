@@ -40,10 +40,7 @@ public static class StaticDashboardRecordToStaticDashboardObject
 			CoverletVersion = dashboard.Properties.CoverletVersion,
 			DashboardVersion = dashboard.Properties.DashboardVersion,
 			// Collections
-			HotRepos = new ObservableCollection<RepoData>(dashboard.Properties.HotRepos),
-			ComplexMethods = new ObservableCollection<MethodData>(dashboard.Properties.ComplexMethods),
-			HealthyRepos = new ObservableCollection<RepoData>(dashboard.Properties.HealthyRepos),
-			UnhealthyRepos = new ObservableCollection<RepoData>(dashboard.Properties.UnhealthyRepos),
+			ListMethods = new ObservableCollection<MethodData>(dashboard.Properties.ComplexMethods),
 			ListRepos = new ObservableCollection<RepoData>(dashboard.Properties.ListRepos),
 		};
 		return model;
@@ -76,10 +73,7 @@ public static class StaticDashboardRecordToStaticDashboardObject
 			DateRetrieved = data.DateRetrieved,
 			CoverletVersion = data.CoverletVersion,
 			DashboardVersion = data.DashboardVersion,
-			HotRepos = new ObservableCollection<RepoData>(data.HotRepos),
-			ComplexMethods = new ObservableCollection<MethodData>(data.ComplexMethods),
-			HealthyRepos = new ObservableCollection<RepoData>(data.HealthyRepos),
-			UnhealthyRepos = new ObservableCollection<RepoData>(data.UnhealthyRepos),
+			ComplexMethods = new ObservableCollection<MethodData>(data.ListMethods),
 			ListRepos = new ObservableCollection<RepoData>(data.ListRepos),
 			TotalLinesUncoveredCount = data.TotalLinesUncoveredCount
 		};

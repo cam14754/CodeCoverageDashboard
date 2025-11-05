@@ -25,6 +25,8 @@ public partial class RepoData : ObservableObject
 
 	[ObservableProperty]
 	public partial double CoveredLines { get; set; } = 0;
+	[ObservableProperty]
+	public partial double CoveredLinesIncrease { get; set; } = 0;
 
 	[ObservableProperty]
 	public partial double TotalLines { get; set; } = 0;
