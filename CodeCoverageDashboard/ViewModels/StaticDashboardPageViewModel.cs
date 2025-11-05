@@ -20,9 +20,6 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 	public ObservableCollection<RepoData> Top5Unhealthy { get; set; } = [];
 	public ObservableCollection<RepoData> Top5Hottest { get; set; } = [];
 
-
-
-
 	[RelayCommand]
 	public async Task GetRepoData()
 	{
@@ -120,7 +117,7 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 		dashboardData.TotalReposCount = repoDatas.Count;
 		dashboardData.DateRetrieved = DateTime.Now;
 		dashboardData.CoverletVersion = "6.0.2";
-		dashboardData.DashboardVersion = "0.1";
+		dashboardData.DashboardVersion = "0.1.2";
 
 		double AverageCoveragePercentSum = 0;
 		double AverageBranchCoveragePercentSum = 0;

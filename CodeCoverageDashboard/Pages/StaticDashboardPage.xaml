@@ -5,80 +5,113 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:CodeCoverageDashboard.Models"
     xmlns:telerik="http://schemas.telerik.com/2022/xaml/maui"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:CodeCoverageDashboard.ViewModels"
     Title="StaticDashboardPage"
+    Padding="4"
     x:DataType="viewmodels:StaticDashboardPageViewModel"
+    Background="{StaticResource BackgroundColor}"
     Shell.NavBarIsVisible="False">
+
+
     <Grid ColumnDefinitions="*" RowDefinitions="*,auto,*">
         <!--  Row 1  -->
         <Grid ColumnDefinitions="*, *, *" RowDefinitions="*">
             <!--  Lines Covered Graph  -->
-            <Grid RowDefinitions="auto, *">
-                <Label
-                    Grid.Row="0"
-                    Style="{StaticResource labelSubHeading}"
-                    Text="Lines Covered">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoToMainPageCommand}" NumberOfTapsRequired="2" />
-                    </Label.GestureRecognizers>
-                </Label>
+            <telerik:RadBorder Background="{StaticResource CellColor}" Style="{StaticResource borderRoundedStyle}">
+                <Grid RowDefinitions="auto, *">
+                    <Label
+                        Grid.Row="0"
+                        Style="{StaticResource labelSubHeading}"
+                        Text="Lines Covered">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToMainPageCommand}" NumberOfTapsRequired="2" />
+                        </Label.GestureRecognizers>
+                    </Label>
 
-                <telerik:RadCartesianChart Grid.Row="1">
+                    <telerik:RadCartesianChart Grid.Row="1">
 
-                    <telerik:RadCartesianChart.HorizontalAxis>
-                        <telerik:DateTimeContinuousAxis MajorStep="2" MajorStepUnit="Week" />
-                    </telerik:RadCartesianChart.HorizontalAxis>
+                        <telerik:RadCartesianChart.HorizontalAxis>
+                            <telerik:DateTimeContinuousAxis
+                                LabelTextColor="{StaticResource TextColor}"
+                                LineColor="{StaticResource TextColor}"
+                                MajorStep="2"
+                                MajorStepUnit="Week"
+                                MajorTickBackgroundColor="{StaticResource TextColor}" />
+                        </telerik:RadCartesianChart.HorizontalAxis>
 
-                    <telerik:RadCartesianChart.VerticalAxis>
-                        <telerik:NumericalAxis MajorStep="2500" Minimum="0" />
-                    </telerik:RadCartesianChart.VerticalAxis>
+                        <telerik:RadCartesianChart.VerticalAxis>
+                            <telerik:NumericalAxis
+                                LabelTextColor="{StaticResource TextColor}"
+                                LineColor="{StaticResource TextColor}"
+                                MajorStep="2500"
+                                MajorTickBackgroundColor="{StaticResource TextColor}"
+                                Minimum="0" />
+                        </telerik:RadCartesianChart.VerticalAxis>
 
-                    <telerik:RadCartesianChart.Series>
-                        <telerik:LineSeries
-                            CategoryBinding="DateRetrieved"
-                            ItemsSource="{Binding Data}"
-                            ValueBinding="TotalLinesCoveredCount" />
-                    </telerik:RadCartesianChart.Series>
+                        <telerik:RadCartesianChart.Series>
+                            <telerik:LineSeries
+                                CategoryBinding="DateRetrieved"
+                                ItemsSource="{Binding Data}"
+                                ValueBinding="TotalLinesCoveredCount" />
+                        </telerik:RadCartesianChart.Series>
 
-                </telerik:RadCartesianChart>
-            </Grid>
+                    </telerik:RadCartesianChart>
+                </Grid>
+
+            </telerik:RadBorder>
             <!--  Code Coverage Graph  -->
-            <Grid Grid.Column="1" RowDefinitions="auto, *">
-                <Label
-                    Grid.Row="0"
-                    Style="{StaticResource labelSubHeading}"
-                    Text="Line Coverage Percent" />
-                <telerik:RadCartesianChart Grid.Row="1">
+            <telerik:RadBorder
+                Grid.Column="1"
+                Background="{StaticResource CellColor}"
+                Style="{StaticResource borderRoundedStyle}">
+                <Grid RowDefinitions="auto, *">
+                    <Label
+                        Grid.Row="0"
+                        Style="{StaticResource labelSubHeading}"
+                        Text="Line Coverage Percent" />
+                    <telerik:RadCartesianChart Grid.Row="1">
 
-                    <telerik:RadCartesianChart.HorizontalAxis>
-                        <telerik:DateTimeContinuousAxis MajorStep="2" MajorStepUnit="Week" />
-                    </telerik:RadCartesianChart.HorizontalAxis>
+                        <telerik:RadCartesianChart.HorizontalAxis>
+                            <telerik:DateTimeContinuousAxis
+                                LabelTextColor="{StaticResource TextColor}"
+                                LineColor="{StaticResource TextColor}"
+                                MajorStep="2"
+                                MajorStepUnit="Week"
+                                MajorTickBackgroundColor="{StaticResource TextColor}" />
+                        </telerik:RadCartesianChart.HorizontalAxis>
 
-                    <telerik:RadCartesianChart.VerticalAxis>
-                        <telerik:NumericalAxis
-                            LabelFormat="P2"
-                            MajorStep="0.25"
-                            Maximum="1"
-                            Minimum="0" />
-                    </telerik:RadCartesianChart.VerticalAxis>
+                        <telerik:RadCartesianChart.VerticalAxis>
+                            <telerik:NumericalAxis
+                                LabelFormat="P2"
+                                LabelTextColor="{StaticResource TextColor}"
+                                LineColor="{StaticResource TextColor}"
+                                MajorStep="0.25"
+                                MajorTickBackgroundColor="{StaticResource TextColor}"
+                                Maximum="1"
+                                Minimum="0" />
+                        </telerik:RadCartesianChart.VerticalAxis>
 
-                    <telerik:RadCartesianChart.Series>
-                        <telerik:LineSeries
-                            CategoryBinding="DateRetrieved"
-                            ItemsSource="{Binding Data}"
-                            ValueBinding="AverageLineCoveragePercent" />
-                    </telerik:RadCartesianChart.Series>
-
-                </telerik:RadCartesianChart>
-            </Grid>
-            <!--  General Information Border  -->
-            <telerik:RadBorder Grid.Column="2" Style="{StaticResource borderRoundedStyle}">
+                        <telerik:RadCartesianChart.Series>
+                            <telerik:LineSeries
+                                CategoryBinding="DateRetrieved"
+                                ItemsSource="{Binding Data}"
+                                ValueBinding="AverageLineCoveragePercent" />
+                        </telerik:RadCartesianChart.Series>
+                    </telerik:RadCartesianChart>
+                </Grid>
+            </telerik:RadBorder>
+            <!--  General Information  -->
+            <telerik:RadBorder
+                Grid.Column="2"
+                Background="{StaticResource CellColor}"
+                Style="{StaticResource borderRoundedStyle}">
                 <Grid ColumnDefinitions="*, *" RowDefinitions="*, *, *, *, *, *, *, auto">
                     <!--  Heading  -->
                     <Label
                         Grid.Row="0"
                         Grid.ColumnSpan="2"
-                        Padding="5"
+                        Margin="0,0,0,-7"
                         Style="{StaticResource labelHeading}"
                         Text="Code Coverage Dashboard">
                         <Label.GestureRecognizers>
@@ -151,9 +184,10 @@
                         Grid.ColumnSpan="2"
                         FontSize="18"
                         HorizontalTextAlignment="Center"
+                        TextColor="{StaticResource TextColor}"
                         VerticalOptions="End">
                         <Label.Text>
-                            <MultiBinding StringFormat="Dashboard Version: {0} | Coverlet Version: {1} | By Cameron Strachan">
+                            <MultiBinding StringFormat="Coverlet Version: {0} | Dashboard Version: {1} | By Cameron Strachan">
                                 <Binding Path="LatestData.CoverletVersion" />
                                 <Binding Path="LatestData.DashboardVersion" />
                             </MultiBinding>
@@ -164,278 +198,311 @@
         </Grid>
         <!--  Row 2  -->
         <Grid Grid.Row="1" ColumnDefinitions="*, *">
-            <Grid Grid.Column="0" RowDefinitions="auto, *">
-                <Label
-                    Grid.Row="0"
-                    Style="{StaticResource labelSubHeading}"
-                    Text="Hot Repos 🔥🔥🔥" />
-                <telerik:RadDataGrid
-                    Grid.Row="1"
-                    AlternateRowBackgroundStyle="{StaticResource datagridAlternateRowBackground}"
-                    ItemsSource="{Binding Top5Hottest}"
-                    RowBackgroundStyle="{StaticResource datagridRowBackground}"
-                    Style="{StaticResource datagridBase}">
+            <telerik:RadBorder
+                Grid.Column="0"
+                Background="{StaticResource CellColor}"
+                Style="{StaticResource borderRoundedStyle}">
+                <Grid RowDefinitions="auto, *">
+                    <Label
+                        Grid.Row="0"
+                        Style="{StaticResource labelSubHeading}"
+                        Text="🔥🔥🔥 Hot Repos 🔥🔥🔥" />
+                    <telerik:RadDataGrid
+                        Grid.Row="1"
+                        AlternateRowBackgroundStyle="{StaticResource datagridAlternateRowBackground}"
+                        ItemsSource="{Binding Top5Hottest}"
+                        RowBackgroundStyle="{StaticResource datagridRowBackground}"
+                        Style="{StaticResource datagridBase}">
 
-                    <telerik:RadDataGrid.Columns>
-                        <telerik:DataGridTextColumn
-                            CellContentStyle="{StaticResource datagridCellContentBase}"
-                            HeaderStyle="{StaticResource datagridHeaderBase}"
-                            HeaderText="Repository Name"
-                            PropertyName="Name"
-                            Style="{StaticResource datagridColoumnStretch}" />
+                        <telerik:RadDataGrid.Columns>
+                            <telerik:DataGridTextColumn
+                                CellContentStyle="{StaticResource datagridCellContentBase}"
+                                HeaderStyle="{StaticResource datagridHeaderBase}"
+                                HeaderText="Repository Name"
+                                PropertyName="Name"
+                                Style="{StaticResource datagridColoumnStretch}" />
 
 
 
-                        <telerik:DataGridTemplateColumn
-                            HeaderStyle="{StaticResource datagridHeaderRightAlign}"
-                            HeaderText="Percent Increase"
-                            Style="{StaticResource datagridColoumnAuto}">
+                            <telerik:DataGridTemplateColumn
+                                HeaderStyle="{StaticResource datagridHeaderRightAlign}"
+                                HeaderText="Percent Increase"
+                                Style="{StaticResource datagridColoumnAuto}">
 
-                            <telerik:DataGridTemplateColumn.CellContentTemplate>
-                                <DataTemplate x:DataType="models:RepoData">
-                                    <Grid
-                                        Margin="0,0,5,0"
-                                        ColumnDefinitions="Auto, *"
-                                        ColumnSpacing="10"
-                                        HorizontalOptions="End"
-                                        VerticalOptions="Center"
-                                        WidthRequest="70">
-                                        <Image
-                                            Grid.Column="0"
-                                            Source="green_arrow_up.png"
-                                            Style="{StaticResource imageEmoji}" />
-                                        <Label
-                                            Grid.Column="1"
-                                            Style="{StaticResource labelBodyRightAlign}"
-                                            Text="{Binding CoveragePercentPercentIncrease, StringFormat='{}{0}%'}"
-                                            VerticalOptions="Center"
-                                            VerticalTextAlignment="Center" />
-                                    </Grid>
-                                </DataTemplate>
-                            </telerik:DataGridTemplateColumn.CellContentTemplate>
-                        </telerik:DataGridTemplateColumn>
-
-                        <telerik:DataGridTemplateColumn
-                            HeaderStyle="{StaticResource datagridHeaderRightAlign}"
-                            HeaderText="Lines Increase"
-                            Style="{StaticResource datagridColoumnAuto}">
-
-                            <telerik:DataGridTemplateColumn.CellContentTemplate>
-                                <DataTemplate x:DataType="models:RepoData">
-                                    <Grid
-                                        Margin="0,0,5,0"
-                                        ColumnDefinitions="Auto, *"
-                                        ColumnSpacing="10"
-                                        HorizontalOptions="End"
-                                        VerticalOptions="Center"
-                                        WidthRequest="70">
-                                        <Image
-                                            Grid.Column="0"
-                                            Source="green_arrow_up.png"
-                                            Style="{StaticResource imageEmoji}" />
-                                        <Label
-                                            Grid.Column="1"
+                                <telerik:DataGridTemplateColumn.CellContentTemplate>
+                                    <DataTemplate x:DataType="models:RepoData">
+                                        <Grid
+                                            Margin="0,0,5,0"
+                                            ColumnDefinitions="Auto, *"
+                                            ColumnSpacing="10"
                                             HorizontalOptions="End"
-                                            HorizontalTextAlignment="End"
-                                            Style="{StaticResource labelBodyRightAlign}"
-                                            Text="{Binding CoveredLinesIncrease}"
-                                            VerticalOptions="Center" />
-                                    </Grid>
-                                </DataTemplate>
-                            </telerik:DataGridTemplateColumn.CellContentTemplate>
-                        </telerik:DataGridTemplateColumn>
+                                            VerticalOptions="Center"
+                                            WidthRequest="70">
+                                            <Image
+                                                Grid.Column="0"
+                                                Source="green_arrow_up.png"
+                                                Style="{StaticResource imageEmoji}" />
+                                            <Label
+                                                Grid.Column="1"
+                                                Style="{StaticResource labelBodyRightAlign}"
+                                                Text="{Binding CoveragePercentPercentIncrease, StringFormat='{}{0}%'}"
+                                                VerticalOptions="Center"
+                                                VerticalTextAlignment="Center" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </telerik:DataGridTemplateColumn.CellContentTemplate>
+                            </telerik:DataGridTemplateColumn>
 
-                    </telerik:RadDataGrid.Columns>
+                            <telerik:DataGridTemplateColumn
+                                HeaderStyle="{StaticResource datagridHeaderRightAlign}"
+                                HeaderText="Lines Increase"
+                                Style="{StaticResource datagridColoumnAuto}">
 
-                    <telerik:RadDataGrid.SortDescriptors>
-                        <telerik:PropertySortDescriptor PropertyName="CoveragePercentPercentIncrease" SortOrder="Descending" />
-                    </telerik:RadDataGrid.SortDescriptors>
-                </telerik:RadDataGrid>
-            </Grid>
+                                <telerik:DataGridTemplateColumn.CellContentTemplate>
+                                    <DataTemplate x:DataType="models:RepoData">
+                                        <Grid
+                                            Margin="0,0,5,0"
+                                            ColumnDefinitions="Auto, *"
+                                            ColumnSpacing="10"
+                                            HorizontalOptions="End"
+                                            VerticalOptions="Center"
+                                            WidthRequest="70">
+                                            <Image
+                                                Grid.Column="0"
+                                                Source="green_arrow_up.png"
+                                                Style="{StaticResource imageEmoji}" />
+                                            <Label
+                                                Grid.Column="1"
+                                                HorizontalOptions="End"
+                                                HorizontalTextAlignment="End"
+                                                Style="{StaticResource labelBodyRightAlign}"
+                                                Text="{Binding CoveredLinesIncrease}"
+                                                VerticalOptions="Center" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </telerik:DataGridTemplateColumn.CellContentTemplate>
+                            </telerik:DataGridTemplateColumn>
 
-            <Grid Grid.Column="1" RowDefinitions="auto, *">
-                <Label
-                    Grid.Row="0"
-                    Style="{StaticResource labelSubHeading}"
-                    Text="Complex Methods 😵‍💫😵‍💫😵‍💫" />
+                        </telerik:RadDataGrid.Columns>
 
-                <telerik:RadDataGrid
-                    Grid.Row="1"
-                    AlternateRowBackgroundStyle="{StaticResource datagridAlternateRowBackground}"
-                    ItemsSource="{Binding Top5Complex}"
-                    RowBackgroundStyle="{StaticResource datagridRowBackground}"
-                    Style="{StaticResource datagridBase}">
+                        <telerik:RadDataGrid.SortDescriptors>
+                            <telerik:PropertySortDescriptor PropertyName="CoveredLinesIncrease" SortOrder="Descending" />
+                        </telerik:RadDataGrid.SortDescriptors>
 
-                    <telerik:RadDataGrid.Columns>
-                        <telerik:DataGridTextColumn
-                            CellContentStyle="{StaticResource datagridCellContentBase}"
-                            HeaderStyle="{StaticResource datagridHeaderBase}"
-                            HeaderText="Method Name"
-                            PropertyName="Name"
-                            Style="{StaticResource datagridColoumnStretch}" />
-                        <telerik:DataGridNumericalColumn
-                            CellContentStyle="{StaticResource datagridCellContentRightAlign}"
-                            HeaderStyle="{StaticResource datagridHeaderRightAlign}"
-                            HeaderText="Complexity"
-                            PropertyName="Complexity"
-                            Style="{StaticResource datagridColoumnAuto}" />
-                    </telerik:RadDataGrid.Columns>
 
-                    <telerik:RadDataGrid.SortDescriptors>
-                        <telerik:PropertySortDescriptor PropertyName="Complexity" SortOrder="Descending" />
-                    </telerik:RadDataGrid.SortDescriptors>
-                </telerik:RadDataGrid>
+                    </telerik:RadDataGrid>
+                </Grid>
 
-            </Grid>
+            </telerik:RadBorder>
+
+            <telerik:RadBorder
+                Grid.Column="1"
+                Background="{StaticResource CellColor}"
+                Style="{StaticResource borderRoundedStyle}">
+                <Grid RowDefinitions="auto, *">
+                    <Label
+                        Grid.Row="0"
+                        Style="{StaticResource labelSubHeading}"
+                        Text="😵‍💫😵‍💫😵‍💫 Complex Methods 😵‍💫😵‍💫😵‍💫" />
+
+                    <telerik:RadDataGrid
+                        Grid.Row="1"
+                        AlternateRowBackgroundStyle="{StaticResource datagridAlternateRowBackground}"
+                        ItemsSource="{Binding Top5Complex}"
+                        RowBackgroundStyle="{StaticResource datagridRowBackground}"
+                        Style="{StaticResource datagridBase}">
+
+                        <telerik:RadDataGrid.Columns>
+                            <telerik:DataGridTextColumn
+                                CellContentStyle="{StaticResource datagridCellContentBase}"
+                                HeaderStyle="{StaticResource datagridHeaderBase}"
+                                HeaderText="Method Name"
+                                PropertyName="Name"
+                                Style="{StaticResource datagridColoumnStretch}" />
+                            <telerik:DataGridNumericalColumn
+                                CellContentStyle="{StaticResource datagridCellContentRightAlign}"
+                                HeaderStyle="{StaticResource datagridHeaderRightAlign}"
+                                HeaderText="Complexity"
+                                PropertyName="Complexity"
+                                Style="{StaticResource datagridColoumnAuto}" />
+                        </telerik:RadDataGrid.Columns>
+
+                        <telerik:RadDataGrid.SortDescriptors>
+                            <telerik:PropertySortDescriptor PropertyName="Complexity" SortOrder="Descending" />
+                        </telerik:RadDataGrid.SortDescriptors>
+                    </telerik:RadDataGrid>
+
+                </Grid>
+            </telerik:RadBorder>
         </Grid>
-
+        <!--  Row 3  -->
         <Grid
             Grid.Row="2"
             ColumnDefinitions="*, *, *"
             RowDefinitions="*">
+            <telerik:RadBorder
+                Grid.Column="0"
+                Background="{StaticResource CellColor}"
+                Style="{StaticResource borderRoundedStyle}">
+                <Grid RowDefinitions="auto, *">
+                    <Label Style="{StaticResource labelSubHeading}" Text="Line Coverage" />
 
-            <Grid Grid.Column="0" RowDefinitions="auto, *">
-                <Label Style="{StaticResource labelSubHeading}" Text="Line Coverage" />
+                    <Label
+                        Grid.Row="1"
+                        Margin="5,0,0,100"
+                        HorizontalOptions="Center"
+                        Style="{StaticResource labelEmphasis}"
+                        Text="{Binding LatestData.AverageLineCoveragePercent, StringFormat='{}{0:P2}'}"
+                        VerticalOptions="End" />
+                    <Label
+                        Grid.Row="1"
+                        Margin="5,0,0,80"
+                        HorizontalOptions="Center"
+                        Style="{StaticResource labelBody}"
+                        Text="{Binding LatestData.TotalLinesCoveredCount, StringFormat='({0})'}"
+                        VerticalOptions="End" />
+                    <telerik:RadRadialGauge Grid.Row="1">
+                        <telerik:RadRadialGauge.Axis>
+                            <telerik:GaugeLinearAxis
+                                Maximum="1"
+                                Minimum="0"
+                                Step="0.1"
+                                Stroke="{StaticResource TextColor}"
+                                TextColor="{StaticResource TextColor}" />
+                        </telerik:RadRadialGauge.Axis>
 
-                <Label
-                    Grid.Row="1"
-                    Margin="5,0,0,100"
-                    HorizontalOptions="Center"
-                    Style="{StaticResource labelEmphasis}"
-                    Text="{Binding LatestData.AverageLineCoveragePercent, StringFormat='{}{0:P2}'}"
-                    VerticalOptions="End" />
-                <Label
-                    Grid.Row="1"
-                    Margin="5,0,0,80"
-                    HorizontalOptions="Center"
-                    Style="{StaticResource labelBody}"
-                    Text="{Binding LatestData.TotalLinesCoveredCount, StringFormat='({0})'}"
-                    VerticalOptions="End" />
-                <telerik:RadRadialGauge Grid.Row="1">
-                    <telerik:RadRadialGauge.Axis>
-                        <telerik:GaugeLinearAxis
-                            Maximum="1"
-                            Minimum="0"
-                            Step="0.1" />
-                    </telerik:RadRadialGauge.Axis>
 
-                    <telerik:RadRadialGauge.Ranges>
-                        <telerik:GaugeRangesDefinition>
-                            <telerik:GaugeGradientRange From="0" To="1">
-                                <telerik:RadGradientStop Offset="0.9" Color="Green" />
-                                <telerik:RadGradientStop Offset="0.8" Color="GreenYellow" />
-                                <telerik:RadGradientStop Offset="0.67" Color="Yellow" />
-                                <telerik:RadGradientStop Offset="0.5" Color="Orange" />
-                                <telerik:RadGradientStop Offset="0.1" Color="Red" />
-                                <telerik:RadGradientStop Offset="0" Color="Red" />
-                            </telerik:GaugeGradientRange>
-                        </telerik:GaugeRangesDefinition>
-                    </telerik:RadRadialGauge.Ranges>
+                        <telerik:RadRadialGauge.Ranges>
+                            <telerik:GaugeRangesDefinition>
+                                <telerik:GaugeGradientRange From="0" To="1">
+                                    <telerik:RadGradientStop Offset="0.9" Color="Green" />
+                                    <telerik:RadGradientStop Offset="0.8" Color="GreenYellow" />
+                                    <telerik:RadGradientStop Offset="0.67" Color="Yellow" />
+                                    <telerik:RadGradientStop Offset="0.5" Color="Orange" />
+                                    <telerik:RadGradientStop Offset="0.1" Color="Red" />
+                                    <telerik:RadGradientStop Offset="0" Color="Red" />
+                                </telerik:GaugeGradientRange>
+                            </telerik:GaugeRangesDefinition>
+                        </telerik:RadRadialGauge.Ranges>
 
-                    <telerik:RadRadialGauge.Indicators>
-                        <telerik:GaugeNeedleIndicator Offset="0" Value="{Binding LatestData.AverageLineCoveragePercent}" />
-                    </telerik:RadRadialGauge.Indicators>
+                        <telerik:RadRadialGauge.Indicators>
+                            <telerik:GaugeNeedleIndicator Offset="0" Value="{Binding LatestData.AverageLineCoveragePercent}" />
+                        </telerik:RadRadialGauge.Indicators>
 
-                </telerik:RadRadialGauge>
+                    </telerik:RadRadialGauge>
 
-            </Grid>
+                </Grid>
+            </telerik:RadBorder>
 
-            <Grid Grid.Column="1" RowDefinitions="auto, *">
+            <telerik:RadBorder
+                Grid.Column="1"
+                Background="{StaticResource CellColor}"
+                Style="{StaticResource borderRoundedStyle}">
+                <Grid RowDefinitions="auto, *">
 
-                <Label Style="{StaticResource labelSubHeading}" Text="Branch Coverage" />
+                    <Label Style="{StaticResource labelSubHeading}" Text="Branch Coverage" />
 
-                <Label
-                    Grid.Row="1"
-                    Margin="5,0,0,100"
-                    HorizontalOptions="Center"
-                    Style="{StaticResource labelEmphasis}"
-                    Text="{Binding LatestData.AverageBranchCoveragePercent, StringFormat='{}{0:P2}'}"
-                    VerticalOptions="End" />
-                <Label
-                    Grid.Row="1"
-                    Margin="5,0,0,80"
-                    HorizontalOptions="Center"
-                    Style="{StaticResource labelBody}"
-                    Text="{Binding LatestData.TotalBracnhesCoveredCount, StringFormat='({0})'}"
-                    VerticalOptions="End" />
-                <telerik:RadRadialGauge Grid.Row="1">
-                    <telerik:RadRadialGauge.Axis>
-                        <telerik:GaugeLinearAxis
-                            Maximum="1"
-                            Minimum="0"
-                            Step="0.1" />
-                    </telerik:RadRadialGauge.Axis>
+                    <Label
+                        Grid.Row="1"
+                        Margin="5,0,0,100"
+                        HorizontalOptions="Center"
+                        Style="{StaticResource labelEmphasis}"
+                        Text="{Binding LatestData.AverageBranchCoveragePercent, StringFormat='{}{0:P2}'}"
+                        VerticalOptions="End" />
+                    <Label
+                        Grid.Row="1"
+                        Margin="5,0,0,80"
+                        HorizontalOptions="Center"
+                        Style="{StaticResource labelBody}"
+                        Text="{Binding LatestData.TotalBracnhesCoveredCount, StringFormat='({0})'}"
+                        VerticalOptions="End" />
+                    <telerik:RadRadialGauge Grid.Row="1">
+                        <telerik:RadRadialGauge.Axis>
+                            <telerik:GaugeLinearAxis
+                                Maximum="1"
+                                Minimum="0"
+                                Step="0.1"
+                                Stroke="{StaticResource TextColor}"
+                                TextColor="{StaticResource TextColor}" />
+                        </telerik:RadRadialGauge.Axis>
 
-                    <telerik:RadRadialGauge.Ranges>
-                        <telerik:GaugeRangesDefinition>
-                            <telerik:GaugeGradientRange From="0" To="1">
-                                <telerik:RadGradientStop Offset="0.9" Color="Green" />
-                                <telerik:RadGradientStop Offset="0.8" Color="GreenYellow" />
-                                <telerik:RadGradientStop Offset="0.67" Color="Yellow" />
-                                <telerik:RadGradientStop Offset="0.5" Color="Orange" />
-                                <telerik:RadGradientStop Offset="0.1" Color="Red" />
-                                <telerik:RadGradientStop Offset="0" Color="Red" />
-                            </telerik:GaugeGradientRange>
-                        </telerik:GaugeRangesDefinition>
-                    </telerik:RadRadialGauge.Ranges>
+                        <telerik:RadRadialGauge.Ranges>
+                            <telerik:GaugeRangesDefinition>
+                                <telerik:GaugeGradientRange From="0" To="1">
+                                    <telerik:RadGradientStop Offset="0.9" Color="Green" />
+                                    <telerik:RadGradientStop Offset="0.8" Color="GreenYellow" />
+                                    <telerik:RadGradientStop Offset="0.67" Color="Yellow" />
+                                    <telerik:RadGradientStop Offset="0.5" Color="Orange" />
+                                    <telerik:RadGradientStop Offset="0.1" Color="Red" />
+                                    <telerik:RadGradientStop Offset="0" Color="Red" />
+                                </telerik:GaugeGradientRange>
+                            </telerik:GaugeRangesDefinition>
+                        </telerik:RadRadialGauge.Ranges>
 
-                    <telerik:RadRadialGauge.Indicators>
-                        <telerik:GaugeNeedleIndicator Value="{Binding LatestData.AverageBranchCoveragePercent}" />
-                    </telerik:RadRadialGauge.Indicators>
+                        <telerik:RadRadialGauge.Indicators>
+                            <telerik:GaugeNeedleIndicator Value="{Binding LatestData.AverageBranchCoveragePercent}" />
+                        </telerik:RadRadialGauge.Indicators>
 
-                </telerik:RadRadialGauge>
+                    </telerik:RadRadialGauge>
 
-            </Grid>
+                </Grid>
+            </telerik:RadBorder>
 
-            <Grid Grid.Column="2" RowDefinitions="auto, *">
+            <telerik:RadBorder
+                Grid.Column="2"
+                Background="{StaticResource CellColor}"
+                Style="{StaticResource borderRoundedStyle}">
+                <Grid Grid.Column="2" RowDefinitions="auto, *">
 
-                <Label Style="{StaticResource labelSubHeading}" Text="Complex Methods" />
+                    <Label Style="{StaticResource labelSubHeading}" Text="Complex Methods" />
 
-                <Label
-                    Grid.Row="1"
-                    Margin="5,0,0,100"
-                    HorizontalOptions="Center"
-                    Style="{StaticResource labelEmphasis}"
-                    Text="{Binding LatestData.AverageComplexMethodPercent, StringFormat='{}{0:P2}'}"
-                    VerticalOptions="End" />
-                <Label
-                    Grid.Row="1"
-                    Margin="5,0,0,80"
-                    HorizontalOptions="Center"
-                    Style="{StaticResource labelBody}"
-                    Text="{Binding LatestData.TotalComplexMethodCount, StringFormat='({0})'}"
-                    VerticalOptions="End" />
-                <telerik:RadRadialGauge Grid.Row="1">
+                    <Label
+                        Grid.Row="1"
+                        Margin="5,0,0,100"
+                        HorizontalOptions="Center"
+                        Style="{StaticResource labelEmphasis}"
+                        Text="{Binding LatestData.AverageComplexMethodPercent, StringFormat='{}{0:P2}'}"
+                        VerticalOptions="End" />
+                    <Label
+                        Grid.Row="1"
+                        Margin="5,0,0,80"
+                        HorizontalOptions="Center"
+                        Style="{StaticResource labelBody}"
+                        Text="{Binding LatestData.TotalComplexMethodCount, StringFormat='({0})'}"
+                        VerticalOptions="End" />
+                    <telerik:RadRadialGauge Grid.Row="1">
 
-                    <telerik:RadRadialGauge.Axis>
-                        <telerik:GaugeLinearAxis
-                            Maximum="1"
-                            Minimum="0"
-                            Step="0.1" />
-                    </telerik:RadRadialGauge.Axis>
+                        <telerik:RadRadialGauge.Axis>
+                            <telerik:GaugeLinearAxis
+                                Maximum="1"
+                                Minimum="0"
+                                Step="0.1"
+                                Stroke="{StaticResource TextColor}"
+                                TextColor="{StaticResource TextColor}" />
+                        </telerik:RadRadialGauge.Axis>
 
-                    <telerik:RadRadialGauge.Ranges>
-                        <telerik:GaugeRangesDefinition>
-                            <telerik:GaugeGradientRange From="0" To="1">
-                                <telerik:RadGradientStop Offset="0.005" Color="Green" />
-                                <telerik:RadGradientStop Offset="0.05" Color="GreenYellow" />
-                                <telerik:RadGradientStop Offset="0.1" Color="Yellow" />
-                                <telerik:RadGradientStop Offset="0.4" Color="Orange" />
-                                <telerik:RadGradientStop Offset="0.5" Color="Red" />
-                                <telerik:RadGradientStop Offset="1" Color="Red" />
-                            </telerik:GaugeGradientRange>
-                        </telerik:GaugeRangesDefinition>
-                    </telerik:RadRadialGauge.Ranges>
+                        <telerik:RadRadialGauge.Ranges>
+                            <telerik:GaugeRangesDefinition>
+                                <telerik:GaugeGradientRange From="0" To="1">
+                                    <telerik:RadGradientStop Offset="0.995" Color="Green" />
+                                    <telerik:RadGradientStop Offset="0.95" Color="GreenYellow" />
+                                    <telerik:RadGradientStop Offset="0.9" Color="Yellow" />
+                                    <telerik:RadGradientStop Offset="0.6" Color="Orange" />
+                                    <telerik:RadGradientStop Offset="0.5" Color="Red" />
+                                    <telerik:RadGradientStop Offset="0" Color="Red" />
+                                </telerik:GaugeGradientRange>
+                            </telerik:GaugeRangesDefinition>
+                        </telerik:RadRadialGauge.Ranges>
 
-                    <telerik:RadRadialGauge.Indicators>
-                        <telerik:GaugeNeedleIndicator Offset="0" Value="{Binding LatestData.AverageComplexMethodPercent, Converter={StaticResource InvertPercentConverter}}" />
-                    </telerik:RadRadialGauge.Indicators>
+                        <telerik:RadRadialGauge.Indicators>
+                            <telerik:GaugeNeedleIndicator Offset="0" Value="{Binding LatestData.AverageComplexMethodPercent, Converter={StaticResource InvertPercentConverter}}" />
+                        </telerik:RadRadialGauge.Indicators>
 
-                </telerik:RadRadialGauge>
+                    </telerik:RadRadialGauge>
 
-            </Grid>
+                </Grid>
+            </telerik:RadBorder>
 
         </Grid>
-
     </Grid>
 </ContentPage>

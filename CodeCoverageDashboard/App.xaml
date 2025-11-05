@@ -10,11 +10,25 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries />
 
+            <Color x:Key="BackgroundColor">#151138</Color>
+            <Color x:Key="CellColor">#27294e</Color>
+            <Color x:Key="TableHeaderColor">#393b68</Color>
+
+            <Color x:Key="NormalRowColor">#151138</Color>
+            <Color x:Key="AlternateRowColor">#262847</Color>
+
+            <Color x:Key="TextColor">White</Color>
+
+
+
+
+
+
             <converters:InvertPercentConverter x:Key="InvertPercentConverter" />
             <converters:DecimalPercentToWholePercentConverter x:Key="DecimalPercentConverter" />
 
             <Style x:Key="labelBaseStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="Black" />
+                <Setter Property="TextColor" Value="{StaticResource TextColor}" />
             </Style>
 
             <Style
@@ -64,15 +78,18 @@
                 <Setter Property="RowHeight" Value="35" />
                 <Setter Property="GridLinesVisibility" Value="Vertical" />
                 <Setter Property="GridLinesThickness" Value="2" />
-                <Setter Property="GridLinesColor" Value="#949494" />
+                <Setter Property="GridLinesColor" Value="{StaticResource TableHeaderColor}" />
+
             </Style>
 
             <Style x:Key="datagridHeaderBase" TargetType="telerik:DataGridColumnHeaderAppearance">
-                <Setter Property="BackgroundColor" Value="#949494" />
+                <Setter Property="BackgroundColor" Value="{StaticResource TableHeaderColor}" />
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="IndicatorFontSize" Value="25" />
                 <Setter Property="SortIndicatorColor" Value="Transparent" />
                 <Setter Property="TextFontSize" Value="25" />
+                <Setter Property="TextColor" Value="{StaticResource TextColor}" />
+
             </Style>
 
             <Style x:Key="datagridColoumnBase" TargetType="telerik:DataGridColumn">
@@ -110,9 +127,8 @@
                 <Setter Property="TextHorizontalOptions" Value="End" />
             </Style>
 
-            <!--  FIX: Change TargetType to telerik:DataGridTextCellContentAppearance, which is a valid type for cell content appearance in Telerik MAUI DataGrid  -->
             <Style x:Key="datagridCellContentBase" TargetType="telerik:DataGridTextCellAppearance">
-                <Setter Property="TextColor" Value="Black" />
+                <Setter Property="TextColor" Value="{StaticResource TextColor}" />
                 <Setter Property="FontSize" Value="20" />
             </Style>
 
@@ -124,12 +140,18 @@
             </Style>
 
             <Style x:Key="datagridRowBackground" TargetType="telerik:DataGridRowBackgroundAppearance">
-                <Setter Property="BackgroundColor" Value="White" />
+                <Setter Property="BackgroundColor" Value="{StaticResource NormalRowColor}" />
             </Style>
 
             <Style x:Key="datagridAlternateRowBackground" TargetType="telerik:DataGridRowBackgroundAppearance">
-                <Setter Property="BackgroundColor" Value="#c9c9c9" />
+                <Setter Property="BackgroundColor" Value="{StaticResource AlternateRowColor}" />
             </Style>
+
+            <Style x:Key="chartBaseStyle" TargetType="telerik:CategoricalAxis">
+                <Setter Property="LabelTextColor" Value="{StaticResource TextColor}" />
+            </Style>
+
+
 
             <Style
                 x:Key="labelBodyRightAlign"
@@ -140,7 +162,6 @@
             </Style>
 
             <Style x:Key="borderBaseStyle" TargetType="telerik:RadBorder">
-                <Setter Property="BorderColor" Value="Black" />
                 <Setter Property="BorderThickness" Value="2" />
                 <Setter Property="Margin" Value="10" />
                 <Setter Property="Padding" Value="5" />
@@ -151,6 +172,9 @@
                 BasedOn="{StaticResource borderBaseStyle}"
                 TargetType="telerik:RadBorder">
                 <Setter Property="CornerRadius" Value="10" />
+                <Setter Property="Margin" Value="4" />
+                <Setter Property="Padding" Value="7" />
+
             </Style>
 
         </ResourceDictionary>
