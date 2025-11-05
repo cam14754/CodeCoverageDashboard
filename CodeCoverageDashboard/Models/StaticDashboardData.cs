@@ -12,6 +12,8 @@ public partial class StaticDashboardData : ObservableObject
 	[ObservableProperty] public partial double TotalReposCount { get; set; } = 0; //
 	[ObservableProperty] public partial double TotalClassesCount { get; set; } = 0; //
 	[NotifyPropertyChangedFor(nameof(AverageComplexMethodPercent))]
+	[NotifyPropertyChangedFor(nameof(TotalComplexMethodCount))]
+
 	[ObservableProperty] public partial double TotalMethodsCount { get; set; } = 0; //
 	[ObservableProperty] public partial double TotalLinesCount { get; set; } = 0; //
 	[ObservableProperty] public partial double AverageBranchCoveragePercent { get; set; } = 0; //
@@ -33,5 +35,6 @@ public partial class StaticDashboardData : ObservableObject
 	// Calculated inferred properties
 	//public int TotalRepos => ListRepos.Count;
 	public double TotalLinesUncoveredCount => TotalLinesCount - TotalLinesCoveredCount; //	
-	public double AverageComplexMethodPercent => ListMethods.Count / TotalMethodsCount; //
+	public double AverageComplexMethodPercent => TotalComplexMethodCount / ListMethods.Count; //
+	public double TotalComplexMethodCount => ListMethods.Where(m => m.Complexity >= 10).Count(); //
 }

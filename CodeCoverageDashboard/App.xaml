@@ -4,12 +4,155 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:CodeCoverageDashboard.Converters"
-    xmlns:local="clr-namespace:CodeCoverageDashboard">
+    xmlns:local="clr-namespace:CodeCoverageDashboard"
+    xmlns:telerik="http://schemas.telerik.com/2022/xaml/maui">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries />
+
             <converters:InvertPercentConverter x:Key="InvertPercentConverter" />
             <converters:DecimalPercentToWholePercentConverter x:Key="DecimalPercentConverter" />
+
+            <Style x:Key="labelBaseStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="Black" />
+            </Style>
+
+            <Style
+                x:Key="labelHeading"
+                BasedOn="{StaticResource labelBaseStyle}"
+                TargetType="Label">
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="FontSize" Value="35" />
+                <Setter Property="FontAttributes" Value="Bold" />
+            </Style>
+
+            <Style
+                x:Key="labelSubHeading"
+                BasedOn="{StaticResource labelBaseStyle}"
+                TargetType="Label">
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="FontSize" Value="30" />
+            </Style>
+
+            <Style
+                x:Key="labelEmphasis"
+                BasedOn="{StaticResource labelBaseStyle}"
+                TargetType="Label">
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="FontSize" Value="25" />
+            </Style>
+
+            <Style
+                x:Key="labelBody"
+                BasedOn="{StaticResource labelBaseStyle}"
+                TargetType="Label">
+                <Setter Property="FontSize" Value="20" />
+            </Style>
+
+            <Style x:Key="datagridBase" TargetType="telerik:RadDataGrid">
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="InputTransparent" Value="True" />
+                <Setter Property="ShowGroupFooters" Value="False" />
+                <Setter Property="ShowGroupFooters" Value="False" />
+                <Setter Property="ShowColumnFooters" Value="False" />
+                <Setter Property="UserEditMode" Value="None" />
+                <Setter Property="UserGroupMode" Value="Disabled" />
+                <Setter Property="AutoGenerateColumns" Value="False" />
+                <Setter Property="RowHeight" Value="35" />
+                <Setter Property="GridLinesVisibility" Value="Vertical" />
+                <Setter Property="GridLinesThickness" Value="2" />
+                <Setter Property="GridLinesColor" Value="#949494" />
+            </Style>
+
+            <Style x:Key="datagridHeaderBase" TargetType="telerik:DataGridColumnHeaderAppearance">
+                <Setter Property="BackgroundColor" Value="#949494" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="IndicatorFontSize" Value="25" />
+                <Setter Property="SortIndicatorColor" Value="Transparent" />
+                <Setter Property="TextFontSize" Value="25" />
+            </Style>
+
+            <Style x:Key="datagridColoumnBase" TargetType="telerik:DataGridColumn">
+                <Setter Property="CanUserEdit" Value="False" />
+                <Setter Property="CanUserFilter" Value="False" />
+                <Setter Property="CanUserSort" Value="False" />
+            </Style>
+
+            <Style x:Key="imageEmoji" TargetType="Image">
+                <Setter Property="WidthRequest" Value="18" />
+                <Setter Property="HeightRequest" Value="18" />
+
+            </Style>
+
+            <Style
+                x:Key="datagridColoumnAuto"
+                BasedOn="{StaticResource datagridColoumnBase}"
+                TargetType="telerik:DataGridColumn">
+                <Setter Property="SizeMode" Value="Auto" />
+            </Style>
+
+            <Style
+                x:Key="datagridColoumnStretch"
+                BasedOn="{StaticResource datagridColoumnBase}"
+                TargetType="telerik:DataGridColumn">
+                <Setter Property="SizeMode" Value="Stretch" />
+            </Style>
+
+            <Style
+                x:Key="datagridHeaderRightAlign"
+                BasedOn="{StaticResource datagridHeaderBase}"
+                TargetType="telerik:DataGridColumnHeaderAppearance">
+                <Setter Property="SortIndicatorHorizontalOptions" Value="End" />
+                <Setter Property="SortIndicatorMargin" Value="-9999" />
+                <Setter Property="TextHorizontalOptions" Value="End" />
+            </Style>
+
+            <!--  FIX: Change TargetType to telerik:DataGridTextCellContentAppearance, which is a valid type for cell content appearance in Telerik MAUI DataGrid  -->
+            <Style x:Key="datagridCellContentBase" TargetType="telerik:DataGridTextCellAppearance">
+                <Setter Property="TextColor" Value="Black" />
+                <Setter Property="FontSize" Value="20" />
+            </Style>
+
+            <Style
+                x:Key="datagridCellContentRightAlign"
+                BasedOn="{StaticResource datagridCellContentBase}"
+                TargetType="telerik:DataGridTextCellAppearance">
+                <Setter Property="HorizontalTextAlignment" Value="End" />
+            </Style>
+
+            <Style x:Key="datagridRowBackground" TargetType="telerik:DataGridRowBackgroundAppearance">
+                <Setter Property="BackgroundColor" Value="White" />
+            </Style>
+
+            <Style x:Key="datagridAlternateRowBackground" TargetType="telerik:DataGridRowBackgroundAppearance">
+                <Setter Property="BackgroundColor" Value="#c9c9c9" />
+            </Style>
+
+            <Style
+                x:Key="labelBodyRightAlign"
+                BasedOn="{StaticResource labelBaseStyle}"
+                TargetType="Label">
+                <Setter Property="FontSize" Value="18" />
+                <Setter Property="HorizontalTextAlignment" Value="End" />
+            </Style>
+
+            <Style x:Key="borderBaseStyle" TargetType="telerik:RadBorder">
+                <Setter Property="BorderColor" Value="Black" />
+                <Setter Property="BorderThickness" Value="2" />
+                <Setter Property="Margin" Value="10" />
+                <Setter Property="Padding" Value="5" />
+            </Style>
+
+            <Style
+                x:Key="borderRoundedStyle"
+                BasedOn="{StaticResource borderBaseStyle}"
+                TargetType="telerik:RadBorder">
+                <Setter Property="CornerRadius" Value="10" />
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

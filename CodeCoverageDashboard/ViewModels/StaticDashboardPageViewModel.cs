@@ -40,6 +40,7 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 
 			//Calculate the dashboard data from the current repos, and add to memory collection
 			LatestData = PopulateCalculatedFields(currentReposDataList);
+			OnPropertyChanged(nameof(LatestData));
 
 			Data.Add(LatestData);
 
@@ -65,7 +66,7 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 			}
 
 			//Calculate changes with current data
-			PopulateChangesFields(LatestData);
+			StaticDashboardPageViewModel.PopulateChangesFields(LatestData);
 
 			UpdateTop5s();
 
@@ -156,15 +157,14 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 		return dashboardData;
 	}
 
-	public void PopulateChangesFields(StaticDashboardData dashboardData)
+	public static void PopulateChangesFields(StaticDashboardData dashboardData)
 	{
 		Random rnd = new();
-		var list = new List<(RepoData repo, double change)>();
 
 		foreach (RepoData repo in dashboardData.ListRepos)
 		{
 			repo.CoveragePercentPercentIncrease = rnd.Next(0, 100);
-			list.Add((repo, repo.CoveragePercentPercentIncrease));
+			repo.CoveredLinesIncrease = rnd.Next(0, 2500);
 		}
 	}
 

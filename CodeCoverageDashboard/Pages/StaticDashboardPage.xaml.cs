@@ -9,7 +9,8 @@ public partial class StaticDashboardPage : ContentPage
 {
 	public StaticDashboardPage(StaticDashboardPageViewModel staticDashboardPageViewModel)
 	{
-		InitializeComponent();
 		BindingContext = staticDashboardPageViewModel;
+
+		InitializeComponent();
 	}
 }

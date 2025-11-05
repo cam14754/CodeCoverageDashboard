@@ -15,6 +15,8 @@ public class RepoProperties
 
 	[JsonPropertyName("CoveredLines")]
 	public double CoveredLines { get; set; } = 0;
+	[JsonPropertyName("CoveredLinesIncrease")]
+	public double CoveredLinesIncrease { get; set; } = 0;
 
 	[JsonPropertyName("NumLines")]
 	public double NumLines { get; set; } = 0;
