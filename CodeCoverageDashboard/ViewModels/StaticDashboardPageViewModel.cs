@@ -181,7 +181,7 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 
 			if (match is null)
 			{
-				Debug.WriteLine($"No matching repo found for {latestRepo.Name} in second latest data.");
+				Debug.WriteLine($"No matching repo found for {latestRepo.Name}");
 				latestRepo.CoveredLinesIncrease = latestRepo.CoveredLines;
 				if (latestRepo.CoveredLinesIncrease <= 0)
 				{
