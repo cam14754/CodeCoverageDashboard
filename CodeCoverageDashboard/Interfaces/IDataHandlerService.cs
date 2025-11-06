@@ -9,5 +9,5 @@ namespace CodeCoverageDashboard.Interfaces;
 public interface IDataHandlerService
 {
 	ObservableCollection<RepoData> Repos { get; set; }
-	Task GetXDocRequest();
+	abstract Task ProcessXDocsFromHTTP();
 }

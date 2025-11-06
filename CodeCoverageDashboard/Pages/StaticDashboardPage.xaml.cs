@@ -6,6 +6,7 @@ namespace CodeCoverageDashboard.Pages;
 
 public partial class StaticDashboardPage : ContentPage
 {
+
 	public StaticDashboardPage(StaticDashboardPageViewModel staticDashboardPageViewModel)
 	{
 		BindingContext = staticDashboardPageViewModel;

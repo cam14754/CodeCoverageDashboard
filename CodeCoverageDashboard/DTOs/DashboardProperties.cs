@@ -24,6 +24,8 @@ public class DashboardProperties
 
 	//Given properties
 	[JsonPropertyName("DateRetrieved")] public DateTime DateRetrieved { get; set; } = DateTime.MinValue;
+	[JsonPropertyName("DataAge")] public DateTime DataAge { get; set; } = DateTime.MinValue;
+
 	[JsonPropertyName("CoverletVersion")] public string CoverletVersion { get; set; } = string.Empty;
 	[JsonPropertyName("DashboardVersion")] public string DashboardVersion { get; set; } = string.Empty;
 	[JsonPropertyName("ListRepos")] public ObservableCollection<RepoData> ListRepos { get; set; } = [];

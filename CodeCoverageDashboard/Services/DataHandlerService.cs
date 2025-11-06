@@ -9,7 +9,7 @@ public class DataHandlerService(IDatabaseService databaseService) : IDataHandler
 {
 	public ObservableCollection<RepoData> Repos { get; set; } = [];
 
-	public async Task GetXDocRequest()
+	public async Task ProcessXDocsFromHTTP()
 	{
 		Repos.Clear();
 
@@ -21,8 +21,6 @@ public class DataHandlerService(IDatabaseService databaseService) : IDataHandler
 
 			RepoCoverageAnalyzer.AnalyzeRepo(newRepo);
 			
-			await databaseService.SaveMemoryToDB(newRepo);
-
 			Repos.Add(newRepo);
 		}
 	}

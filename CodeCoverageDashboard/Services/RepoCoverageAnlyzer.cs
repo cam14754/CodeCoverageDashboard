@@ -44,7 +44,7 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 		try
 		{
 			repoData.Name = coverage!.Packages.First().Name;
-			repoData.DateRetrieved = DateTime.Now;
+			repoData.DateRetrieved = DateTime.UnixEpoch.AddSeconds(coverage.Timestamp).ToLocalTime();
 		}
 		catch (Exception ex)
 		{

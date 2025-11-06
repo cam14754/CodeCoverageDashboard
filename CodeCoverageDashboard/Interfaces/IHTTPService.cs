@@ -6,7 +6,7 @@
 using System.Xml.Linq;
 
 namespace CodeCoverageDashboard.Interfaces;
-interface IHTTPService
+public interface IHTTPService
 {
 	static abstract Task<List<XDocument>> GetXDocs();
 }

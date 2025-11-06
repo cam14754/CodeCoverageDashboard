@@ -6,7 +6,8 @@
 namespace CodeCoverageDashboard.ViewModels;
 public partial class MainPageViewModel(IDataHandlerService dataHandlerService) : BaseViewModel
 {
-	public ObservableCollection<RepoData> Repos => dataHandlerService.Repos;
+	public ObservableCollection<RepoData> Repos { get; set; }
+	readonly IDataHandlerService datahandlerService = dataHandlerService;
 
 	[RelayCommand]
 	public async Task RunAsync()
@@ -20,7 +21,13 @@ public partial class MainPageViewModel(IDataHandlerService dataHandlerService) :
 			IsBusy = true;
 			Debug.WriteLine("Loading repos... \n");
 
-			await dataHandlerService.GetXDocRequest();
+			//Get from HTTP
+			await datahandlerService.ProcessXDocsFromHTTP();
+
+			//Save to memory
+			Repos = dataHandlerService.Repos;
+
+			OnPropertyChanged(nameof(Repos));
 
 			Debug.WriteLine("Repos loaded successfully.");
 

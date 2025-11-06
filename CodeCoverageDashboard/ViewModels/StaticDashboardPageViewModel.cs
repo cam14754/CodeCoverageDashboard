@@ -8,24 +8,27 @@ using System.Runtime.CompilerServices;
 
 namespace CodeCoverageDashboard.ViewModels;
 
-public partial class StaticDashboardPageViewModel(IDatabaseService databaseService) : BaseViewModel
+public partial class StaticDashboardPageViewModel(IDatabaseService databaseService, IDataHandlerService dataHandlerService) : BaseViewModel
 {
 	readonly IDatabaseService databaseService = databaseService;
+	readonly IDataHandlerService dataHandlerService = dataHandlerService;
 
 	// Stores 6 Data points. Get the past 12 weeks of data, every 2 weeks.
 	public ObservableCollection<StaticDashboardData> Data { get; set; } = [];
 	public StaticDashboardData? LatestData { get; set; }
 	public StaticDashboardData? WeekoldData { get; set; }
 
+	List<RepoData> currentReposDataList = [];
+
 	public ObservableCollection<Tuple<MethodData, RepoData>> Top5Complex { get; set; } = [];
 	public ObservableCollection<RepoData> Top5Healthy { get; set; } = [];
 	public ObservableCollection<RepoData> Top5Unhealthy { get; set; } = [];
 	public ObservableCollection<RepoData> Top5Hottest { get; set; } = [];
 
-	public const string DashboardVersion = "0.3.1";
+	public const string DashboardVersion = "0.3.3";
 
 	[RelayCommand]
-	public async Task GetRepoData()
+	public async Task GetRepoData(bool saveToDatabase = false)
 	{
 		if (IsBusy)
 		{
@@ -36,13 +39,24 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 		{
 			Data.Clear();
 
-			//Get the list of latest repos from the database
-			var currentReposDataList = await databaseService.LoadLatestReposList();
+			//Load from HTTP
+			await dataHandlerService.ProcessXDocsFromHTTP();
+			
+			//Save to memory
+			currentReposDataList = [.. dataHandlerService.Repos];
 
 			//Calculate the dashboard data from the current repos, and add to memory collection
 			LatestData = PopulateCalculatedFields(currentReposDataList);
 			Data.Add(LatestData);
 
+			//Load all previous dashboard data from DB
+			var allData = await databaseService.LoadAllDashboardData();
+			foreach (var dash in allData.OrderByDescending(d => d.DateRetrieved))
+			{
+				Data.Add(dash);
+			}
+
+			//Load week old data from DB
 			WeekoldData = await databaseService.LoadXWeekOldDashboardData(1);
 			if(WeekoldData is null)
 			{
@@ -50,18 +64,21 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 				WeekoldData = new StaticDashboardData();
 			}
 
-			var allData = await databaseService.LoadAllDashboardData();
-			foreach (var dash in allData.OrderByDescending(d => d.DateRetrieved))
-			{
-				Data.Add(dash);
-			}
-
+			//Calculate changes since last week
 			PopulateChangesFields(LatestData, WeekoldData);
-			
+
+			//Update Top 5s
 			UpdateTop5s();
 
+			//Notify UI
 			OnPropertyChanged(nameof(LatestData));
 			OnPropertyChanged(nameof(WeekoldData));
+
+			//Save latest data to DB
+			if (saveToDatabase)
+			{
+				await databaseService.SaveMemoryToDB(LatestData);
+			}
 		}
 		catch (Exception ex)
 		{
@@ -119,6 +136,7 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 		dashboardData.DateRetrieved = DateTime.Now;
 		dashboardData.CoverletVersion = "6.0.2";
 		dashboardData.DashboardVersion = DashboardVersion;
+		dashboardData.DataAge = repoDatas.Max(r => r.DateRetrieved);
 
 		double AverageCoveragePercentSum = 0;
 		double AverageBranchCoveragePercentSum = 0;

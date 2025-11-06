@@ -118,6 +118,19 @@ public class DatabaseService : IDatabaseService
 		return results;
 	}
 
+	public async Task<List<RepoData>> LoadAllRepoData()
+	{
+		await Init();
+		List<RepoRecord> RepoRecords = await database.QueryAsync<RepoRecord>(await ReadSQLAsync("GetAllRepoData.sql"));
+		
+		var results = new List<RepoData>();
+		foreach (var record in RepoRecords)
+		{
+			results.Add((RepoData)RepoRecordToRepoObject.Convert(record));
+		}
+		return results;
+	}
+
 	public async Task<StaticDashboardData> LoadSecondLatestDashboardData()
 	{
 		await Init();

@@ -7,7 +7,7 @@ using System.Collections.Specialized;
 
 namespace CodeCoverageDashboard.Services;
 
-class HTTPService : IHTTPService
+public class HTTPService : IHTTPService
 {
 	public static async Task<List<XDocument>> GetXDocs()
 	{

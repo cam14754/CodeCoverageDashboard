@@ -9,9 +9,10 @@ public static class RepoRecordToRepoObject
 		var repoRecord = (RepoRecord)value ?? throw new NullReferenceException("RepoRecord is null in RepoRecordToRepoObject converter.");
 
 		x.Name = repoRecord.RepoName;
-		x.DateRetrieved = repoRecord.DateRetrieved;
 
 		var properties = repoRecord.Properties ?? throw new NullReferenceException("RepoRecord.Properties is null in RepoRecordToRepoObject converter.");
+
+		x.DateRetrieved = repoRecord.DateRetrieved;
 
 		x.CoveredLines = properties.CoveredLines;
 		x.TotalLines = properties.NumLines;
@@ -38,7 +39,6 @@ public static class RepoRecordToRepoObject
 		x.Properties = new RepoProperties
 		{
 			RepoName = repoData.Name,
-			DateRetrieved = repoData.DateRetrieved,
 			CoveredLines = repoData.CoveredLines,
 			NumLines = repoData.TotalLines,
 			CoveragePercent = repoData.CoveragePercent,

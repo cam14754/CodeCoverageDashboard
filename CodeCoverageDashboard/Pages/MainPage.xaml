@@ -67,9 +67,6 @@
                             <Label Text="{Binding BranchRate, StringFormat='Branch Rate: {0}'}" />
                             <Label Text="{Binding TotalBranches, StringFormat='Total Branches: {0}'}" />
 
-
-
-
                             <Label Text="Errors:" />
 
                             <!--  Inner list of strings  -->

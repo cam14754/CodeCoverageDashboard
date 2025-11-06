@@ -39,6 +39,7 @@ public static class StaticDashboardRecordToStaticDashboardObject
 			DateRetrieved = dashboard.Properties.DateRetrieved,
 			CoverletVersion = dashboard.Properties.CoverletVersion,
 			DashboardVersion = dashboard.Properties.DashboardVersion,
+			DataAge = dashboard.Properties.DataAge,
 			// Collections
 			ListMethods = new ObservableCollection<MethodData>(dashboard.Properties.ComplexMethods),
 			ListRepos = new ObservableCollection<RepoData>(dashboard.Properties.ListRepos),
@@ -75,7 +76,8 @@ public static class StaticDashboardRecordToStaticDashboardObject
 			DashboardVersion = data.DashboardVersion,
 			ComplexMethods = new ObservableCollection<MethodData>(data.ListMethods),
 			ListRepos = new ObservableCollection<RepoData>(data.ListRepos),
-			TotalLinesUncoveredCount = data.TotalLinesUncoveredCount
+			TotalLinesUncoveredCount = data.TotalLinesUncoveredCount,
+			DataAge = data.DataAge
 		};
 
 		var record = new DashboardRecord

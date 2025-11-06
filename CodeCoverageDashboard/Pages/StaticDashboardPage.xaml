@@ -106,7 +106,10 @@
                 Grid.Column="2"
                 Background="{StaticResource CellColor}"
                 Style="{StaticResource borderRoundedStyle}">
-                <Grid ColumnDefinitions="*, *" RowDefinitions="*, *, *, *, *, *, *, auto">
+                <Grid
+                    ColumnDefinitions="*, *"
+                    RowDefinitions="auto, auto, auto, auto, auto, auto, auto, *"
+                    RowSpacing="10">
                     <!--  Heading  -->
                     <Label
                         Grid.Row="0"
@@ -115,7 +118,13 @@
                         Style="{StaticResource labelHeading}"
                         Text="Code Coverage Dashboard">
                         <Label.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding GetRepoDataCommand}" NumberOfTapsRequired="2" />
+                            <TapGestureRecognizer Command="{Binding GetRepoDataCommand}" NumberOfTapsRequired="2">
+                                <TapGestureRecognizer.CommandParameter>
+                                    <x:Boolean>
+                                        False
+                                    </x:Boolean>
+                                </TapGestureRecognizer.CommandParameter>
+                            </TapGestureRecognizer>
                         </Label.GestureRecognizers>
                     </Label>
 
@@ -179,8 +188,20 @@
                         Style="{StaticResource labelBodyRightAlign}"
                         Text="{Binding LatestData.DateRetrieved}" />
 
+                    <!--  Data Age  -->
                     <Label
                         Grid.Row="6"
+                        Grid.Column="0"
+                        Style="{StaticResource labelBody}"
+                        Text="Data Collected:" />
+                    <Label
+                        Grid.Row="6"
+                        Grid.Column="1"
+                        Style="{StaticResource labelBodyRightAlign}"
+                        Text="{Binding LatestData.DataAge}" />
+
+                    <Label
+                        Grid.Row="7"
                         Grid.ColumnSpan="2"
                         FontSize="18"
                         HorizontalTextAlignment="Center"
