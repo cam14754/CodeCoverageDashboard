@@ -73,7 +73,6 @@ public class DatabaseService : IDatabaseService
 		await Init();
 		var DashboardData = await database.QueryAsync<DashboardRecord>(await ReadSQLAsync("GetXWeekOldDashboardRecords.sql"), x);
 		return (StaticDashboardData)StaticDashboardRecordToStaticDashboardObject.Convert(DashboardData);
-		
 	}
 
 	public async Task<RepoData> LoadLatestRepoByName(string repoName)
@@ -98,7 +97,31 @@ public class DatabaseService : IDatabaseService
 		}
 		catch (Exception ex)
 		{
-			throw new IOException($"Failed to load SQL file: {fileName}", ex);
+			Debug.WriteLine($"Error reading SQL file {fileName}: {ex.Message}");
+			return string.Empty;
 		}
+	}
+
+	public async Task<List<StaticDashboardData>> LoadAllDashboardData()
+	{
+		await Init();
+
+		List<DashboardRecord> DashboardRecords = await database.QueryAsync<DashboardRecord>(await ReadSQLAsync("GetAllStaticdashboardData.sql"));
+		
+		var results = new List<StaticDashboardData>();
+
+		foreach (var record in DashboardRecords)
+		{
+			results.Add((StaticDashboardData)StaticDashboardRecordToStaticDashboardObject.Convert(record));
+		}
+
+		return results;
+	}
+
+	public async Task<StaticDashboardData> LoadSecondLatestDashboardData()
+	{
+		await Init();
+		var DashboardData = await database.QueryAsync<DashboardRecord>(await ReadSQLAsync("GetSecondLatestDashboardData.sql"));
+		return (StaticDashboardData)StaticDashboardRecordToStaticDashboardObject.Convert(DashboardData);
 	}
 }

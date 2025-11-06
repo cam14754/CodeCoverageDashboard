@@ -12,35 +12,18 @@ public class DataHandlerService(IDatabaseService databaseService) : IDataHandler
 	public async Task GetXDocRequest()
 	{
 		Repos.Clear();
+
 		List<XDocument> xDocsFromService = await HTTPService.GetXDocs();
 
 		foreach (var xDoc in xDocsFromService)
 		{
 			RepoData newRepo = new() { XDocument = xDoc };
-			RepoCoverageAnalyzer.AnalyzeRepo(newRepo);
-			RepoData previousRepo = await databaseService.LoadLatestRepoByName(newRepo.Name);
-			if (previousRepo is null)
-			{
-				newRepo.CoveragePercentPercentIncrease = newRepo.CoveragePercent;
-			}
-			else
-			{
-				if(previousRepo.CoveragePercent == 0)
-				{
-					newRepo.CoveragePercentPercentIncrease = newRepo.CoveragePercent;
-				}
-				else
-				{
-					newRepo.CoveragePercentPercentIncrease = ((newRepo.CoveragePercent - previousRepo.CoveragePercent) / previousRepo.CoveragePercent) * 100;
-				}
-			}
-			await databaseService.SaveMemoryToDB(newRepo);
-		}
 
-		var repos = await databaseService.LoadLatestReposList();
-		foreach (var repo in repos)
-		{
-			Repos.Add(repo);
+			RepoCoverageAnalyzer.AnalyzeRepo(newRepo);
+			
+			await databaseService.SaveMemoryToDB(newRepo);
+
+			Repos.Add(newRepo);
 		}
 	}
 }

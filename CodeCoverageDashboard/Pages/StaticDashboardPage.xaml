@@ -226,7 +226,7 @@
 
                             <telerik:DataGridTemplateColumn
                                 HeaderStyle="{StaticResource datagridHeaderRightAlign}"
-                                HeaderText="Percent Increase"
+                                HeaderText="{Binding WeekoldData.DateRetrieved, StringFormat='Coverage Increase (since {0:MM/dd hh:mm})'}"
                                 Style="{StaticResource datagridColoumnAuto}">
 
                                 <telerik:DataGridTemplateColumn.CellContentTemplate>
@@ -237,7 +237,7 @@
                                             ColumnSpacing="10"
                                             HorizontalOptions="End"
                                             VerticalOptions="Center"
-                                            WidthRequest="70">
+                                            WidthRequest="90">
                                             <Image
                                                 Grid.Column="0"
                                                 Source="green_arrow_up.png"
@@ -245,7 +245,7 @@
                                             <Label
                                                 Grid.Column="1"
                                                 Style="{StaticResource labelBodyRightAlign}"
-                                                Text="{Binding CoveragePercentPercentIncrease, StringFormat='{}{0}%'}"
+                                                Text="{Binding CoveragePercentPercentIncrease, StringFormat='{}{0:P1}'}"
                                                 VerticalOptions="Center"
                                                 VerticalTextAlignment="Center" />
                                         </Grid>
@@ -317,18 +317,27 @@
                                 CellContentStyle="{StaticResource datagridCellContentBase}"
                                 HeaderStyle="{StaticResource datagridHeaderBase}"
                                 HeaderText="Method Name"
-                                PropertyName="Name"
+                                PropertyName="Item1.Name"
                                 Style="{StaticResource datagridColoumnStretch}" />
+
+
+                            <telerik:DataGridTextColumn
+                                CellContentStyle="{StaticResource datagridCellContentBase}"
+                                HeaderStyle="{StaticResource datagridHeaderBase}"
+                                HeaderText="Repo Name"
+                                PropertyName="Item2.Name"
+                                Style="{StaticResource datagridColoumnStretch}" />
+
                             <telerik:DataGridNumericalColumn
                                 CellContentStyle="{StaticResource datagridCellContentRightAlign}"
                                 HeaderStyle="{StaticResource datagridHeaderRightAlign}"
                                 HeaderText="Complexity"
-                                PropertyName="Complexity"
+                                PropertyName="Item1.Complexity"
                                 Style="{StaticResource datagridColoumnAuto}" />
                         </telerik:RadDataGrid.Columns>
 
                         <telerik:RadDataGrid.SortDescriptors>
-                            <telerik:PropertySortDescriptor PropertyName="Complexity" SortOrder="Descending" />
+                            <telerik:PropertySortDescriptor PropertyName="Item1.Complexity" SortOrder="Descending" />
                         </telerik:RadDataGrid.SortDescriptors>
                     </telerik:RadDataGrid>
 

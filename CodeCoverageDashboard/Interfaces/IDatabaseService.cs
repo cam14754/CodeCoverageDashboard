@@ -13,5 +13,8 @@ public interface IDatabaseService
 	abstract Task<List<RepoData>> LoadLatestReposList();
 	abstract Task<RepoData> LoadLatestRepoByName(string repoName);
 	abstract Task<StaticDashboardData> LoadXWeekOldDashboardData(int x);
+	abstract Task<List<StaticDashboardData>> LoadAllDashboardData();
+	abstract Task<StaticDashboardData> LoadSecondLatestDashboardData();
+
 
 }
