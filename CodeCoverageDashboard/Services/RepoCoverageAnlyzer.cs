@@ -37,7 +37,6 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			return;
 		}
 
-		Debug.WriteLine("Successfully analyzed repo: " + repoData.Name);
 	}
 	public static bool TryParseRepoMetadata(RepoData repoData, CoverageDTO? coverage)
 	{
@@ -137,7 +136,6 @@ public class RepoCoverageAnalyzer : IRepoCoverageAnalyzer
 			repoData.ListErrors.Add("Classes Count is 0");
 		}
 
-		Debug.WriteLine("Successfully added data to objects");
 		return true;
 	}
 }
