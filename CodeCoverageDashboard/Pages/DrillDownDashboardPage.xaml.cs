@@ -5,12 +5,12 @@
 
 namespace CodeCoverageDashboard;
 
-public partial class MainPage : ContentPage
+public partial class DrillDownDashboardPage : ContentPage
 {
-	public MainPage(MainPageViewModel mainPageViewModel)
+	public DrillDownDashboardPage(DrillDownDashboardPageViewModel drillDownDashboardPageViewModel)
 	{
 		InitializeComponent();
 
-		BindingContext = mainPageViewModel;
+		BindingContext = drillDownDashboardPageViewModel;
 	}
 }

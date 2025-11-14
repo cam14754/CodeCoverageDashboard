@@ -7,12 +7,13 @@ namespace CodeCoverageDashboard;
 
 public partial class AppShell : Shell
 {
-	public AppShell()
-	{
-		InitializeComponent();
-		Routing.RegisterRoute(nameof(Pages.RepoPage), typeof(Pages.RepoPage));
-		Routing.RegisterRoute(nameof(Pages.ClassPage), typeof(Pages.ClassPage));
-		Routing.RegisterRoute(nameof(Pages.MethodPage), typeof(Pages.MethodPage));
-		Routing.RegisterRoute(nameof(Pages.StaticDashboardPage), typeof(Pages.StaticDashboardPage));
-	}
+    public AppShell()
+    {
+        InitializeComponent();
+        Routing.RegisterRoute(nameof(RepoPage), typeof(RepoPage));
+        Routing.RegisterRoute(nameof(ClassPage), typeof(ClassPage));
+        Routing.RegisterRoute(nameof(MethodPage), typeof(MethodPage));
+        Routing.RegisterRoute(nameof(DrillDownDashboardPage), typeof(DrillDownDashboardPage));
+
+    }
 }

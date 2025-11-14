@@ -3,7 +3,7 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
-namespace CodeCoverageDashboard.Pages;
+namespace CodeCoverageDashboard;
 
 public partial class ClassPage : ContentPage
 {

@@ -11,21 +11,15 @@ public class HTTPService : IHTTPService
 {
 	public static async Task<List<XDocument>> GetXDocs()
 	{
-		//List<RepoData> repoDatas = GetRepoDataAsync();
-		//foreach (RepoData repodata in repoDatas)
-		//{
-		//	await AnalyzeRepoAsync(repodata);
-		//}
-
-		//return [.. repoDatas.Select(x => x.XDocument)];
-		return await getfromdesk();
+		
+		return await Getfromdesk();
 	}
 
-	public static async Task<List<XDocument>> getfromdesk()
+	public static async Task<List<XDocument>> Getfromdesk()
 	{
 		await Task.Run(() =>
 		{
-			Thread.Sleep(100); // Simulate async work
+			Thread.Sleep(1); // Simulate async work
 		});
 
 		//Collect data from the desktop, from the folder which name is the latest cronologically
@@ -51,12 +45,8 @@ public class HTTPService : IHTTPService
 			.OrderByDescending(x => x.Date)
 			.FirstOrDefault();
 
-		if (latestFolder == null)
-		{
-			throw new Exception("No valid folders found in the specified directory.");
-		}
-
-		return Directory.GetFiles(latestFolder.Path, "*.cobertura.xml").Select(XDocument.Load).ToList();
-
-	}
+        return latestFolder is null
+            ? throw new Exception("No valid folders found in the specified directory.")
+            : Directory.GetFiles(latestFolder.Path, "*.cobertura.xml").Select(XDocument.Load).ToList();
+    }
 }

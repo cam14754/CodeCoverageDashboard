@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="CodeCoverageDashboard.DrillDownDashboardPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:CodeCoverageDashboard.Models"
+    xmlns:telerik="http://schemas.telerik.com/2022/xaml/maui"
+    xmlns:viewmodels="clr-namespace:CodeCoverageDashboard.ViewModels"
+    Padding="20"
+    x:DataType="viewmodels:DrillDownDashboardPageViewModel"
+    BackgroundColor="{StaticResource BackgroundColor}">
+
+
+    <Grid ColumnDefinitions="3*, *" RowDefinitions="*">
+        <telerik:RadBorder
+            Grid.Column="1"
+            BackgroundColor="{StaticResource CellColor}"
+            Style="{StaticResource borderRoundedStyle}">
+            <VerticalStackLayout>
+                <Button
+                    Margin="20"
+                    Command="{Binding RunCommand}"
+                    HeightRequest="100"
+                    Text="Load Repositories"
+                    WidthRequest="200" />
+                <Button
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Command="{Binding GoToStaticDashboardPageCommand}"
+                    HeightRequest="40"
+                    Text="Go To Static Dashboard Page"
+                    WidthRequest="200" />
+            </VerticalStackLayout>
+        </telerik:RadBorder>
+
+
+
+
+
+
+
+        <CollectionView x:Name="SelectedRepo" ItemsSource="{Binding Repos}">
+
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="2" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.EmptyView>
+                <Label Style="{StaticResource labelHeading}" Text="No Repositories availible, press 'Load Repositories' to load repositories" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:RepoData">
+                    <Grid Margin="20">
+                        <telerik:RadBorder
+                            Padding="20"
+                            BackgroundColor="{StaticResource CellColor}"
+                            Style="{StaticResource borderRoundedStyle}">
+
+                            <telerik:RadBorder.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=GoToRepoPageCommand}"
+                                    CommandParameter="{Binding .}"
+                                    NumberOfTapsRequired="2" />
+                            </telerik:RadBorder.GestureRecognizers>
+                            <Grid ColumnDefinitions="*, auto">
+                                <VerticalStackLayout Grid.Column="0">
+                                    <Label Style="{StaticResource labelEmphasis}" Text="{Binding Name}" />
+                                    <Label Style="{StaticResource labelBody}" Text="{Binding CoveragePercent, StringFormat='Coverage Percent: {0:P2}'}" />
+                                    <Label Style="{StaticResource labelBody}" Text="{Binding CoveredLines, StringFormat='Covered Lines: {0}'}" />
+                                    <Label Style="{StaticResource labelBody}" Text="{Binding UncoveredLines, StringFormat='Uncovered Lines: {0}'}" />
+                                    <Label Style="{StaticResource labelBody}" Text="{Binding TotalLines, StringFormat='Total Lines: {0}'}" />
+                                    <Label Style="{StaticResource labelBody}" Text="{Binding BranchRate, StringFormat='Branch Rate: {0}'}" />
+                                </VerticalStackLayout>
+
+                                <telerik:RadRadialGauge
+                                    Grid.Column="1"
+                                    StartAngle="90"
+                                    SweepAngle="360"
+                                    WidthRequest="200">
+                                    <telerik:RadRadialGauge.Axis>
+                                        <telerik:GaugeLinearAxis
+                                            FontSize="0"
+                                            Maximum="100"
+                                            Minimum="0"
+                                            Step="10"
+                                            StrokeThickness="0"
+                                            TickThickness="0" />
+                                    </telerik:RadRadialGauge.Axis>
+                                    <telerik:RadRadialGauge.Indicators>
+                                        <telerik:GaugeBarIndicator Value="{Binding CoveragePercent, Converter={StaticResource DecimalPercentConverter}}" />
+                                    </telerik:RadRadialGauge.Indicators>
+
+
+
+
+                                </telerik:RadRadialGauge>
+
+                            </Grid>
+
+                        </telerik:RadBorder>
+
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+
+
+
+    </Grid>
+
+</ContentPage>

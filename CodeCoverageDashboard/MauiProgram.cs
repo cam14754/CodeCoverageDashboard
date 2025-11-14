@@ -10,7 +10,7 @@ namespace CodeCoverageDashboard;
 public static class MauiProgram
 {
 	public static MauiApp CreateMauiApp()
-	{
+	{	
 
 		var builder = MauiApp.CreateBuilder();
 		builder
@@ -27,13 +27,13 @@ public static class MauiProgram
 		builder.Logging.AddDebug();
 #endif
 
-		builder.Services.AddSingleton<MainPageViewModel>();
+		builder.Services.AddSingleton<DrillDownDashboardPageViewModel>();
 		builder.Services.AddSingleton<RepoPageViewModel>();
 		builder.Services.AddSingleton<ClassPageViewModel>();
 		builder.Services.AddSingleton<MethodPageViewModel>();
 		builder.Services.AddSingleton<StaticDashboardPageViewModel>();
 
-		builder.Services.AddSingleton<MainPage>();
+		builder.Services.AddSingleton<DrillDownDashboardPage>();
 		builder.Services.AddTransient<RepoPage>();
 		builder.Services.AddTransient<ClassPage>();
 		builder.Services.AddTransient<MethodPage>();

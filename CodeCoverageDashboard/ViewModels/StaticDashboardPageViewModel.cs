@@ -3,263 +3,266 @@
 // Created by Cameron Strachan.
 // For personal and educational use only.
 
-using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
-
 namespace CodeCoverageDashboard.ViewModels;
 
 public partial class StaticDashboardPageViewModel(IDatabaseService databaseService, IDataHandlerService dataHandlerService) : BaseViewModel
 {
-	readonly IDatabaseService databaseService = databaseService;
-	readonly IDataHandlerService dataHandlerService = dataHandlerService;
+    readonly IDatabaseService databaseService = databaseService;
+    readonly IDataHandlerService dataHandlerService = dataHandlerService;
 
-	// Stores 6 Data points. Get the past 12 weeks of data, every 2 weeks.
-	public ObservableCollection<StaticDashboardData> Data { get; set; } = [];
-	public StaticDashboardData? LatestData { get; set; }
-	public StaticDashboardData? WeekoldData { get; set; }
+    // Stores 6 Data points. Get the past 12 weeks of data, every 2 weeks.
+    public ObservableCollection<StaticDashboardData> Data { get; set; } = [];
+    public StaticDashboardData? LatestData { get; set; }
+    public StaticDashboardData? WeekoldData { get; set; }
 
-	List<RepoData> currentReposDataList = [];
+    ObservableCollection<RepoData> currentReposDataList => dataHandlerService.Repos;
 
-	public ObservableCollection<Tuple<MethodData, RepoData>> Top5Complex { get; set; } = [];
-	public ObservableCollection<RepoData> Top5Healthy { get; set; } = [];
-	public ObservableCollection<RepoData> Top5Unhealthy { get; set; } = [];
-	public ObservableCollection<RepoData> Top5Hottest { get; set; } = [];
+    public ObservableCollection<Tuple<MethodData, RepoData>> Top5Complex { get; set; } = [];
+    public ObservableCollection<RepoData> Top5Healthy { get; set; } = [];
+    public ObservableCollection<RepoData> Top5Unhealthy { get; set; } = [];
+    public ObservableCollection<RepoData> Top5Hottest { get; set; } = [];
 
-	public const string DashboardVersion = "0.3.4";
+    public const string DashboardVersion = "0.3.5";
 
-	[RelayCommand]
-	public async Task GetRepoData(bool saveToDatabase = false)
-	{
-		if (IsBusy)
-		{
-			return;
-		}
-		IsBusy = true;
-		try
-		{
-			Data.Clear();
+    [RelayCommand]
+    public async Task GetRepoData(bool saveToDatabase = false)
+    {
+        if (IsBusy)
+        {
+            return;
+        }
+        IsBusy = true;
+        try
+        {
+            await Execute(saveToDatabase);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error loading latest repos: {ex.Message}");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
 
+    public async Task Execute(bool saveToDatabase = false)
+    {
+        
+            // Replace instead of Clear to reduce churn
+            Data = new ObservableCollection<StaticDashboardData>();
+            OnPropertyChanged(nameof(Data));
 
-			//Load and save from HTTP
-			Debug.WriteLine("Loading latest repo data...");
-			await dataHandlerService.ProcessXDocsFromHTTP();
-			if(dataHandlerService.Repos.Count is 0 || dataHandlerService.Repos is null)
-			{
-				throw new Exception("Latest repo data is null after attempting to load.");
-			}
-			currentReposDataList = [.. dataHandlerService.Repos];
-			Debug.WriteLine("Successfully loaded all repo data.");
+            Debug.WriteLine("Starting calls...");
 
+            // Start both operations. Offload DB load if it is synchronous behind the scenes.
+            var getRepoDataTask = dataHandlerService.ProcessXDocsFromHTTP();
+            var allDataTask = Task.Run(() => databaseService.LoadAllDashboardData());
 
-			//Load and save all previous dashboard data from DB
-			Debug.WriteLine("Loading all dashboard data...");
-			var allData = await databaseService.LoadAllDashboardData();
-			if(allData is null || allData.Count is 0)
-			{
-				throw new Exception("Latest dashboard data is null after attempting to load.");
-			}
-			foreach (var dash in allData.OrderByDescending(d => d.DateRetrieved))
-			{
-				Data.Add(dash);
-			}
-			Debug.WriteLine("Successfully loaded all dashboard data.");
+            Debug.WriteLine("Awaiting calls...");
+            await Task.WhenAll(getRepoDataTask, allDataTask).ConfigureAwait(true);
 
+            var allData = allDataTask.Result;
 
-			//Load week old data from DB
-			Debug.WriteLine("Loading week old dashboard data...");
-			WeekoldData = await databaseService.LoadXWeekOldDashboardData(1);
-			if(WeekoldData is null)
-			{
-				Debug.WriteLine("No week old data found in database.");
-				WeekoldData = new StaticDashboardData();
-			}
-			Debug.WriteLine("Successfully loaded week old dashboard data.");
+            // Snapshot AFTER data fetch completes (UI thread)
+            var reposSnapshot = dataHandlerService.Repos.ToList();
+            OnPropertyChanged(nameof(currentReposDataList));
 
-			//Calculate the dashboard data from the current repos, and add to memory collection
-			LatestData = await PopulateCalculatedFields(currentReposDataList);
-			Data.Add(LatestData);
+            // Heavy compute off UI thread using snapshots only
+            var computeResult = await Task.Run(() =>
+            {
+                var latest = PopulateCalculatedFields(new ObservableCollection<RepoData>(reposSnapshot));
 
-			//Calculate changes since last week
-			PopulateChangesFields(LatestData, WeekoldData);
+                var dashboards = new List<StaticDashboardData> { latest };
+                dashboards.AddRange(allData);
 
-			//Update Top 5s
-			UpdateTop5s();
+                var oneWeekAgoDate = DateTime.Today.AddDays(-7).Date;
+                var weekOld = dashboards.FirstOrDefault(d => d.DataAge.Date == oneWeekAgoDate)
+                              ?? new StaticDashboardData();
 
-			//Notify UI
-			OnPropertyChanged(nameof(LatestData));
-			OnPropertyChanged(nameof(WeekoldData));
+                PopulateChangesFields(latest, weekOld);
 
-			//Save latest data to DB
-			if (saveToDatabase)
-			{
-				await databaseService.SaveMemoryToDB(LatestData);
-			}
+                var topMethods = latest.ListRepos
+                    .SelectMany(r => r.ListClasses.SelectMany(c => c.ListMethods.Select(m => new Tuple<MethodData, RepoData>(m, r))))
+                    .OrderByDescending(x => x.Item1.Complexity)
+                    .Take(5)
+                    .ToList();
 
-			Debug.WriteLine("\nFinished processing data.");
-		}
-		catch (Exception ex)
-		{
-			Debug.WriteLine($"Error loading latest repos: {ex.Message}");
-		}
-		finally
-		{
-			IsBusy = false;
-		}
-	}
+                var topHealthy = latest.ListRepos
+                    .OrderByDescending(r => r.CoveragePercent)
+                    .Take(5)
+                    .ToList();
 
-	void UpdateTop5s()
-	{
-		Debug.WriteLine("Adding data to top 5's...");
+                var topUnhealthy = latest.ListRepos
+                    .OrderBy(r => r.CoveragePercent)
+                    .Take(5)
+                    .ToList();
 
-		if (LatestData is null)
-		{
-			Debug.WriteLine("Latest data is null");
-			return;
-		}
+                var topHottest = latest.ListRepos
+                    .OrderByDescending(r => r.CoveredLinesIncrease)
+                    .Take(5)
+                    .ToList();
 
-		Top5Complex.Clear();
-		var topMethods = LatestData.ListRepos
-			.SelectMany(r => r.ListClasses
-				.SelectMany(c => c.ListMethods
-					.Select(m => new { Repo = r, Method = m })))
-		.OrderByDescending(x => x.Method.Complexity)
-		.Take(5);
+                return new
+                {
+                    Latest = latest,
+                    WeekOld = weekOld,
+                    Dashboards = dashboards,
+                    TopMethods = topMethods,
+                    TopHealthy = topHealthy,
+                    TopUnhealthy = topUnhealthy,
+                    TopHottest = topHottest
+                };
+            }).ConfigureAwait(true);
 
-		foreach (var item in topMethods)
-		{
-			Top5Complex.Add(new Tuple<MethodData, RepoData>(item.Method, item.Repo));
-		}
+            // UI thread updates
+            LatestData = computeResult.Latest;
+            WeekoldData = computeResult.WeekOld;
+            Data = new ObservableCollection<StaticDashboardData>(computeResult.Dashboards);
+            Top5Complex = new ObservableCollection<Tuple<MethodData, RepoData>>(computeResult.TopMethods);
+            Top5Healthy = new ObservableCollection<RepoData>(computeResult.TopHealthy);
+            Top5Unhealthy = new ObservableCollection<RepoData>(computeResult.TopUnhealthy);
+            Top5Hottest = new ObservableCollection<RepoData>(computeResult.TopHottest);
 
-		Top5Healthy.Clear();
-		foreach (var r in LatestData.ListRepos.OrderByDescending(r => r.CoveragePercent).Take(5))
-		{
-			Top5Healthy.Add(r);
-		}
+            OnPropertyChanged(nameof(Data));
+            OnPropertyChanged(nameof(LatestData));
+            OnPropertyChanged(nameof(WeekoldData));
+            OnPropertyChanged(nameof(Top5Complex));
+            OnPropertyChanged(nameof(Top5Healthy));
+            OnPropertyChanged(nameof(Top5Unhealthy));
+            OnPropertyChanged(nameof(Top5Hottest));
 
-		Top5Unhealthy.Clear();
-		foreach (var r in LatestData.ListRepos.OrderBy(r => r.CoveragePercent).Take(5))
-		{
-			Top5Unhealthy.Add(r);
-		}
+            if (saveToDatabase && LatestData is not null)
+            {
+                // Offload save if implementation is synchronous
+                await Task.Run(() => databaseService.SaveMemoryToDB(LatestData)).ConfigureAwait(true);
+            }
 
-		Top5Hottest.Clear();
-		foreach (var r in LatestData.ListRepos.OrderByDescending(r => r.CoveragePercentPercentIncrease).Take(5))
-		{
-			Top5Hottest.Add(r);
-		}
-		Debug.WriteLine("Successfully updated top 5's");
-	}
+            Debug.WriteLine("Execute finished (UI applied).");
+    }
 
-	public static async Task<StaticDashboardData> PopulateCalculatedFields(List<RepoData> repoDatas)
-	{
-		Debug.WriteLine("Updating meta data...");
+    public static StaticDashboardData PopulateCalculatedFields(ObservableCollection<RepoData> repoDatas)
+    {
+        Debug.WriteLine("Updating meta data...");
 
-		var dashboardData = new StaticDashboardData();
-		dashboardData.TotalReposCount = repoDatas.Count;
-		dashboardData.DateRetrieved = repoDatas[0].DateRetrieved;
-		//Dynamically Alocated
-		dashboardData.CoverletVersion = "6.0.2";
-		dashboardData.DashboardVersion = DashboardVersion;
-		dashboardData.DataAge = repoDatas.Max(r => r.DateRetrieved);
+        var dashboardData = new StaticDashboardData();
+        dashboardData.TotalReposCount = repoDatas.Count;
+        dashboardData.DateRetrieved = DateTime.Now;
+        //Dynamically Alocated
+        dashboardData.CoverletVersion = "6.0.2";
+        dashboardData.DashboardVersion = DashboardVersion;
+        dashboardData.DataAge = repoDatas[0].DateRetrieved;
 
-		double AverageCoveragePercentSum = 0;
-		double AverageBranchCoveragePercentSum = 0;
+        double AverageCoveragePercentSum = 0;
+        double AverageBranchCoveragePercentSum = 0;
 
-		Debug.WriteLine("Successfully updated meta data...");
+        Debug.WriteLine("Successfully updated meta data...");
 
-		Debug.WriteLine("Updating repo data...");
+        Debug.WriteLine("Updating repo data...");
 
-		await Task.Run(() =>
-		{
-			foreach (RepoData repo in repoDatas)
-			{
-				dashboardData.ListRepos.Add(repo);
-				AverageCoveragePercentSum += repo.CoveragePercent;
-				AverageBranchCoveragePercentSum += repo.BranchRate;
-				dashboardData.TotalBracnhesCoveredCount += repo.TotalCoveredBranches;
+        
+            foreach (RepoData repo in repoDatas)
+            {
+                dashboardData.ListRepos.Add(repo);
+                AverageCoveragePercentSum += repo.CoveragePercent;
+                AverageBranchCoveragePercentSum += repo.BranchRate;
+                dashboardData.TotalBracnhesCoveredCount += repo.TotalCoveredBranches;
 
-				foreach (ClassData classData in repo.ListClasses)
-				{
-					dashboardData.TotalClassesCount++;
-					foreach (MethodData methodData in classData.ListMethods)
-					{
-						dashboardData.ListMethods.Add(methodData);
+                foreach (ClassData classData in repo.ListClasses)
+                {
+                    dashboardData.TotalClassesCount++;
+                    foreach (MethodData methodData in classData.ListMethods)
+                    {
+                        dashboardData.ListMethods.Add(methodData);
 
-						dashboardData.TotalMethodsCount++;
-						foreach (LineData lineData in methodData.ListLines)
-						{
-							dashboardData.TotalLinesCount++;
-							if (lineData.Hits >= 1)
-							{
-								dashboardData.TotalLinesCoveredCount++;
-							}
-						}
-					}
-				}
-			}
-		});
+                        dashboardData.TotalMethodsCount++;
+                        foreach (LineData lineData in methodData.ListLines)
+                        {
+                            dashboardData.TotalLinesCount++;
+                            if (lineData.Hits >= 1)
+                            {
+                                dashboardData.TotalLinesCoveredCount++;
+                            }
+                        }
+                    }
+                }
+            }
+        
 
-		dashboardData.AverageLineCoveragePercent = AverageCoveragePercentSum / repoDatas.Count;
-		dashboardData.AverageBranchCoveragePercent = AverageBranchCoveragePercentSum / repoDatas.Count;
+        dashboardData.AverageLineCoveragePercent = AverageCoveragePercentSum / repoDatas.Count;
+        dashboardData.AverageBranchCoveragePercent = AverageBranchCoveragePercentSum / repoDatas.Count;
 
-		Debug.WriteLine("Successfully updated repo data...");
+        Debug.WriteLine("Successfully updated repo data...");
 
-		return dashboardData;
-	}
+        return dashboardData;
+    }
 
-	public static void PopulateChangesFields(StaticDashboardData latestData, StaticDashboardData PreviousData)
-	{
-		Debug.WriteLine("Updating chages fields...");
-		foreach (var latestRepo in latestData.ListRepos)
-		{
-			RepoData match = PreviousData.ListRepos.FirstOrDefault(r => r.Name == latestRepo.Name);
+    public static void PopulateChangesFields(StaticDashboardData latestData, StaticDashboardData previousData)
+    {
+        if (latestData is null)
+        {
+            throw new ArgumentNullException(nameof(latestData));
+        }
 
-			if (match is null)
-			{
-				latestRepo.CoveredLinesIncrease = latestRepo.CoveredLines;
-				if (latestRepo.CoveredLinesIncrease <= 0)
-				{
-					latestRepo.CoveragePercentPercentIncrease = 0;
-				} else
-				{
-					latestRepo.CoveragePercentPercentIncrease = latestRepo.CoveragePercent;
-				}
-				continue;
-			}
+        // If there's no previous data, treat as "all new"
+        previousData ??= new StaticDashboardData();
 
-			latestRepo.CoveredLinesIncrease = latestRepo.CoveredLines - match.CoveredLines;
+        // Guard against null repo lists
+        previousData.ListRepos ??= new ObservableCollection<RepoData>();
+        latestData.ListRepos ??= new ObservableCollection<RepoData>();
 
-			if (latestRepo.CoveredLinesIncrease <= 0) 
-			{
-				latestRepo.CoveragePercentPercentIncrease = 0;
-			}
-			else
-			{
-				latestRepo.CoveragePercentPercentIncrease = latestRepo.CoveragePercent - match.CoveragePercent;
-			}
-		}
-		Debug.WriteLine("Successfully updated changes fields.");
-	}
+        Debug.WriteLine("Updating changes fields...");
 
-	[RelayCommand]
-	public async Task GoToMainPageAsync()
-	{
-		if (IsBusy)
-		{
-			return;
-		}
-		IsBusy = true;
-		try
-		{
-			await Shell.Current.GoToAsync($"//{nameof(MainPage)}", true);
-		}
-		catch (Exception ex)
-		{
-			Debug.WriteLine($"Error navigating to MainPage: {ex.Message}");
-		}
-		finally
-		{
-			IsBusy = false;
-		}
-	}
+        var previousByName = previousData.ListRepos
+            .Where(r => !string.IsNullOrWhiteSpace(r.Name))
+            .ToDictionary(r => r.Name, r => r);
+
+        foreach (var latestRepo in latestData.ListRepos)
+        {
+            if (latestRepo is null)
+            {
+                continue;
+            }
+
+            if (!previousByName.TryGetValue(latestRepo.Name, out var match) || match is null)
+            {
+                //If not match found, increase is just current
+                latestRepo.CoveredLinesIncrease = latestRepo.CoveredLines;
+
+                latestRepo.CoveragePercentPercentIncrease = latestRepo.CoveragePercent;
+
+            } 
+            else
+            {
+                // Compute line delta
+                latestRepo.CoveredLinesIncrease = latestRepo.CoveredLines - match.CoveredLines;
+
+                latestRepo.CoveragePercentPercentIncrease = latestRepo.CoveragePercent - match.CoveragePercent;
+            }
+        }
+
+        Debug.WriteLine("Successfully updated changes fields.");
+    }
+
+    [RelayCommand]
+    public async Task GoToMainPageAsync()
+    {
+        if (IsBusy)
+        {
+            return;
+        }
+        IsBusy = true;
+        try
+        {
+            await Shell.Current.GoToAsync($"{nameof(DrillDownDashboardPage)}", true);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error navigating to DrillDownDashboardPage: {ex.Message}");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
 }

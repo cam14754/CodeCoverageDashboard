@@ -28,9 +28,9 @@ public partial class StaticDashboardData : ObservableObject
 
 
 	//Given properties
-	[ObservableProperty] public partial DateTime DateRetrieved { get; set; } = DateTime.MinValue; //
-	[ObservableProperty] public partial DateTime DataAge { get; set; } = DateTime.MinValue; //
-	[ObservableProperty] public partial string CoverletVersion { get; set; } = string.Empty; //
+	[ObservableProperty] public partial DateTime DateRetrieved { get; set; } = DateTime.UnixEpoch; //
+	[ObservableProperty] public partial DateTime DataAge { get; set; } = DateTime.UnixEpoch; //
+    [ObservableProperty] public partial string CoverletVersion { get; set; } = string.Empty; //
 	[ObservableProperty] public partial string DashboardVersion { get; set; } = string.Empty; //
 
 	// Calculated inferred properties

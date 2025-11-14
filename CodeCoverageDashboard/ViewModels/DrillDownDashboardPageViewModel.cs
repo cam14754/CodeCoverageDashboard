@@ -4,7 +4,7 @@
 // For personal and educational use only.
 
 namespace CodeCoverageDashboard.ViewModels;
-public partial class MainPageViewModel(IDataHandlerService dataHandlerService) : BaseViewModel
+public partial class DrillDownDashboardPageViewModel(IDataHandlerService dataHandlerService) : BaseViewModel
 {
 	public ObservableCollection<RepoData> Repos { get; set; }
 	readonly IDataHandlerService datahandlerService = dataHandlerService;
@@ -81,7 +81,7 @@ public partial class MainPageViewModel(IDataHandlerService dataHandlerService) :
 		IsBusy = true;
 		try
 		{
-			await Shell.Current.GoToAsync(nameof(StaticDashboardPage));
+			await Shell.Current.GoToAsync($"//{nameof(StaticDashboardPage)}");
 		}
 		catch (Exception ex)
 		{

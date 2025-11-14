@@ -5,15 +5,18 @@
 
 namespace CodeCoverageDashboard;
 
+using System.Diagnostics;
+
 public static class TraceConfig
 {
-	public static void Setup()
-	{
-		Trace.Listeners.Clear();
-		Trace.Listeners.Add(new TextWriterTraceListener("trace.log"));
-		Trace.Listeners.Add(new ConsoleTraceListener());
-		Trace.AutoFlush = true;
+    public static void Setup()
+    {
+        Trace.Listeners.Clear();
+        Trace.Listeners.Add(new TextWriterTraceListener("trace.log"));
+        Trace.Listeners.Add(new ConsoleTraceListener());
+        Trace.AutoFlush = true;
 
-		Trace.WriteLine("Trace system initialized!");
-	}
+        Trace.WriteLine("Trace system initialized!");
+    }
 }
+

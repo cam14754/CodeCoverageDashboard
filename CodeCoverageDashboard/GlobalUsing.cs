@@ -14,7 +14,6 @@ global using CodeCoverageDashboard.Converters;
 global using CodeCoverageDashboard.DTOs;
 global using CodeCoverageDashboard.Interfaces;
 global using CodeCoverageDashboard.Models;
-global using CodeCoverageDashboard.Pages;
 global using CodeCoverageDashboard.Services;
 global using CodeCoverageDashboard.Tables;
 global using CodeCoverageDashboard.ViewModels;
@@ -23,5 +22,6 @@ global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Mvvm.Input;
 global using Microsoft.Extensions.Logging;
 global using SQLite;
-global using System.Globalization;	
+global using System.Globalization;  
+
 
