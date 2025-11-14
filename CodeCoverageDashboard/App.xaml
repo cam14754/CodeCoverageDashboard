@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:CodeCoverageDashboard.Converters"
     xmlns:local="clr-namespace:CodeCoverageDashboard"
+    xmlns:models="clr-namespace:CodeCoverageDashboard.Models"
     xmlns:telerik="http://schemas.telerik.com/2022/xaml/maui">
     <Application.Resources>
         <ResourceDictionary>
@@ -19,13 +20,11 @@
 
             <Color x:Key="TextColor">White</Color>
 
-
-
-
-
-
             <converters:InvertPercentConverter x:Key="InvertPercentConverter" />
             <converters:DecimalPercentToWholePercentConverter x:Key="DecimalPercentConverter" />
+            <converters:ZeroToBoolConverter x:Key="ZeroToBoolConverter" />
+            <converters:CoveragePercentToColorGradient x:Key="CoveragePercentToColorGradient" />
+
 
             <Style x:Key="labelBaseStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="{StaticResource TextColor}" />
@@ -174,9 +173,7 @@
                 <Setter Property="CornerRadius" Value="10" />
                 <Setter Property="Margin" Value="4" />
                 <Setter Property="Padding" Value="7" />
-
             </Style>
-
         </ResourceDictionary>
     </Application.Resources>
 </Application>

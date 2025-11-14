@@ -270,3 +270,4 @@ paket-files/
 BenchmarkDotNet.Artifacts/
 CodeCoverageDashboard/RepoIgnore.cs
 .db
+CodeCoverageDashboard/CodeCoverageDataBase.db

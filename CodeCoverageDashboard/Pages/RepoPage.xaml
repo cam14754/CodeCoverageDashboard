@@ -4,81 +4,71 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:CodeCoverageDashboard.Models"
+    xmlns:telerik="http://schemas.telerik.com/2022/xaml/maui"
     xmlns:viewmodels="clr-namespace:CodeCoverageDashboard.ViewModels"
     Title="{Binding Title}"
-    x:DataType="viewmodels:RepoPageViewModel">
-    <Grid ColumnDefinitions="*, 400" RowDefinitions="170, *">
-        <!--  Top left box  -->
-        <Label
-            Grid.Row="0"
-            Grid.Column="0"
-            BackgroundColor="Red" />
-        <!--  Top right box  -->
-        <Label
-            Grid.Row="1"
-            Grid.Column="0"
-            BackgroundColor="Aqua" />
+    Padding="20"
+    x:DataType="viewmodels:RepoPageViewModel"
+    BackgroundColor="{StaticResource BackgroundColor}"
+    Shell.NavBarIsVisible="False">
 
-        <!--  Bottom right box  -->
-        <Label
-            Grid.Row="1"
-            Grid.Column="1"
-            BackgroundColor="Green" />
+    <Grid ColumnDefinitions="3.5*, *" RowDefinitions="*">
 
-        <!--  Bottom left box  -->
-        <Label
-            Grid.Row="0"
+        <telerik:RadBorder
             Grid.Column="1"
-            BackgroundColor="Yellow" />
-        <CollectionView
-            Grid.Row="1"
-            Grid.Column="0"
-            ItemsSource="{Binding SelectedRepo.ListClasses}">
+            BackgroundColor="{StaticResource CellColor}"
+            Style="{StaticResource borderRoundedStyle}">
+            <VerticalStackLayout Padding="20" Spacing="16">
+                <Label Style="{StaticResource labelHeading}" Text="{Binding SelectedRepo.Name}" />
+
+                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedRepo.CoveragePercent, StringFormat='Coverage: {0:P2}'}" />
+
+                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedRepo.TotalLines, StringFormat='Total Lines: {0}'}" />
+
+                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedRepo.BranchRate, StringFormat='Branch Rate: {0}'}" />
+            </VerticalStackLayout>
+        </telerik:RadBorder>
+
+        <CollectionView Grid.Column="0" ItemsSource="{Binding SelectedRepo.ListClasses}">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="3" />
+            </CollectionView.ItemsLayout>
+
             <CollectionView.EmptyView>
                 <Label
                     Margin="20"
-                    FontSize="50"
                     HorizontalOptions="Center"
                     HorizontalTextAlignment="Center"
-                    Text="No classes availible" />
+                    Style="{StaticResource labelHeading}"
+                    Text="No classes available" />
             </CollectionView.EmptyView>
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:ClassData">
-                    <Border
-                        BackgroundColor="Yellow"
-                        HeightRequest="120"
-                        StrokeThickness="5"
-                        WidthRequest="400">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:RepoPageViewModel}}, x:DataType=viewmodels:RepoPageViewModel, Path=GoToClassPageCommand}"
-                                CommandParameter="{Binding .}"
-                                NumberOfTapsRequired="2" />
-                        </Border.GestureRecognizers>
-                        <VerticalStackLayout>
-                            <Label Text="{Binding Name, StringFormat='Name: {0}'}" />
-                            <Label Text="{Binding FilePath, StringFormat='File Path: {0}'}" />
+                    <Grid Margin="20">
+                        <telerik:RadBorder
+                            Padding="8"
+                            BackgroundColor="{Binding CoveragePercent, Converter={StaticResource CoveragePercentToColorGradient}}"
+                            HeightRequest="150"
+                            Style="{StaticResource borderRoundedStyle}">
 
-                            <Label Text="{Binding CoveragePercent, StringFormat='Coverage Percent: {0:P2}'}" />
-                            <Label Text="Errors:" />
+                            <telerik:RadBorder.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:RepoPageViewModel}}, Path=GoToClassPageCommand}"
+                                    CommandParameter="{Binding .}"
+                                    NumberOfTapsRequired="2" />
+                            </telerik:RadBorder.GestureRecognizers>
 
-                            <!--  Inner list of strings  -->
-                            <ScrollView>
-                                <CollectionView ItemsSource="{Binding Errors}">
-                                    <CollectionView.EmptyView>
-                                        <Label Text="No Errors :)" />
-                                    </CollectionView.EmptyView>
-                                    <CollectionView.ItemTemplate>
-                                        <DataTemplate x:DataType="x:String">
-                                            <Label Text="{Binding ., StringFormat=' -{0}'}" />
-                                        </DataTemplate>
-                                    </CollectionView.ItemTemplate>
-                                </CollectionView>
-                            </ScrollView>
+                            <VerticalStackLayout Spacing="4">
+                                <Label Style="{StaticResource labelEmphasis}" Text="{Binding Name}" />
 
-                        </VerticalStackLayout>
-                    </Border>
+
+
+                                <Label Style="{StaticResource labelBody}" Text="{Binding CoveragePercent, StringFormat='Coverage: {0:P2}'}" />
+
+                            </VerticalStackLayout>
+                        </telerik:RadBorder>
+                    </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
