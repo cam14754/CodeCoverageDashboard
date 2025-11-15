@@ -54,7 +54,7 @@
                     <Grid Margin="20">
                         <telerik:RadBorder
                             Padding="20"
-                            BackgroundColor="{StaticResource CellColor}"
+                            BackgroundColor="{Binding IsHovered, Converter={StaticResource BoolToColorConverter}}"
                             Style="{StaticResource borderRoundedStyle}">
 
                             <telerik:RadBorder.GestureRecognizers>
@@ -62,6 +62,7 @@
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DrillDownDashboardPageViewModel}}, Path=GoToRepoPageCommand}"
                                     CommandParameter="{Binding .}"
                                     NumberOfTapsRequired="2" />
+                                <PointerGestureRecognizer PointerEnteredCommand="{Binding ToggleHoveredCommand}" PointerExitedCommand="{Binding ToggleHoveredCommand}" />
                             </telerik:RadBorder.GestureRecognizers>
                             <Grid ColumnDefinitions="*, auto">
                                 <VerticalStackLayout Grid.Column="0">

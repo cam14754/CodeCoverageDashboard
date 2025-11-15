@@ -13,6 +13,8 @@
 
             <Color x:Key="BackgroundColor">#151138</Color>
             <Color x:Key="CellColor">#27294e</Color>
+            <Color x:Key="HoveredCellColor">#31346e</Color>
+
             <Color x:Key="TableHeaderColor">#393b68</Color>
 
             <Color x:Key="NormalRowColor">#151138</Color>
@@ -24,6 +26,7 @@
             <converters:DecimalPercentToWholePercentConverter x:Key="DecimalPercentConverter" />
             <converters:ZeroToBoolConverter x:Key="ZeroToBoolConverter" />
             <converters:CoveragePercentToColorGradient x:Key="CoveragePercentToColorGradient" />
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
 
 
             <Style x:Key="labelBaseStyle" TargetType="Label">

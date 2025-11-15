@@ -48,4 +48,14 @@ public partial class RepoData : ObservableObject
 
 	[ObservableProperty]
 	public partial XDocument? XDocument { get; set; } = null;
+
+	//Not to be saved
+	[ObservableProperty]
+	public partial bool IsHovered { get; set; } = false;
+
+    [RelayCommand]
+    public void ToggleHovered()
+    {
+        IsHovered = !IsHovered;
+    }
 }
