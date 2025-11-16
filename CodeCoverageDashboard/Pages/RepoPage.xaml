@@ -18,14 +18,21 @@
             Grid.Column="1"
             BackgroundColor="{StaticResource CellColor}"
             Style="{StaticResource borderRoundedStyle}">
-            <VerticalStackLayout Padding="20" Spacing="16">
-                <Label Style="{StaticResource labelHeading}" Text="{Binding SelectedRepo.Name}" />
+            <VerticalStackLayout Padding="20" Spacing="0">
+                <Label
+                    HorizontalOptions="Start"
+                    HorizontalTextAlignment="Start"
+                    Style="{StaticResource labelSubHeading}"
+                    Text="{Binding SelectedRepo.Name}" />
 
-                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedRepo.CoveragePercent, StringFormat='Coverage: {0:P2}'}" />
+                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedRepo.CoveragePercent, StringFormat='Coverage Percent: {0:P2}'}" />
+
+                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedRepo.BranchRate, StringFormat='Branch Coverage Percent: {0:P2}'}" />
 
                 <Label Style="{StaticResource labelBody}" Text="{Binding SelectedRepo.TotalLines, StringFormat='Total Lines: {0}'}" />
 
-                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedRepo.BranchRate, StringFormat='Branch Rate: {0}'}" />
+                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedRepo.DateRetrieved, StringFormat='Date Retrieved: {0}'}" />
+
             </VerticalStackLayout>
         </telerik:RadBorder>
 
@@ -60,10 +67,11 @@
                             </telerik:RadBorder.GestureRecognizers>
 
                             <VerticalStackLayout Spacing="4">
-                                <Label Style="{StaticResource labelEmphasis}" Text="{Binding Name}" />
-
-
-
+                                <Label
+                                    HorizontalOptions="Start"
+                                    HorizontalTextAlignment="Start"
+                                    Style="{StaticResource labelEmphasis}"
+                                    Text="{Binding Name, Converter={StaticResource RegexToStringConverter}, ConverterParameter='^.*\\.'}" />
                                 <Label Style="{StaticResource labelBody}" Text="{Binding CoveragePercent, StringFormat='Coverage: {0:P2}'}" />
 
                             </VerticalStackLayout>

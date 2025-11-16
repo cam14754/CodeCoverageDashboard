@@ -2,12 +2,20 @@
 // © 2025 Cameron Strachan, trading as Cameron's Rock Company. All rights reserved.
 // Created by Cameron Strachan.
 // For personal and educational use only.
-
 namespace CodeCoverageDashboard.ViewModels;
 public partial class DrillDownDashboardPageViewModel(IDataHandlerService dataHandlerService) : BaseViewModel
 {
 	public ObservableCollection<RepoData> Repos { get; set; }
-	readonly IDataHandlerService datahandlerService = dataHandlerService;
+    public ObservableCollection<RepoData> VisableRepos { get; set; }
+
+	[ObservableProperty]
+	public partial double TotalLines { get; set; }
+    [ObservableProperty]
+    public partial double AverageCoveragePercent { get; set; }
+
+	public string DashboardVersion { get; set; } = Constants.DashboardVersion;
+
+    readonly IDataHandlerService datahandlerService = dataHandlerService;
 
 	[RelayCommand]
 	public async Task RunAsync()
@@ -26,8 +34,11 @@ public partial class DrillDownDashboardPageViewModel(IDataHandlerService dataHan
 
 			//Save to memory
 			Repos = dataHandlerService.Repos;
+			VisableRepos = Repos;
 
-			OnPropertyChanged(nameof(Repos));
+			UpdateStats();
+
+			OnPropertyChanged(nameof(VisableRepos));
 
 			Debug.WriteLine("Repos loaded successfully.");
 
@@ -93,4 +104,9 @@ public partial class DrillDownDashboardPageViewModel(IDataHandlerService dataHan
 		}
 	}
 
+	public void UpdateStats()
+	{
+		TotalLines = VisableRepos?.Sum(r => r.TotalLines) ?? 0;
+		AverageCoveragePercent = VisableRepos?.Average(r => r.CoveragePercent) ?? 0;
+	}
 }

@@ -22,7 +22,7 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
     public ObservableCollection<RepoData> Top5Unhealthy { get; set; } = [];
     public ObservableCollection<RepoData> Top5Hottest { get; set; } = [];
 
-    public const string DashboardVersion = "0.3.5";
+    public const string DashboardVersion = Constants.DashboardVersion;
 
     [RelayCommand]
     public async Task GetRepoData(bool saveToDatabase = false)
@@ -134,8 +134,7 @@ public partial class StaticDashboardPageViewModel(IDatabaseService databaseServi
 
             if (saveToDatabase && LatestData is not null)
             {
-                // Offload save if implementation is synchronous
-                await Task.Run(() => databaseService.SaveMemoryToDB(LatestData)).ConfigureAwait(true);
+                await Task.Run(() => databaseService.SaveMemoryToDB(LatestData));
             }
 
             Debug.WriteLine("Execute finished (UI applied).");

@@ -18,4 +18,6 @@ public static class Constants
 		SQLite.SQLiteOpenFlags.SharedCache;
 
 	public static string DatabasePath => $"C:\\Users\\cam14754\\Desktop\\UnitTestingInternProject\\CodeCoverageDashboard\\CodeCoverageDashboard\\{DatabaseFilename}";
+
+	public const string DashboardVersion = "0.3.6";
 }

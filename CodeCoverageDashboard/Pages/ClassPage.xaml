@@ -14,13 +14,16 @@
 
     <Grid ColumnDefinitions="3.5*, *" RowDefinitions="*">
 
-        <!--  Right panel: Class summary  -->
         <telerik:RadBorder
             Grid.Column="1"
             BackgroundColor="{StaticResource CellColor}"
             Style="{StaticResource borderRoundedStyle}">
             <VerticalStackLayout Padding="20" Spacing="16">
-                <Label Style="{StaticResource labelHeading}" Text="{Binding SelectedClass.Name}" />
+                <Label
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    Style="{StaticResource labelEmphasis}"
+                    Text="{Binding SelectedClass.Name}" />
 
                 <Label
                     LineBreakMode="TailTruncation"
@@ -31,13 +34,11 @@
             </VerticalStackLayout>
         </telerik:RadBorder>
 
-        <!--  Left panel: Methods list  -->
         <CollectionView
             Grid.Column="0"
             ItemsSource="{Binding SelectedClass.ListMethods}"
             VerticalOptions="Fill">
             <CollectionView.ItemsLayout>
-                <!--  3-wide grid of method cards  -->
                 <GridItemsLayout Orientation="Vertical" Span="3" />
             </CollectionView.ItemsLayout>
 

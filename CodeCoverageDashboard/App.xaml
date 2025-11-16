@@ -27,6 +27,8 @@
             <converters:ZeroToBoolConverter x:Key="ZeroToBoolConverter" />
             <converters:CoveragePercentToColorGradient x:Key="CoveragePercentToColorGradient" />
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+            <converters:RegexToStringConverter x:Key="RegexToStringConverter" />
+
 
 
             <Style x:Key="labelBaseStyle" TargetType="Label">

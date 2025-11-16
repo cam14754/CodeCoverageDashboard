@@ -10,36 +10,92 @@
     x:DataType="viewmodels:DrillDownDashboardPageViewModel"
     BackgroundColor="{StaticResource BackgroundColor}">
 
-    <!--  change back to 3 once done  -->
-    <Grid ColumnDefinitions="3.1*, *" RowDefinitions="*">
+    <Grid ColumnDefinitions="3*, *" RowDefinitions="2*, *">
         <telerik:RadBorder
+            Grid.Row="0"
             Grid.Column="1"
             BackgroundColor="{StaticResource CellColor}"
             Style="{StaticResource borderRoundedStyle}">
-            <VerticalStackLayout>
+            <Grid ColumnDefinitions="*, *" RowDefinitions="auto, *, *, *, *">
                 <Button
-                    Margin="20"
+                    Margin="5"
                     Command="{Binding RunCommand}"
                     HeightRequest="100"
-                    Text="Load Repositories"
-                    WidthRequest="200" />
+                    HorizontalOptions="Fill"
+                    Text="Load Repositories" />
                 <Button
-                    Grid.Row="2"
-                    Grid.Column="0"
+                    Grid.Column="1"
+                    Margin="5"
                     Command="{Binding GoToStaticDashboardPageCommand}"
-                    HeightRequest="40"
-                    Text="Go To Static Dashboard Page"
-                    WidthRequest="200" />
-            </VerticalStackLayout>
+                    HeightRequest="100"
+                    HorizontalOptions="Fill"
+                    Text="Go To Static Dashboard Page" />
+
+                <Label
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    HeightRequest="100"
+                    Style="{StaticResource labelBody}"
+                    Text="Other controls and settings going here..."
+                    TextColor="Gray"
+                    VerticalOptions="End"
+                    VerticalTextAlignment="End" />
+                <Label
+                    Grid.Row="2"
+                    Grid.ColumnSpan="2"
+                    HeightRequest="100"
+                    Style="{StaticResource labelBody}"
+                    Text="Filtering..."
+                    TextColor="Gray"
+                    VerticalOptions="Center"
+                    VerticalTextAlignment="Center" />
+                <Label
+                    Grid.Row="3"
+                    Grid.ColumnSpan="2"
+                    HeightRequest="100"
+                    Style="{StaticResource labelBody}"
+                    Text="Sorting..."
+                    TextColor="Gray"
+                    VerticalOptions="Start"
+                    VerticalTextAlignment="Start" />
+
+            </Grid>
+
+
+
         </telerik:RadBorder>
 
+        <telerik:RadBorder
+            Grid.Row="1"
+            Grid.Column="1"
+            BackgroundColor="{StaticResource CellColor}"
+            Style="{StaticResource borderRoundedStyle}">
+            <Grid RowDefinitions="auto,auto, auto, *">
+                <Label
+                    Grid.Row="0"
+                    Style="{StaticResource labelSubHeading}"
+                    Text="Overall Statistics" />
+                <Label
+                    Grid.Row="1"
+                    Style="{StaticResource labelBody}"
+                    Text="{Binding TotalLines, StringFormat='Total Lines: {0}'}" />
+                <Label
+                    Grid.Row="2"
+                    Style="{StaticResource labelBody}"
+                    Text="{Binding AverageCoveragePercent, StringFormat='Average Coverage Percent: {0:P2}'}" />
+                <Label
+                    Grid.Row="3"
+                    Style="{StaticResource labelBody}"
+                    Text="{Binding DashboardVersion, StringFormat='Dashboard Version: {0} | By Cameron Strachan'}"
+                    VerticalOptions="End" />
 
+            </Grid>
+        </telerik:RadBorder>
 
-
-
-
-
-        <CollectionView x:Name="SelectedRepo" ItemsSource="{Binding Repos}">
+        <CollectionView
+            x:Name="SelectedRepo"
+            Grid.RowSpan="2"
+            ItemsSource="{Binding VisableRepos}">
 
             <CollectionView.ItemsLayout>
                 <GridItemsLayout Orientation="Vertical" Span="2" />
@@ -67,14 +123,15 @@
                             <Grid ColumnDefinitions="*, auto">
                                 <VerticalStackLayout Grid.Column="0">
                                     <Label
+                                        HorizontalOptions="Start"
                                         HorizontalTextAlignment="Start"
                                         Style="{StaticResource labelEmphasis}"
                                         Text="{Binding Name}" />
                                     <Label Style="{StaticResource labelBody}" Text="{Binding CoveragePercent, StringFormat='Coverage Percent: {0:P2}'}" />
+                                    <Label Style="{StaticResource labelBody}" Text="{Binding BranchRate, StringFormat='Branch Coverage Percent: {0:P2}'}" />
                                     <Label Style="{StaticResource labelBody}" Text="{Binding CoveredLines, StringFormat='Covered Lines: {0}'}" />
                                     <Label Style="{StaticResource labelBody}" Text="{Binding UncoveredLines, StringFormat='Uncovered Lines: {0}'}" />
                                     <Label Style="{StaticResource labelBody}" Text="{Binding TotalLines, StringFormat='Total Lines: {0}'}" />
-                                    <Label Style="{StaticResource labelBody}" Text="{Binding BranchRate, StringFormat='Branch Rate: {0}'}" />
                                 </VerticalStackLayout>
 
                                 <telerik:RadRadialGauge
@@ -119,8 +176,9 @@
                                     <Image
                                         Aspect="AspectFit"
                                         HeightRequest="50"
+                                        IsAnimationPlaying="True"
                                         IsVisible="{Binding CoveragePercent, Converter={StaticResource ZeroToBoolConverter}}"
-                                        Source="warning.png"
+                                        Source="warning_gif_two.gif"
                                         WidthRequest="50" />
                                     <Label
                                         Margin="5,0,0,0"
