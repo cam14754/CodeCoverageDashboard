@@ -90,7 +90,7 @@
                                 HorizontalOptions="Start"
                                 HorizontalTextAlignment="Start"
                                 Style="{StaticResource labelEmphasis}"
-                                Text="{Binding Name}" />
+                                Text="{Binding Name, Converter={StaticResource RegexToStringConverter}, ConverterParameter='^.*\\.'}" />
                             <Label Style="{StaticResource labelBody}" Text="{Binding CoveragePercent, StringFormat='Coverage: {0:P2}'}" />
                             <Label Style="{StaticResource labelBody}" Text="{Binding FilePath, StringFormat='FilePath: {0}'}" />
 

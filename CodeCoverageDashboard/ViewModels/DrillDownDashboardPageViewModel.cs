@@ -129,6 +129,8 @@ public partial class DrillDownDashboardPageViewModel(IDataHandlerService dataHan
         AverageBranchCoveragePercent = VisableRepos?.Average(r => r.BranchRate) ?? 0;
         DateRetrieved = DateTime.Now;
 
-        //VisableRepos = VisableRepos.OrderBy(r => Regex.Replace(r.Name, "^.*\\.", "")).ToList();
+        var list  = VisableRepos.OrderBy(r => r.Name);
+        VisableRepos = new ObservableCollection<RepoData>(list);
+        OnPropertyChanged(nameof(VisableRepos));
     }
 }

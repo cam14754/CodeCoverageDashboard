@@ -20,7 +20,7 @@ public class CoveragePercentToColorGradient : IValueConverter
     {
         double Value = (double)value;
         // Soft max value to reduce vibrance
-        const double Max = 200.0;
+        const double Max = 180;
 
         double r, g;
 

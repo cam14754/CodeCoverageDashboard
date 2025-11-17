@@ -70,6 +70,7 @@
                     <telerik:RadBorder
                         Padding="8"
                         BackgroundColor="{Binding CoveragePercent, Converter={StaticResource CoveragePercentToColorGradient}}"
+                        HeightRequest="150"
                         Style="{StaticResource borderRoundedStyle}"
                         VerticalOptions="Start">
                         <VerticalStackLayout Spacing="5">
