@@ -4,9 +4,11 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:CodeCoverageDashboard.Models"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:telerik="http://schemas.telerik.com/2022/xaml/maui"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:CodeCoverageDashboard.ViewModels"
+    x:Name="StaticDashboardPageName"
     Title="StaticDashboardPage"
     Padding="4"
     x:DataType="viewmodels:StaticDashboardPageViewModel"
@@ -124,7 +126,7 @@
                             <Label.GestureRecognizers>
                                 <TapGestureRecognizer
                                     Command="{Binding GetRepoDataCommand}"
-                                    CommandParameter="{x:Boolean false}"
+                                    CommandParameter="{x:Boolean True}"
                                     NumberOfTapsRequired="2" />
                             </Label.GestureRecognizers>
                         </Label>
@@ -187,7 +189,7 @@
                             Grid.Row="5"
                             Grid.Column="1"
                             Style="{StaticResource labelBodyRightAlign}"
-                            Text="{Binding LatestData.DateRetrieved}" />
+                            Text="{Binding LatestData.DateRetrieved, StringFormat='{0:dd/MM/yyyy h:mm tt}'}" />
 
                         <!--  Data Age  -->
                         <Label
@@ -199,7 +201,7 @@
                             Grid.Row="6"
                             Grid.Column="1"
                             Style="{StaticResource labelBodyRightAlign}"
-                            Text="{Binding LatestData.DataAge}" />
+                            Text="{Binding LatestData.DataAge, StringFormat='{0:dd/MM/yyyy h:mm tt}'}" />
 
                         <Label
                             Grid.Row="7"
@@ -246,10 +248,27 @@
 
 
 
-                                <telerik:DataGridTemplateColumn
-                                    HeaderStyle="{StaticResource datagridHeaderRightAlign}"
-                                    HeaderText="{Binding WeekoldData.DateRetrieved, StringFormat='Coverage Increase (since {0:MM/dd hh:mm})'}"
-                                    Style="{StaticResource datagridColoumnAuto}">
+                                <telerik:DataGridTemplateColumn HeaderStyle="{StaticResource datagridHeaderRightAlign}" Style="{StaticResource datagridColoumnAuto}">
+                                    <telerik:DataGridTemplateColumn.HeaderContentTemplate>
+                                        <DataTemplate>
+                                            <HorizontalStackLayout>
+                                                <Label
+                                                    FontSize="28"
+                                                    HorizontalTextAlignment="Center"
+                                                    Text="Coverage Percent Increase "
+                                                    TextColor="White"
+                                                    VerticalTextAlignment="Center" />
+                                                <Label
+                                                    Margin="0,9,0,0"
+                                                    FontSize="18"
+                                                    HorizontalTextAlignment="Center"
+                                                    Text="{Binding Source={x:Reference StaticDashboardPageName}, Path=BindingContext.WeekoldData.DateRetrieved, StringFormat=' (since {0:MM/dd HH:mm})'}"
+                                                    TextColor="LightGray"
+                                                    VerticalTextAlignment="Center" />
+
+                                            </HorizontalStackLayout>
+                                        </DataTemplate>
+                                    </telerik:DataGridTemplateColumn.HeaderContentTemplate>
 
                                     <telerik:DataGridTemplateColumn.CellContentTemplate>
                                         <DataTemplate x:DataType="models:RepoData">
@@ -483,20 +502,20 @@
                     Grid.Column="2"
                     Background="{StaticResource CellColor}"
                     Style="{StaticResource borderRoundedStyle}">
-                    <Grid Grid.Column="2" RowDefinitions="auto, *">
+                    <Grid Grid.Column="2" RowDefinitions="auto, *, auto">
 
                         <Label Style="{StaticResource labelSubHeading}" Text="Complex Methods" />
 
                         <Label
                             Grid.Row="1"
-                            Margin="5,0,0,100"
+                            Margin="5,0,0,80"
                             HorizontalOptions="Center"
                             Style="{StaticResource labelEmphasis}"
                             Text="{Binding LatestData.AverageComplexMethodPercent, StringFormat='{}{0:P2}'}"
                             VerticalOptions="End" />
                         <Label
                             Grid.Row="1"
-                            Margin="5,0,0,80"
+                            Margin="5,0,0,60"
                             HorizontalOptions="Center"
                             Style="{StaticResource labelBody}"
                             Text="{Binding LatestData.TotalComplexMethodCount, StringFormat='({0})'}"
@@ -530,6 +549,14 @@
                             </telerik:RadRadialGauge.Indicators>
 
                         </telerik:RadRadialGauge>
+
+                        <Label
+                            Grid.Row="2"
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="(Percentage of methods with greater then 10 complexity)"
+                            TextColor="LightGray"
+                            VerticalOptions="End" />
 
                     </Grid>
                 </telerik:RadBorder>

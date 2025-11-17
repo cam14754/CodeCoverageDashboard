@@ -67,9 +67,6 @@
 	  <MauiXaml Update="Pages\DrillDownDashboardPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Pages\MethodPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
 	  <MauiXaml Update="Pages\RepoPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

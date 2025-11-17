@@ -12,34 +12,54 @@
     BackgroundColor="{StaticResource BackgroundColor}"
     Shell.NavBarIsVisible="False">
 
-    <Grid ColumnDefinitions="3.5*, *" RowDefinitions="*">
+    <Grid ColumnDefinitions="3*, *" RowDefinitions="auto, *">
+
+        <Label
+            Grid.ColumnSpan="2"
+            HorizontalOptions="Start"
+            HorizontalTextAlignment="Start"
+            Style="{StaticResource labelHeading}"
+            Text="Availible Classes: " />
 
         <telerik:RadBorder
+            Grid.Row="1"
             Grid.Column="1"
             BackgroundColor="{StaticResource CellColor}"
             Style="{StaticResource borderRoundedStyle}">
-            <VerticalStackLayout Padding="20" Spacing="0">
+            <VerticalStackLayout Padding="20" Spacing="5">
                 <Label
                     HorizontalOptions="Start"
                     HorizontalTextAlignment="Start"
                     Style="{StaticResource labelSubHeading}"
                     Text="{Binding SelectedRepo.Name}" />
 
-                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedRepo.CoveragePercent, StringFormat='Coverage Percent: {0:P2}'}" />
+                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedRepo.CoveragePercent, StringFormat='Line Coverage Percent: {0:P2}'}" />
 
                 <Label Style="{StaticResource labelBody}" Text="{Binding SelectedRepo.BranchRate, StringFormat='Branch Coverage Percent: {0:P2}'}" />
 
                 <Label Style="{StaticResource labelBody}" Text="{Binding SelectedRepo.TotalLines, StringFormat='Total Lines: {0}'}" />
 
-                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedRepo.DateRetrieved, StringFormat='Date Retrieved: {0}'}" />
+                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedRepo.CoveredLines, StringFormat='Total Lines Covered: {0}'}" />
+
+
+                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedRepo.DateRetrieved, StringFormat='Date Retrieved: {0:dd/MM/yyyy h:mm tt}'}" />
 
             </VerticalStackLayout>
         </telerik:RadBorder>
 
-        <CollectionView Grid.Column="0" ItemsSource="{Binding SelectedRepo.ListClasses}">
+        <CollectionView
+            Grid.Row="1"
+            Grid.Column="0"
+            ItemsSource="{Binding SelectedRepo.ListClasses}">
+
             <CollectionView.ItemsLayout>
-                <GridItemsLayout Orientation="Vertical" Span="3" />
+                <GridItemsLayout
+                    HorizontalItemSpacing="5"
+                    Orientation="Vertical"
+                    Span="3"
+                    VerticalItemSpacing="5" />
             </CollectionView.ItemsLayout>
+
 
             <CollectionView.EmptyView>
                 <Label
@@ -52,31 +72,30 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:ClassData">
-                    <Grid Margin="20">
-                        <telerik:RadBorder
-                            Padding="8"
-                            BackgroundColor="{Binding CoveragePercent, Converter={StaticResource CoveragePercentToColorGradient}}"
-                            HeightRequest="150"
-                            Style="{StaticResource borderRoundedStyle}">
+                    <telerik:RadBorder
+                        Padding="12,8,8,8"
+                        BackgroundColor="{Binding CoveragePercent, Converter={StaticResource CoveragePercentToColorGradient}}"
+                        HeightRequest="200"
+                        Style="{StaticResource borderRoundedStyle}">
 
-                            <telerik:RadBorder.GestureRecognizers>
-                                <TapGestureRecognizer
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:RepoPageViewModel}}, Path=GoToClassPageCommand}"
-                                    CommandParameter="{Binding .}"
-                                    NumberOfTapsRequired="2" />
-                            </telerik:RadBorder.GestureRecognizers>
+                        <telerik:RadBorder.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:RepoPageViewModel}}, Path=GoToClassPageCommand}"
+                                CommandParameter="{Binding .}"
+                                NumberOfTapsRequired="2" />
+                        </telerik:RadBorder.GestureRecognizers>
 
-                            <VerticalStackLayout Spacing="4">
-                                <Label
-                                    HorizontalOptions="Start"
-                                    HorizontalTextAlignment="Start"
-                                    Style="{StaticResource labelEmphasis}"
-                                    Text="{Binding Name, Converter={StaticResource RegexToStringConverter}, ConverterParameter='^.*\\.'}" />
-                                <Label Style="{StaticResource labelBody}" Text="{Binding CoveragePercent, StringFormat='Coverage: {0:P2}'}" />
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                HorizontalOptions="Start"
+                                HorizontalTextAlignment="Start"
+                                Style="{StaticResource labelEmphasis}"
+                                Text="{Binding Name}" />
+                            <Label Style="{StaticResource labelBody}" Text="{Binding CoveragePercent, StringFormat='Coverage: {0:P2}'}" />
+                            <Label Style="{StaticResource labelBody}" Text="{Binding FilePath, StringFormat='FilePath: {0}'}" />
 
-                            </VerticalStackLayout>
-                        </telerik:RadBorder>
-                    </Grid>
+                        </VerticalStackLayout>
+                    </telerik:RadBorder>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

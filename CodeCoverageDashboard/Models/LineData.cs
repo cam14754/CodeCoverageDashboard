@@ -1,11 +1,21 @@
-﻿// SPDX-License-Identifier: Proprietary
-// © 2025 Cameron Strachan, trading as Cameron's Rock Company. All rights reserved.
-// Created by Cameron Strachan.
-// For personal and educational use only.
+﻿// COPYRIGHT © 2025 ESRI
+//
+// TRADE SECRETS: ESRI PROPRIETARY AND CONFIDENTIAL
+// Unpublished material - all rights reserved under the
+// Copyright Laws of the United States.
+//
+// For additional information, contact:
+// Environmental Systems Research Institute, Inc.
+// Attn: Contracts Dept
+// 380 New York Street
+// Redlands, California, USA 92373
+//
+// email: contracts@esri.com
 
 namespace CodeCoverageDashboard.Models;
+
 public class LineData
 {
-	public double? LineNumber { get; set; }
-	public double? Hits { get; set; } = null;
+    public double? LineNumber { get; set; }
+    public double? Hits { get; set; } = null;
 }

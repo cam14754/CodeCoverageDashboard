@@ -1,4 +1,18 @@
-﻿namespace CodeCoverageDashboard.Converters;
+﻿// COPYRIGHT © 2025 ESRI
+//
+// TRADE SECRETS: ESRI PROPRIETARY AND CONFIDENTIAL
+// Unpublished material - all rights reserved under the
+// Copyright Laws of the United States.
+//
+// For additional information, contact:
+// Environmental Systems Research Institute, Inc.
+// Attn: Contracts Dept
+// 380 New York Street
+// Redlands, California, USA 92373
+//
+// email: contracts@esri.com
+
+namespace CodeCoverageDashboard.Converters;
 
 public class BoolToColorConverter : IValueConverter
 {
@@ -7,11 +21,12 @@ public class BoolToColorConverter : IValueConverter
     {
         bool Value = (bool)value;
 
-        if (Value) 
+        if (Value)
         {
             return (Color)Application.Current.Resources["HoveredCellColor"];
-            
-        } else
+
+        }
+        else
         {
             return (Color)Application.Current.Resources["CellColor"];
         }

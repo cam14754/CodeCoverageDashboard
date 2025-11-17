@@ -12,35 +12,49 @@
     BackgroundColor="{StaticResource BackgroundColor}"
     Shell.NavBarIsVisible="False">
 
-    <Grid ColumnDefinitions="3.5*, *" RowDefinitions="*">
+    <Grid ColumnDefinitions="3.5*, *" RowDefinitions="auto, *">
+
+        <Label
+            Grid.ColumnSpan="2"
+            HorizontalOptions="Start"
+            HorizontalTextAlignment="Start"
+            Style="{StaticResource labelHeading}"
+            Text="Availible Methods: " />
 
         <telerik:RadBorder
+            Grid.Row="1"
             Grid.Column="1"
             BackgroundColor="{StaticResource CellColor}"
             Style="{StaticResource borderRoundedStyle}">
-            <VerticalStackLayout Padding="20" Spacing="16">
+            <VerticalStackLayout Padding="20" Spacing="5">
                 <Label
-                    HorizontalOptions="Center"
-                    HorizontalTextAlignment="Center"
-                    Style="{StaticResource labelEmphasis}"
-                    Text="{Binding SelectedClass.Name}" />
+                    HorizontalOptions="Start"
+                    HorizontalTextAlignment="Start"
+                    Style="{StaticResource labelSubHeading}"
+                    Text="{Binding SelectedClass.Name, Converter={StaticResource RegexToStringConverter}, ConverterParameter='^.*\\.'}" />
+                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedClass.CoveragePercent, StringFormat='Line Coverage Percent: {0:P2}'}" />
+                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedClass.BranchCoveragePercent, StringFormat='Branch Coverage Percent: {0:P2}'}" />
+                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedClass.TotalLines, StringFormat='Total Lines: {0}'}" />
+                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedClass.CoveredLines, StringFormat='Total Lines Covered: {0}'}" />
+                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedClass.DateRetrieved, StringFormat='Date Retrieved: {0:dd/MM/yyyy h:mm tt}'}" />
 
-                <Label
-                    LineBreakMode="TailTruncation"
-                    Style="{StaticResource labelBody}"
-                    Text="{Binding SelectedClass.FilePath, StringFormat='File Path: {0}'}" />
-
-                <Label Style="{StaticResource labelBody}" Text="{Binding SelectedClass.CoveragePercent, StringFormat='Coverage: {0:P2}'}" />
             </VerticalStackLayout>
         </telerik:RadBorder>
 
         <CollectionView
+            Grid.Row="1"
             Grid.Column="0"
+            ItemSizingStrategy="MeasureAllItems"
             ItemsSource="{Binding SelectedClass.ListMethods}"
             VerticalOptions="Fill">
             <CollectionView.ItemsLayout>
-                <GridItemsLayout Orientation="Vertical" Span="3" />
+                <GridItemsLayout
+                    HorizontalItemSpacing="5"
+                    Orientation="Vertical"
+                    Span="3"
+                    VerticalItemSpacing="5" />
             </CollectionView.ItemsLayout>
+
 
             <CollectionView.EmptyView>
                 <Label
@@ -53,33 +67,32 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:MethodData">
-                    <Grid Margin="20">
-                        <telerik:RadBorder
-                            Padding="8"
-                            BackgroundColor="{Binding CoveragePercent, Converter={StaticResource CoveragePercentToColorGradient}}"
-                            HeightRequest="175"
-                            Style="{StaticResource borderRoundedStyle}">
+                    <telerik:RadBorder
+                        Padding="8"
+                        BackgroundColor="{Binding CoveragePercent, Converter={StaticResource CoveragePercentToColorGradient}}"
+                        Style="{StaticResource borderRoundedStyle}"
+                        VerticalOptions="Start">
+                        <VerticalStackLayout Spacing="5">
+                            <Label
+                                HorizontalOptions="Start"
+                                LineBreakMode="TailTruncation"
+                                MaxLines="2"
+                                Style="{StaticResource labelEmphasis}"
+                                VerticalOptions="Start">
+                                <Label.Text>
+                                    <MultiBinding StringFormat="{}{0}{1}">
+                                        <Binding Path="Name" />
+                                        <Binding Path="Signature" />
+                                    </MultiBinding>
+                                </Label.Text>
+                            </Label>
 
-                            <VerticalStackLayout Spacing="8">
-                                <!--  Name + Signature  -->
-                                <Label
-                                    LineBreakMode="CharacterWrap"
-                                    MaxLines="4"
-                                    Style="{StaticResource labelEmphasis}"
-                                    VerticalOptions="Fill">
-                                    <Label.Text>
-                                        <MultiBinding StringFormat="{}{0}{1}">
-                                            <Binding Path="Name" />
-                                            <Binding Path="Signature" />
-                                        </MultiBinding>
-                                    </Label.Text>
-                                </Label>
+                            <Label Style="{StaticResource labelBody}" Text="{Binding CoveragePercent, StringFormat='Coverage Percent: {0:P2}'}" />
+                            <Label Style="{StaticResource labelBody}" Text="{Binding Complexity, StringFormat='Complexity: {0}'}" />
 
-                                <Label Style="{StaticResource labelBody}" Text="{Binding CoveragePercent, StringFormat='Coverage: {0:P2}'}" />
-                            </VerticalStackLayout>
+                        </VerticalStackLayout>
 
-                        </telerik:RadBorder>
-                    </Grid>
+                    </telerik:RadBorder>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
 

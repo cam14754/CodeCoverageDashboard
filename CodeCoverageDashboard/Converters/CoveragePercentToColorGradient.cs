@@ -1,75 +1,49 @@
-﻿namespace CodeCoverageDashboard.Converters;
+﻿// COPYRIGHT © 2025 ESRI
+//
+// TRADE SECRETS: ESRI PROPRIETARY AND CONFIDENTIAL
+// Unpublished material - all rights reserved under the
+// Copyright Laws of the United States.
+//
+// For additional information, contact:
+// Environmental Systems Research Institute, Inc.
+// Attn: Contracts Dept
+// 380 New York Street
+// Redlands, California, USA 92373
+//
+// email: contracts@esri.com
+
+namespace CodeCoverageDashboard.Converters;
 
 public class CoveragePercentToColorGradient : IValueConverter
 {
-    // You can tweak these stops however you like
-    // position: 0–1 range
-    private readonly List<(double position, Color color)> _stops =
-    [
-        (0.00, Colors.Red),
-        (0.30, Colors.Red),
-        (0.39, Colors.Yellow),
-        (0.50, Colors.Green),
-        (1.00, Colors.Green)
-    ];
-
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is null)
-            return Colors.Transparent;
+        double Value = (double)value;
+        // Soft max value to reduce vibrance
+        const double Max = 200.0;
 
-        double t;
+        double r, g;
 
-        if (value is double d)
-            t = d;
-        else if (value is float f)
-            t = f;
-        else if (value is int i)
-            t = i;
-        else
-            return Colors.Transparent;
-
-        // Support 0–100 too
-        if (t > 1.0)
-            t /= 100.0;
-
-        t = Math.Clamp(t, 0.0, 1.0);
-
-        // Edge cases
-        if (t <= _stops[0].position)
-            return _stops[0].color;
-
-        if (t >= _stops[^1].position)
-            return _stops[^1].color;
-
-        // Find the two stops we're between
-        for (int i = 0; i < _stops.Count - 1; i++)
+        if (Value <= 0.5)
         {
-            var (posA, colorA) = _stops[i];
-            var (posB, colorB) = _stops[i + 1];
-
-            if (t >= posA && t <= posB)
-            {
-                double localT = (t - posA) / (posB - posA);
-                return LerpColor(colorA, colorB, localT);
-            }
+            // 0 → 0.5 = red (180,0,0) → yellow (180,180,0)
+            // green goes 0 → 180
+            r = Max;
+            g = (Value / 0.5) * Max;
+        }
+        else
+        {
+            // 0.5 → 1 = yellow (180,180,0) → green (0,180,0)
+            // red goes 180 → 0
+            r = ((1.0 - Value) / 0.5) * Max;
+            g = Max;
         }
 
-        // Fallback (shouldn't hit)
-        return _stops[^1].color;
+        return Color.FromRgb((int)r, (int)g, 0);
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         => throw new NotImplementedException();
 
-    private static Color LerpColor(Color a, Color b, double t)
-    {
-        t = Math.Clamp(t, 0.0, 1.0);
 
-        return new Color(
-            (float)(a.Red + (b.Red - a.Red) * t),
-            (float)(a.Green + (b.Green - a.Green) * t),
-            (float)(a.Blue + (b.Blue - a.Blue) * t),
-            (float)(a.Alpha + (b.Alpha - a.Alpha) * t));
-    }
 }
