@@ -531,7 +531,7 @@ XML_LOCATION = r"C:\Users\cam14754\Desktop\Reports"
 DOTNET_TICKS_PER_SECOND = 10_000_000
 DOTNET_EPOCH = datetime(1, 1, 1)
 UPLOAD_TO_DB_BOOL = Boolean
-DASHBOARD_VERSION = "0.3.11"
+DASHBOARD_VERSION = "0.4.1"
 
 def Execute():
     latest_full_path = GetLatestReportDir()
@@ -657,7 +657,7 @@ def AnalyzeCoverageDTO(coverage_list: List["CoverageDTO"]) -> List["RepoData"]:
                     )
                 )
 
-            # Compute TotalLines and CoveredLines like your LINQ
+            # Compute TotalLines and CoveredLines
             total_lines = sum(len(m.lines) for m in c.methods)
             covered_lines = sum(
                 1
