@@ -262,7 +262,7 @@
                                                     Margin="0,9,0,0"
                                                     FontSize="18"
                                                     HorizontalTextAlignment="Center"
-                                                    Text="{Binding Source={x:Reference StaticDashboardPageName}, Path=BindingContext.WeekoldData.DateRetrieved, StringFormat=' (since {0:MM/dd HH:mm})'}"
+                                                    Text="{Binding Source={x:Reference StaticDashboardPageName}, Path=BindingContext.WeekOldData.DateRetrieved, StringFormat=' (since {0:MM/dd HH:mm})'}"
                                                     TextColor="LightGray"
                                                     VerticalTextAlignment="Center" />
 

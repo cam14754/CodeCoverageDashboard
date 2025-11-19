@@ -19,6 +19,7 @@ public partial class StaticDashboardPageViewModel(IDataHandlerService dataHandle
     readonly IDataHandlerService dataHandlerService = dataHandlerService;
     public ObservableCollection<StaticDashboardData>? Data => dataHandlerService.Latest;
     public StaticDashboardData? LatestData => Data?.FirstOrDefault();
+    public StaticDashboardData? WeekOldData { get; set; }
 
     [RelayCommand]
     public async Task GetRepoData()
@@ -52,8 +53,17 @@ public partial class StaticDashboardPageViewModel(IDataHandlerService dataHandle
             await dataHandlerService.LoadLatestStaticDashboardData();
         });
 
+        //Find week old data
+        var target = DateTime.Now.AddDays(-7);
+        var start = target.AddHours(-12);
+        var end = target.AddHours(12);
+        WeekOldData = Data.Where(d => d.DateRetrieved >= start && d.DateRetrieved <= end).FirstOrDefault();
+
+        WeekOldData ??= new StaticDashboardData();
+
         OnPropertyChanged(nameof(Data));
         OnPropertyChanged(nameof(LatestData));
+        OnPropertyChanged(nameof(WeekOldData));
 
         Debug.WriteLine("Execute finished (UI applied).");
     }
