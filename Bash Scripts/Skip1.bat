@@ -1,0 +1,1 @@
+.\dailyJob.bat skip1 --bypass-console

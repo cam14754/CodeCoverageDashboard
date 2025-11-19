@@ -10,7 +10,7 @@ public class Program
 	public static async Task Main(string[] args)
 	{
 		bool isRunning = true;
-		bool isBypassConsole = args.Length > 0 && args[0] == "bypass-console";
+		bool isBypassConsole = args.Length > 0 && args[0] == "--bypass-console";
 
 		while (isRunning)
 		{
@@ -23,8 +23,8 @@ public class Program
 			}
 			else
 			{
-				Console.WriteLine("Welcome to the code coverage analyzer");
-				Console.WriteLine("Type yes to continue...");
+				Debug.WriteLine("Welcome to the code coverage analyzer");
+				Debug.WriteLine("Type yes to continue...");
 				userInput = Console.ReadLine();
 			}
 			if (userInput != null && (userInput.Equals("yes", StringComparison.CurrentCultureIgnoreCase) || userInput.Equals("y", StringComparison.CurrentCultureIgnoreCase)))
@@ -33,7 +33,7 @@ public class Program
 
 				try
 				{
-					Console.WriteLine("Starting code coverage analysis for all repositories");
+					Console.WriteLine("\nStarting code coverage analysis for all repositories");
 
 					string outputDir = Path.Combine(Constants.OutputDir, $"{DateTime.Now:yyyy-MM-dd_HH-mm}_Reports");
 
@@ -41,7 +41,7 @@ public class Program
 
 					if (!Directory.Exists(outputDir)) 
 					{
-						Console.WriteLine($"Failed to create output directory at {outputDir}");
+						Debug.WriteLine($"Failed to create output directory at {outputDir}");
 						continue;
 					}
 
@@ -55,13 +55,13 @@ public class Program
 				}
 				catch (Exception ex)
 				{
-					Console.WriteLine($"An error occurred: {ex.Message}");
+					Debug.WriteLine($"An error occurred: {ex.Message}");
 				}
 				finally
 				{
 					Console.WriteLine("Operation completed. Type 'yes' to run again or 'no' to exit.");
 					stopwatch.Stop();
-					Console.WriteLine($"All repos tested in {stopwatch.ElapsedMilliseconds} ms.");
+					Debug.WriteLine($"All repos tested in {stopwatch.ElapsedMilliseconds} ms.");
 
 					if(isBypassConsole)
 					{
@@ -72,11 +72,11 @@ public class Program
 			else if (userInput != null && (userInput.Equals("no", StringComparison.CurrentCultureIgnoreCase) || userInput.Equals("n", StringComparison.CurrentCultureIgnoreCase)))
 			{
 				isRunning = false;
-				Console.WriteLine("Exiting the program. Goodbye!");
+				Debug.WriteLine("Exiting the program. Goodbye!");
 			}
 			else
 			{
-				Console.WriteLine("Invalid input. Please type 'yes' to continue.");
+				Debug.WriteLine("Invalid input. Please type 'yes' to continue.");
 			}
 		}
 	}
@@ -90,11 +90,11 @@ public class RepoCoverageReportGenerator
 	{
 		var stopwatch = Stopwatch.StartNew();
 
-		Console.WriteLine($"Starting analysis for {dir}");
+		Debug.WriteLine($"Starting analysis for {dir}");
 
 		if (RepoIgnore.IgnoreReposList.Contains(dir))
 		{
-			Console.WriteLine($"Skipping ignored repo: {dir}");
+			Debug.WriteLine($"Skipping ignored repo: {dir}");
 			return;
 		}
 
@@ -104,7 +104,7 @@ public class RepoCoverageReportGenerator
 
 		if (!Directory.Exists(srcPath))
 		{
-			Console.WriteLine($"Test folder not found for {dir}");
+			Debug.WriteLine($"Test folder not found for {dir}");
 			return;
 		}
 
@@ -112,7 +112,7 @@ public class RepoCoverageReportGenerator
 
 		if (childDir is null)
 		{
-			Console.WriteLine($"No child directories found in tests directory for {srcPath}");
+			Debug.WriteLine($"No child directories found in tests directory for {srcPath}");
 			return;
 		}
 
@@ -120,11 +120,11 @@ public class RepoCoverageReportGenerator
 
 		if (csproj is null)
 		{
-			Console.WriteLine($"No .csproj file found in {childDir}");
+			Debug.WriteLine($"No .csproj file found in {childDir}");
 			return;
 		}
 
-		Console.WriteLine($"Found .csproj at {csproj}");
+		Debug.WriteLine($"Found .csproj at {csproj}");
 
 		// Build the dotnet test args
 		var sb = new StringBuilder();
@@ -133,8 +133,7 @@ public class RepoCoverageReportGenerator
 		  .Append("\" ")
 		  .Append("--collect:\"XPlat Code Coverage\" ")
 		  .Append("--settings:\"").Append(runSettingsPath).Append("\" ")
-		  .Append("--results-directory: \"").Append(outputDir).Append("\" ")
-		  .Append("--diag: diag.log");
+		  .Append("--results-directory: \"").Append(outputDir).Append("\" ");
 
 
 		string args = sb.ToString();
@@ -154,7 +153,7 @@ public class RepoCoverageReportGenerator
 		Console.WriteLine($"Starting dotnet test for {dir}...");
 		if (!process.Start())
 		{
-			Console.WriteLine($"Failed to start process for {dir}");
+			Debug.WriteLine($"Failed to start process for {dir}");
 		}
 
 		var stdOutTask = process.StandardOutput.ReadToEndAsync();
@@ -180,7 +179,7 @@ public class RepoCoverageReportGenerator
 
 		if (coverageFilePath is null)
 		{
-			Console.WriteLine($"Coverage file not found for {dir}");
+			Debug.WriteLine($"Coverage file not found for {dir}");
 			return;
 		}
 
@@ -188,7 +187,7 @@ public class RepoCoverageReportGenerator
 		string newFilePath = $"{outputDir}\\{lastPart}_CoverageReport.cobertura.xml";
 		File.Move(coverageFilePath, newFilePath);
 
-		Console.WriteLine($"Generated coverage report at {newFilePath}");
+		Debug.WriteLine($"Generated coverage report at {newFilePath}");
 
 		foreach (var x in Directory.GetDirectories(outputDir))
 		{
@@ -196,7 +195,7 @@ public class RepoCoverageReportGenerator
 		}
 
 		stopwatch.Stop();
-		Console.WriteLine($"Repo {dir} tested in {stopwatch.ElapsedMilliseconds} ms.");
+		Debug.WriteLine($"Repo {dir} tested in {stopwatch.ElapsedMilliseconds} ms.");
 		return;
 	}
 }

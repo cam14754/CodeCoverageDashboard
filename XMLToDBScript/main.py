@@ -2,10 +2,13 @@ from __future__ import annotations
 import os
 import time
 import json
+import sys
 import sqlite3
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import List, Optional, Any
+from xmlrpc.client import Boolean
+
 from xsdata.formats.dataclass.parsers import XmlParser
 
 # ==============================================
@@ -527,7 +530,7 @@ DB_LOCATION = r"\\redstorage4.esri.com\AppsBuild\CodeCoverageDashboard\CodeCover
 XML_LOCATION = r"C:\Users\cam14754\Desktop\Reports"
 DOTNET_TICKS_PER_SECOND = 10_000_000
 DOTNET_EPOCH = datetime(1, 1, 1)
-UPLOAD_TO_DB_BOOL = False
+UPLOAD_TO_DB_BOOL = Boolean
 DASHBOARD_VERSION = "0.3.11"
 
 def Execute():
@@ -678,7 +681,7 @@ def AnalyzeCoverageDTO(coverage_list: List["CoverageDTO"]) -> List["RepoData"]:
             )
 
         # Order classes by name
-        list_classes = sorted(list_classes, key=lambda c: c.name)
+        list_classes = sorted(list_classes, key=lambda lc: lc.name)
 
         # Assign back to repo_data
         data.list_classes = list_classes
@@ -688,8 +691,6 @@ def AnalyzeCoverageDTO(coverage_list: List["CoverageDTO"]) -> List["RepoData"]:
     return repodata
 
 def CreateStaticDashboardDataModel(repo_datas: List["RepoData"]) -> StaticDashboardData:
-    dashboard_data = StaticDashboardData()
-
     dashboard_data = StaticDashboardData()
     dashboard_data.total_repos_count = len(repo_datas)
     dashboard_data.date_retrieved = datetime.now()
@@ -861,7 +862,6 @@ def dashboard_record_to_static_data(record: DashboardRecordPy) -> StaticDashboar
         total_branches_covered_count=p.get("TotalBranchesCount", 0.0),  # note spelling
 
         list_repos=p.get("ListRepos", []),
-        list_methods=p.get("ListMethods", []),
 
         list_hot_repos=p.get("HotRepos", []),
         list_healthy_repos=p.get("HealthyRepos", []),
@@ -996,11 +996,13 @@ def ensure_datetime(value):
 if __name__ == "__main__":
     args = sys.argv[1:]
 
-    if(args[0] == "--bypass-console"):
-        UPLOAD_DASHBOARD_TO_DATABASE = True
+    if len(args) == 0:
+        UPLOAD_TO_DB_BOOL = False
     else:
-        UPLOAD_DASHBOARD_TO_DATABASE = False
-    
+        if args[0] == "--bypass-console":
+            UPLOAD_TO_DB_BOOL = True
+            print("Bypassing human input, uploading to database...")
+
     start = time.perf_counter()
     Execute()
     end = time.perf_counter()
