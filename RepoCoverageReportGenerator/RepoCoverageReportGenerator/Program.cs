@@ -10,13 +10,23 @@ public class Program
 	public static async Task Main(string[] args)
 	{
 		bool isRunning = true;
+		bool isBypassConsole = args.Length > 0 && args[0] == "bypass-console";
 
 		while (isRunning)
 		{
-			Console.WriteLine("Welcome to the code coverage analyzer");
-			Console.WriteLine("Type yes to continue...");
+			string? userInput = "";
 
-			string? userInput = Console.ReadLine();
+			if (isBypassConsole)
+			{
+				Console.WriteLine("Bypassing human input, proceeding with analysis...");
+				userInput = "yes";
+			}
+			else
+			{
+				Console.WriteLine("Welcome to the code coverage analyzer");
+				Console.WriteLine("Type yes to continue...");
+				userInput = Console.ReadLine();
+			}
 			if (userInput != null && (userInput.Equals("yes", StringComparison.CurrentCultureIgnoreCase) || userInput.Equals("y", StringComparison.CurrentCultureIgnoreCase)))
 			{
 				var stopwatch = Stopwatch.StartNew();
@@ -38,7 +48,7 @@ public class Program
 					Console.WriteLine($"Generated output directory at {outputDir}");
 
 
-					foreach (String dir in Directory.GetDirectories(Constants.ReposPath))
+					foreach (string dir in Directory.GetDirectories(Constants.ReposPath))
 					{
 						await RepoCoverageReportGenerator.RunAsync(Constants.RunsettingsFilePath, dir, outputDir);
 					}
@@ -51,8 +61,12 @@ public class Program
 				{
 					Console.WriteLine("Operation completed. Type 'yes' to run again or 'no' to exit.");
 					stopwatch.Stop();
-					isRunning = false;
 					Console.WriteLine($"All repos tested in {stopwatch.ElapsedMilliseconds} ms.");
+
+					if(isBypassConsole)
+					{
+						isRunning = false;
+					}
 				}
 			}
 			else if (userInput != null && (userInput.Equals("no", StringComparison.CurrentCultureIgnoreCase) || userInput.Equals("n", StringComparison.CurrentCultureIgnoreCase)))
@@ -187,77 +201,3 @@ public class RepoCoverageReportGenerator
 	}
 }
 
-
-
-public class DoStuff() 
-{
-	// Complexity : 1
-	public static int SimpleMethod(int a, int b)
-	{
-		return a + b;
-	}
-
-	// Complexity : 2
-	public static int SimpleMethodWithBranch(int a, int b)
-	{
-		if (a > b)
-		{
-			return a - b;
-		}
-		else
-		{
-			return a + b;
-		}
-	}
-
-	//Complexity : 5
-	public static int ComplexMethod(int a, int b, int c)
-	{
-		int result = 0;
-		for (int i = 0; i < c; i++)
-		{
-			for(int y = 0; y < b; y++)
-			{
-				if (a > b)
-				{
-					if(c > 0)
-					{
-						result += a - b;
-					}
-					else
-					{
-						result += a * b;
-					}
-				}
-				else
-				{
-					result += a + b;
-				}
-			}
-		}
-		return result;
-	}
-
-	// Complexity : 7
-	public static int SwitchMethod(int value)
-	{
-		switch (value)
-		{
-			case 1:
-				return 10;
-			case 2:
-				return 20;
-			case 3:
-				return 30;
-			case 4:
-				return 40;
-			case 5:
-				return 50;
-			case 6:
-				return 60;
-			default:
-				return 0;
-		}
-	}
-
-}

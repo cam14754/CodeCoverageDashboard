@@ -65,7 +65,7 @@ public static class StaticDashboardRecordToStaticDashboardObject
     // Convert StaticDashboardData -> DashboardRecord
     public static object? ConvertBack(object? value)
     {
-        Debug.WriteLine("No convert back :(");
+        Debug.WriteLine("Read-only, no converting to record");
         return null;
     }
 }
