@@ -1,1 +1,3 @@
-SELECT * FROM Dashboards
+SELECT * 
+FROM Dashboards
+ORDER BY id DESC;

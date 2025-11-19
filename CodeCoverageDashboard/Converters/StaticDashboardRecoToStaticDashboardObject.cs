@@ -49,9 +49,15 @@ public static class StaticDashboardRecordToStaticDashboardObject
             CoverletVersion = dashboard.Properties.CoverletVersion,
             DashboardVersion = dashboard.Properties.DashboardVersion,
             DataAge = dashboard.Properties.DataAge,
+            AverageComplexMethodPercent = dashboard.Properties.AverageComplexMethodPercent,
+            TotalLinesUncoveredCount = dashboard.Properties.TotalLinesUncoveredCount,
+            TotalComplexMethodCount = dashboard.Properties.TotalComplexMethodCount,
             // Collections
-            ListMethods = new ObservableCollection<MethodData>(dashboard.Properties.ComplexMethods),
-            ListRepos = new ObservableCollection<RepoData>(dashboard.Properties.ListRepos),
+            ListRepos = dashboard.Properties.ListRepos,
+            ComplexMethods = dashboard.Properties.ComplexMethods,
+            HealthyRepos = dashboard.Properties.HealthyRepos,
+            UnhealthyRepos = dashboard.Properties.UnhealthyRepos,
+            HotRepos = dashboard.Properties.HotRepos
         };
         return model;
     }
@@ -59,42 +65,7 @@ public static class StaticDashboardRecordToStaticDashboardObject
     // Convert StaticDashboardData -> DashboardRecord
     public static object? ConvertBack(object? value)
     {
-        if (value is null)
-        {
-            return null;
-        }
-
-        if (value is not StaticDashboardData data)
-        {
-            return null;
-        }
-
-        var props = new DashboardProperties
-        {
-            TotalLinesCoveredCount = data.TotalLinesCoveredCount,
-            TotalReposCount = data.TotalReposCount,
-            TotalClassesCount = data.TotalClassesCount,
-            TotalMethodsCount = data.TotalMethodsCount,
-            TotalLinesCount = data.TotalLinesCount,
-            AverageLineCoveragePercent = data.AverageLineCoveragePercent,
-            AverageBranchCoveragePercent = data.AverageBranchCoveragePercent,
-            TotalBracnhesCoveredCount = data.TotalBracnhesCoveredCount,
-            AverageComplexMethodPercent = data.AverageComplexMethodPercent,
-            DateRetrieved = data.DateRetrieved,
-            CoverletVersion = data.CoverletVersion,
-            DashboardVersion = data.DashboardVersion,
-            ComplexMethods = new ObservableCollection<MethodData>(data.ListMethods),
-            ListRepos = new ObservableCollection<RepoData>(data.ListRepos),
-            TotalLinesUncoveredCount = data.TotalLinesUncoveredCount,
-            DataAge = data.DataAge
-        };
-
-        var record = new DashboardRecord
-        {
-            DateRetrieved = data.DateRetrieved,
-            Properties = props
-        };
-
-        return record;
+        Debug.WriteLine("No convert back :(");
+        return null;
     }
 }

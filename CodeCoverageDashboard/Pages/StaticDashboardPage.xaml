@@ -234,7 +234,7 @@
                         <telerik:RadDataGrid
                             Grid.Row="1"
                             AlternateRowBackgroundStyle="{StaticResource datagridAlternateRowBackground}"
-                            ItemsSource="{Binding Top5Hottest}"
+                            ItemsSource="{Binding LatestData.HotRepos}"
                             RowBackgroundStyle="{StaticResource datagridRowBackground}"
                             Style="{StaticResource datagridBase}">
 
@@ -349,7 +349,7 @@
                         <telerik:RadDataGrid
                             Grid.Row="1"
                             AlternateRowBackgroundStyle="{StaticResource datagridAlternateRowBackground}"
-                            ItemsSource="{Binding Top5Complex}"
+                            ItemsSource="{Binding LatestData.ComplexMethods}"
                             RowBackgroundStyle="{StaticResource datagridRowBackground}"
                             Style="{StaticResource datagridBase}">
 
@@ -358,7 +358,7 @@
                                     CellContentStyle="{StaticResource datagridCellContentBase}"
                                     HeaderStyle="{StaticResource datagridHeaderBase}"
                                     HeaderText="Method Name"
-                                    PropertyName="Item1.Name"
+                                    PropertyName="Name"
                                     Style="{StaticResource datagridColoumnStretch}" />
 
 
@@ -366,20 +366,17 @@
                                     CellContentStyle="{StaticResource datagridCellContentBase}"
                                     HeaderStyle="{StaticResource datagridHeaderBase}"
                                     HeaderText="Repo Name"
-                                    PropertyName="Item2.Name"
+                                    PropertyName="ParentRepoName"
                                     Style="{StaticResource datagridColoumnStretch}" />
 
                                 <telerik:DataGridNumericalColumn
                                     CellContentStyle="{StaticResource datagridCellContentRightAlign}"
                                     HeaderStyle="{StaticResource datagridHeaderRightAlign}"
                                     HeaderText="Complexity"
-                                    PropertyName="Item1.Complexity"
+                                    PropertyName="Complexity"
                                     Style="{StaticResource datagridColoumnAuto}" />
                             </telerik:RadDataGrid.Columns>
 
-                            <telerik:RadDataGrid.SortDescriptors>
-                                <telerik:PropertySortDescriptor PropertyName="Item1.Complexity" SortOrder="Descending" />
-                            </telerik:RadDataGrid.SortDescriptors>
                         </telerik:RadDataGrid>
 
                     </Grid>

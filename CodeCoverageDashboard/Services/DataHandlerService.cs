@@ -12,25 +12,48 @@
 //
 // email: contracts@esri.com
 
+
 namespace CodeCoverageDashboard.Services;
 
 public class DataHandlerService(IDatabaseService databaseService) : IDataHandlerService
 {
-    public ObservableCollection<RepoData> Repos { get; set; } = [];
+    public ObservableCollection<StaticDashboardData>? Latest { get; set; }
 
-    public async Task ProcessXDocsFromHTTP()
+    public async Task LoadLatestStaticDashboardData()
     {
-        Repos.Clear();
-
-        List<XDocument> xDocsFromService = await HTTPService.GetXDocs();
-
-        foreach (var xDoc in xDocsFromService)
+        
+        if (Latest is null || Latest.Count == 0)
         {
-            RepoData newRepo = new() { XDocument = xDoc };
-
-            RepoCoverageAnalyzer.AnalyzeRepo(newRepo);
-
-            Repos.Add(newRepo);
+            // First load, no cache
+            Latest = await databaseService.GetLatestStaticDashboardData();
+            Latest.FirstOrDefault()!.DateRetrieved = DateTime.Now;
+            return;
         }
+
+        // Cache exists
+        var latest = Latest.First();
+
+        if (latest.DateRetrieved < DateTime.Now.AddHours(-12))
+        {
+            // stale cache, reload
+            Latest = await databaseService.GetLatestStaticDashboardData();
+            Latest.FirstOrDefault()!.DateRetrieved = DateTime.Now;
+            return;
+        }
+
+        // Cache is still fresh, do nothing
+    }
+
+    public bool ClearCache()
+    {
+        if(Latest is null || Latest.Count is 0)
+        {
+            return false;
+        }
+
+        Latest.Clear();
+        Latest = null;
+        return true;
     }
 }
+

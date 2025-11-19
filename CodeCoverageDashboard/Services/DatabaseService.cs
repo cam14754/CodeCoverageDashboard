@@ -37,64 +37,7 @@ public class DatabaseService : IDatabaseService
 
     async Task CreateTables()
     {
-        await database.CreateTableAsync<RepoRecord>();
         await database.CreateTableAsync<DashboardRecord>();
-    }
-
-    async Task IDatabaseService.SaveMemoryToDB(List<RepoData> repoDatas)
-    {
-        await Init();
-        foreach (var repo in repoDatas)
-        {
-            var x = RepoRecordToRepoObject.ConvertBack(repo);
-            await database.InsertAsync(x);
-        }
-    }
-
-    async Task IDatabaseService.SaveMemoryToDB(RepoData repoData)
-    {
-        await Init();
-        var x = RepoRecordToRepoObject.ConvertBack(repoData);
-        await database.InsertAsync(x);
-    }
-
-    async Task IDatabaseService.SaveMemoryToDB(StaticDashboardData staticDashboardData)
-    {
-        await Init();
-        var x = StaticDashboardRecordToStaticDashboardObject.ConvertBack(staticDashboardData);
-        await database.InsertAsync(x);
-    }
-
-    public async Task<List<RepoData>> LoadLatestReposList()
-    {
-        await Init();
-        var RepoRecords = await database.QueryAsync<RepoRecord>(await ReadSQLAsync("GetLatestRepoRecords.sql"));
-        var RepoObjects = new List<RepoData>();
-        foreach (var RepoRecord in RepoRecords)
-        {
-            var RepoObject = (RepoData)RepoRecordToRepoObject.Convert(RepoRecord);
-            RepoObjects.Add(RepoObject);
-        }
-        return RepoObjects;
-    }
-
-    public async Task<StaticDashboardData> LoadXWeekOldDashboardData(int x)
-    {
-        await Init();
-        var DashboardData = await database.QueryAsync<DashboardRecord>(await ReadSQLAsync("GetXWeekOldDashboardRecords.sql"), x);
-        return (StaticDashboardData)StaticDashboardRecordToStaticDashboardObject.Convert(DashboardData);
-    }
-
-    public async Task<RepoData> LoadLatestRepoByName(string repoName)
-    {
-        await Init();
-        var RepoRecords = await database.QueryAsync<RepoRecord>(await ReadSQLAsync("GetLatestRepoByName.sql"), repoName);
-        if (RepoRecords.Count == 0)
-        {
-            return null;
-        }
-        var RepoObject = (RepoData)RepoRecordToRepoObject.Convert(RepoRecords[0]);
-        return RepoObject;
     }
 
     public static async Task<string> ReadSQLAsync(string fileName)
@@ -112,39 +55,32 @@ public class DatabaseService : IDatabaseService
         }
     }
 
-    public async Task<List<StaticDashboardData>> LoadAllDashboardData()
+    public async Task<ObservableCollection<StaticDashboardData>?> GetLatestStaticDashboardData()
     {
         await Init();
+        var DashboardDataRecord = await database.QueryAsync<DashboardRecord>(await ReadSQLAsync("GetAllStaticdashboardData.sql"));
 
-        List<DashboardRecord> DashboardRecords = await database.QueryAsync<DashboardRecord>(await ReadSQLAsync("GetAllStaticdashboardData.sql"));
-
-        var results = new List<StaticDashboardData>();
-
-        foreach (var record in DashboardRecords)
+        if(DashboardDataRecord is null || DashboardDataRecord.FirstOrDefault() is null)
         {
-            results.Add((StaticDashboardData)StaticDashboardRecordToStaticDashboardObject.Convert(record));
+            Debug.WriteLine("No dashboard data found / DB call failed.");
+            return null;
         }
 
-        return results;
-    }
+        var CollectionDashboardData = new ObservableCollection<StaticDashboardData>();
 
-    public async Task<List<RepoData>> LoadAllRepoData()
-    {
-        await Init();
-        List<RepoRecord> RepoRecords = await database.QueryAsync<RepoRecord>(await ReadSQLAsync("GetAllRepoData.sql"));
+        foreach(var item in DashboardDataRecord)
+            {
+            var ConvertedData = (StaticDashboardData)StaticDashboardRecordToStaticDashboardObject.Convert(item);
 
-        var results = new List<RepoData>();
-        foreach (var record in RepoRecords)
-        {
-            results.Add((RepoData)RepoRecordToRepoObject.Convert(record));
+            if(ConvertedData is null)
+            {
+                Debug.WriteLine("Failed to convert dashboard data record to dashboard data object.");
+            }
+
+            CollectionDashboardData.Add(ConvertedData);
         }
-        return results;
-    }
 
-    public async Task<StaticDashboardData> LoadSecondLatestDashboardData()
-    {
-        await Init();
-        var DashboardData = await database.QueryAsync<DashboardRecord>(await ReadSQLAsync("GetSecondLatestDashboardData.sql"));
-        return (StaticDashboardData)StaticDashboardRecordToStaticDashboardObject.Convert(DashboardData);
+        
+        return CollectionDashboardData;
     }
 }

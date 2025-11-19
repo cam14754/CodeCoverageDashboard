@@ -12,25 +12,18 @@
 //
 // email: contracts@esri.com
 
+using CommunityToolkit.Maui.Extensions;
+using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
+
 namespace CodeCoverageDashboard.ViewModels;
 
 public partial class DrillDownDashboardPageViewModel(IDataHandlerService dataHandlerService) : BaseViewModel
 {
-    public ObservableCollection<RepoData> Repos { get; set; }
-    public ObservableCollection<RepoData> VisableRepos { get; set; }
-
-    [ObservableProperty]
-    public partial double TotalLines { get; set; }
-    [ObservableProperty]
-    public partial double TotalLinesCovered { get; set; }
-    [ObservableProperty]
-    public partial double AverageCoveragePercent { get; set; }
-    [ObservableProperty]
-    public partial double AverageBranchCoveragePercent { get; set; }
-    [ObservableProperty]
-    public partial DateTime DateRetrieved { get; set; }
-
-    public string DashboardVersion { get; set; } = Constants.DashboardVersion;
+    public ObservableCollection<RepoData>? LatestRepos { get; set; }
+    public ObservableCollection<RepoData>? VisableRepos { get; set; }
+    public StaticDashboardData? LatestData { get; set; }
+    public StaticDashboardData? VisableData { get; set; }
 
     readonly IDataHandlerService datahandlerService = dataHandlerService;
 
@@ -46,16 +39,30 @@ public partial class DrillDownDashboardPageViewModel(IDataHandlerService dataHan
             IsBusy = true;
             Debug.WriteLine("Loading repos... \n");
 
-            //Get from HTTP
-            await datahandlerService.ProcessXDocsFromHTTP();
+            await datahandlerService.LoadLatestStaticDashboardData();
 
-            //Save to memory
-            Repos = dataHandlerService.Repos;
-            VisableRepos = Repos;
+            if (datahandlerService.Latest is null)
+            {
+                Debug.WriteLine("DB call failed");
+                return;
+            }
 
-            UpdateStats();
+            if (datahandlerService.Latest.FirstOrDefault() is null)
+            {
+                Debug.WriteLine("DB call completed, but no repos loaded");
+                return;
+            }
+
+            //Save all data to memory
+            LatestData = datahandlerService.Latest.FirstOrDefault()!;
+            VisableData = LatestData;
+            LatestRepos = new ObservableCollection<RepoData>([.. LatestData.ListRepos.OrderBy(r => r.Name)]);
+            VisableRepos = LatestRepos;
+
+            CalculatePropertiesBasedOnCurrentVisableRepos(VisableRepos, VisableData);
 
             OnPropertyChanged(nameof(VisableRepos));
+            OnPropertyChanged(nameof(VisableData));
 
             Debug.WriteLine("Repos loaded successfully.");
 
@@ -69,6 +76,46 @@ public partial class DrillDownDashboardPageViewModel(IDataHandlerService dataHan
             IsBusy = false;
         }
     }
+
+    public static void CalculatePropertiesBasedOnCurrentVisableRepos(ObservableCollection<RepoData> repos, StaticDashboardData dashs)
+    {
+
+        if (repos == null || repos.Count == 0)
+        {
+            // Reset values for empty view
+            dashs.TotalLinesCount = 0;
+            dashs.TotalLinesCoveredCount = 0;
+            dashs.AverageLineCoveragePercent = 0;
+            dashs.AverageBranchCoveragePercent = 0;
+            return;
+        }
+
+        double totalLines = 0;
+        double coveredLines = 0;
+        double sumLineCoverage = 0;
+        double sumBranchCoverage = 0;
+
+        foreach (var r in repos)
+        {
+            totalLines += r.TotalLines;
+            coveredLines += r.CoveredLines;
+
+            sumLineCoverage += r.CoveragePercent;
+            sumBranchCoverage += r.BranchRate;
+        }
+
+        double count = repos.Count;
+
+        dashs.TotalLinesCount = totalLines;
+        dashs.TotalLinesCoveredCount = coveredLines;
+
+        dashs.AverageLineCoveragePercent =
+            count > 0 ? sumLineCoverage / count : 0;
+
+        dashs.AverageBranchCoveragePercent =
+            count > 0 ? sumBranchCoverage / count : 0;
+    }
+
 
     [RelayCommand]
     public async Task GoToRepoPageAsync(RepoData repoData)
@@ -121,16 +168,25 @@ public partial class DrillDownDashboardPageViewModel(IDataHandlerService dataHan
         }
     }
 
-    public void UpdateStats()
+    [RelayCommand]
+    public async Task ClearCache()
     {
-        TotalLines = VisableRepos?.Sum(r => r.TotalLines) ?? 0;
-        TotalLinesCovered = VisableRepos?.Sum(r => r.CoveredLines) ?? 0;
-        AverageCoveragePercent = VisableRepos?.Average(r => r.CoveragePercent) ?? 0;
-        AverageBranchCoveragePercent = VisableRepos?.Average(r => r.BranchRate) ?? 0;
-        DateRetrieved = DateTime.Now;
+        if (datahandlerService.ClearCache())
+        {
+            VisableRepos = null;
+            VisableData = null;
+            LatestRepos = null;
+            LatestData = null;
 
-        var list  = VisableRepos.OrderBy(r => r.Name);
-        VisableRepos = new ObservableCollection<RepoData>(list);
-        OnPropertyChanged(nameof(VisableRepos));
+            OnPropertyChanged(nameof(VisableRepos));
+            OnPropertyChanged(nameof(VisableData));
+
+            await Shell.Current.ShowPopupAsync(new Label { Text = "Cache cleared successfully." });
+            
+        }
+        else
+        {
+            await Shell.Current.ShowPopupAsync(new Label { Text = "No cache to clear or something went wrong." });
+        }
     }
 }

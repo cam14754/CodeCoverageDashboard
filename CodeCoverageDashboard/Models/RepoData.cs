@@ -20,13 +20,7 @@ namespace CodeCoverageDashboard.Models;
 public partial class RepoData : ObservableObject
 {
     [ObservableProperty]
-    public partial string AbsolutePath { get; set; } = "Unknown Path";
-
-    [ObservableProperty]
     public partial string Name { get; set; } = "Unknown Name";
-
-    [ObservableProperty]
-    public partial ObservableCollection<string> ListErrors { get; set; } = [];
 
     [ObservableProperty]
     public partial double CoveragePercent { get; set; } = 0;
@@ -55,9 +49,6 @@ public partial class RepoData : ObservableObject
 
     [ObservableProperty]
     public partial List<ClassData> ListClasses { get; set; } = [];
-
-    [ObservableProperty]
-    public partial XDocument? XDocument { get; set; } = null;
 
     //Not to be saved
     [ObservableProperty]

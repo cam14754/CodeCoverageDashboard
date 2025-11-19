@@ -7,7 +7,6 @@ namespace RepoCoverageReportGenerator;
 
 public class Program
 {
-
 	public static async Task Main(string[] args)
 	{
 		bool isRunning = true;
@@ -52,6 +51,7 @@ public class Program
 				{
 					Console.WriteLine("Operation completed. Type 'yes' to run again or 'no' to exit.");
 					stopwatch.Stop();
+					isRunning = false;
 					Console.WriteLine($"All repos tested in {stopwatch.ElapsedMilliseconds} ms.");
 				}
 			}

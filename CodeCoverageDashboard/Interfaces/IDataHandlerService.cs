@@ -18,6 +18,8 @@ namespace CodeCoverageDashboard.Interfaces;
 
 public interface IDataHandlerService
 {
-    ObservableCollection<RepoData> Repos { get; set; }
-    abstract Task ProcessXDocsFromHTTP();
+    public ObservableCollection<StaticDashboardData>? Latest { get; set; }
+    abstract Task LoadLatestStaticDashboardData();
+
+    public bool ClearCache();
 }

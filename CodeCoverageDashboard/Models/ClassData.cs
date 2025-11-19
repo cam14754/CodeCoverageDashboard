@@ -17,7 +17,6 @@ namespace CodeCoverageDashboard.Models;
 public class ClassData
 {
     public string Name { get; set; } = "Unknown Name";
-    public string[] Errors { get; set; } = [];
     public double CoveragePercent { get; set; } = 0;
     public double BranchCoveragePercent { get; set; } = 0;
     public double TotalLines { get; set; } = 0;

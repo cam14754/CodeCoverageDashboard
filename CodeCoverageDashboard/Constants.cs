@@ -16,8 +16,6 @@ namespace CodeCoverageDashboard;
 
 public static class Constants
 {
-    public const string DatabaseFilename = "CodeCoverageDataBase.db";
-
     public const SQLite.SQLiteOpenFlags Flags =
         // open the database in read/write mode
         SQLite.SQLiteOpenFlags.ReadWrite |
@@ -26,7 +24,5 @@ public static class Constants
         // enable multi-threaded database access
         SQLite.SQLiteOpenFlags.SharedCache;
 
-    public static string DatabasePath => $"C:\\Users\\cam14754\\Desktop\\UnitTestingInternProject\\CodeCoverageDashboard\\CodeCoverageDashboard\\{DatabaseFilename}";
-
-    public const string DashboardVersion = "0.3.7";
+    public static string DatabasePath => $"\\\\redstorage4.esri.com\\AppsBuild\\CodeCoverageDashboard\\CodeCoverageDataBase.db";
 }
