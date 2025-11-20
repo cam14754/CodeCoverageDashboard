@@ -8,81 +8,42 @@ namespace RepoCoverageReportGenerator;
 public class Program
 {
 	public static async Task Main(string[] args)
-	{
-		bool isRunning = true;
-		bool isBypassConsole = args.Length > 0 && args[0] == "--bypass-console";
+	{		
+		var stopwatch = Stopwatch.StartNew();
 
-		while (isRunning)
+		try
 		{
-			string? userInput = "";
+			Console.WriteLine("\nStarting code coverage analysis for all repositories");
 
-			if (isBypassConsole)
+			string outputDir = Path.Combine(Constants.OutputDir, $"{DateTime.Now:yyyy-MM-dd_HH-mm}_Reports");
+
+			Directory.CreateDirectory(outputDir);
+
+			if (!Directory.Exists(outputDir))
 			{
-				Console.WriteLine("Bypassing human input, proceeding with analysis...");
-				userInput = "yes";
+				Debug.WriteLine($"Failed to create output directory at {outputDir}");
+				return;
 			}
-			else
+
+			Console.WriteLine($"Generated output directory at {outputDir}");
+
+
+			foreach (string dir in Directory.GetDirectories(Constants.ReposPath))
 			{
-				Debug.WriteLine("Welcome to the code coverage analyzer");
-				Debug.WriteLine("Type yes to continue...");
-				userInput = Console.ReadLine();
-			}
-			if (userInput != null && (userInput.Equals("yes", StringComparison.CurrentCultureIgnoreCase) || userInput.Equals("y", StringComparison.CurrentCultureIgnoreCase)))
-			{
-				var stopwatch = Stopwatch.StartNew();
-
-				try
-				{
-					Console.WriteLine("\nStarting code coverage analysis for all repositories");
-
-					string outputDir = Path.Combine(Constants.OutputDir, $"{DateTime.Now:yyyy-MM-dd_HH-mm}_Reports");
-
-					Directory.CreateDirectory(outputDir);
-
-					if (!Directory.Exists(outputDir)) 
-					{
-						Debug.WriteLine($"Failed to create output directory at {outputDir}");
-						continue;
-					}
-
-					Console.WriteLine($"Generated output directory at {outputDir}");
-
-
-					foreach (string dir in Directory.GetDirectories(Constants.ReposPath))
-					{
-						await RepoCoverageReportGenerator.RunAsync(Constants.RunsettingsFilePath, dir, outputDir);
-					}
-				}
-				catch (Exception ex)
-				{
-					Debug.WriteLine($"An error occurred: {ex.Message}");
-				}
-				finally
-				{
-					Console.WriteLine("Operation completed. Type 'yes' to run again or 'no' to exit.");
-					stopwatch.Stop();
-					Debug.WriteLine($"All repos tested in {stopwatch.ElapsedMilliseconds} ms.");
-
-					if(isBypassConsole)
-					{
-						isRunning = false;
-					}
-				}
-			}
-			else if (userInput != null && (userInput.Equals("no", StringComparison.CurrentCultureIgnoreCase) || userInput.Equals("n", StringComparison.CurrentCultureIgnoreCase)))
-			{
-				isRunning = false;
-				Debug.WriteLine("Exiting the program. Goodbye!");
-			}
-			else
-			{
-				Debug.WriteLine("Invalid input. Please type 'yes' to continue.");
+				await RepoCoverageReportGenerator.RunAsync(Constants.RunsettingsFilePath, dir, outputDir);
 			}
 		}
+		catch (Exception ex)
+		{
+			Debug.WriteLine($"An error occurred: {ex.Message}");
+		}
+		finally
+		{
+			Console.WriteLine("Operation completed.");
+			stopwatch.Stop();
+			Debug.WriteLine($"Operation completed in {stopwatch.ElapsedMilliseconds} ms.");
+		}
 	}
-
-
-}
 
 public class RepoCoverageReportGenerator
 {
@@ -98,7 +59,7 @@ public class RepoCoverageReportGenerator
 			return;
 		}
 
-		
+
 
 		string srcPath = Path.Combine(dir, "tests");
 
@@ -197,6 +158,6 @@ public class RepoCoverageReportGenerator
 		stopwatch.Stop();
 		Debug.WriteLine($"Repo {dir} tested in {stopwatch.ElapsedMilliseconds} ms.");
 		return;
+		}
 	}
 }
-
