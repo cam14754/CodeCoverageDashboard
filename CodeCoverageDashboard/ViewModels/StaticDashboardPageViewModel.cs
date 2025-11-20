@@ -52,12 +52,13 @@ public partial class StaticDashboardPageViewModel(IDataHandlerService dataHandle
         {
             await dataHandlerService.LoadLatestStaticDashboardData();
         });
+        
 
         //Find week old data
         var target = DateTime.Now.AddDays(-7);
         var start = target.AddHours(-12);
         var end = target.AddHours(12);
-        WeekOldData = Data.Where(d => d.DateRetrieved >= start && d.DateRetrieved <= end).FirstOrDefault();
+        WeekOldData = Data?.Where(d => d.DateRetrieved >= start && d.DateRetrieved <= end).FirstOrDefault();
 
         WeekOldData ??= new StaticDashboardData();
 
