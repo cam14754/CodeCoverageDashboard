@@ -1,4 +1,3 @@
-from __future__ import annotations
 import os
 import time
 import json
@@ -154,7 +153,39 @@ class StaticDashboardData:
 
     def __str__(self):
         return f"StaticDashboardData(Total Lines: {self.total_lines_count}, Time: {self.date_retrieved}, Average Coverage Percent: {self.average_line_coverage_percent})"
+    
+    def to_dict(self):
+        return {
+            "TotalLinesCoveredCount": self.total_lines_covered_count,
+            "TotalReposCount": self.total_repos_count,
+            "TotalClassesCount": self.total_classes_count,
+            "TotalMethodsCount": self.total_methods_count,
+            "TotalLinesCount": self.total_lines_count,
+            "AverageLineCoveragePercent": self.average_line_coverage_percent,
+            "AverageBranchCoveragePercent": self.average_branch_coverage_percent,
+            "TotalBranchesCoveredCount": self.total_branches_covered_count,
+            "TotalLinesUncoveredCount": self.total_lines_uncovered_count,
 
+            # Complex methods (derived)
+            "TotalComplexMethodCount": self.complex_method_count,
+            "AverageComplexMethodPercent": self.average_complex_method_percent,
+
+            # Top 5 lists
+            "HotRepos": [r.to_dict() for r in self.list_hot_repos],
+            "ComplexMethods": [m.to_dict() for m in self.list_complex_methods],
+            "HealthyRepos": [r.to_dict() for r in self.list_healthy_repos],
+            "UnhealthyRepos": [r.to_dict() for r in self.list_unhealthy_repos],
+
+            # Given properties
+            "DateRetrieved": ensure_datetime(self.date_retrieved).isoformat(),
+            "DataAge": ensure_datetime(self.data_age).isoformat(),
+            "CoverletVersion": self.coverlet_version,
+            "DashboardVersion": self.dashboard_version,
+
+            # Full repo list
+            "ListRepos": [repo.to_dict() for repo in self.list_repos],
+        }
+    
 # ==============================================
 # DTOs
 # ==============================================
@@ -527,22 +558,23 @@ class DashboardRecordPy:
 # ==============================================
 
 DB_LOCATION = r"\\redstorage4.esri.com\AppsBuild\CodeCoverageDashboard\CodeCoverageDataBase.db"
-XML_LOCATION = r"C:\Users\cam14754\Desktop\Reports"
+REPORTS_LOCATION = r"C:\Users\cam14754\Desktop\Reports"
 DOTNET_TICKS_PER_SECOND = 10_000_000
 DOTNET_EPOCH = datetime(1, 1, 1)
 UPLOAD_TO_DB_BOOL = Boolean
 DASHBOARD_VERSION = "0.4.1"
 
-def Execute():
-    latest_full_path = GetLatestReportDir()
+def execute():
+    latest_full_path = get_latest_report_dir()
+
     if latest_full_path is None:
         return
 
-    list_coverages = ParseXML(latest_full_path)
+    list_coverages = parse_xml(latest_full_path)
 
-    list_repo_datas = AnalyzeCoverageDTO(list_coverages)
+    list_repo_datas = analyze_coverage_dto(list_coverages)
 
-    dashboard_data = CreateStaticDashboardDataModel(list_repo_datas)
+    dashboard_data = create_static_dashboard_data_model(list_repo_datas)
 
     if UPLOAD_TO_DB_BOOL:
         print("Uploading to DB")
@@ -550,8 +582,8 @@ def Execute():
     else:
         print("Choose not to upload to DB")
 
-def GetLatestReportDir():
-    repo_dir_list = os.listdir(XML_LOCATION)
+def get_latest_report_dir():
+    repo_dir_list = os.listdir(REPORTS_LOCATION)
 
     list_of_repo_data = []
 
@@ -588,11 +620,11 @@ def GetLatestReportDir():
     print("  Time    :", latest_time)
     print("  Key     :", latest_key)
 
-    latest_full_path = os.path.join(XML_LOCATION, latest_dirname)
+    latest_full_path = os.path.join(REPORTS_LOCATION, latest_dirname)
 
     return latest_full_path
 
-def ParseXML(path_to_latest_dir) -> List[CoverageDTO]:
+def parse_xml(path_to_latest_dir) -> List[CoverageDTO]:
     parser = XmlParser()
     coverage_list: List[CoverageDTO] = []
 
@@ -610,7 +642,7 @@ def ParseXML(path_to_latest_dir) -> List[CoverageDTO]:
 
     return coverage_list
 
-def AnalyzeCoverageDTO(coverage_list: List["CoverageDTO"]) -> List["RepoData"]:
+def analyze_coverage_dto(coverage_list: List["CoverageDTO"]) -> List["RepoData"]:
     repodata: List["RepoData"] = []
 
     for coverage in coverage_list:
@@ -690,7 +722,7 @@ def AnalyzeCoverageDTO(coverage_list: List["CoverageDTO"]) -> List["RepoData"]:
 
     return repodata
 
-def CreateStaticDashboardDataModel(repo_datas: List["RepoData"]) -> StaticDashboardData:
+def create_static_dashboard_data_model(repo_datas: List["RepoData"]) -> StaticDashboardData:
     dashboard_data = StaticDashboardData()
     dashboard_data.total_repos_count = len(repo_datas)
     dashboard_data.date_retrieved = datetime.now()
@@ -737,7 +769,7 @@ def CreateStaticDashboardDataModel(repo_datas: List["RepoData"]) -> StaticDashbo
         )
 
     # Get Previous Data
-    week_old_data = LoadWeekOldData()
+    week_old_data = load_week_old_data()
 
     previous_by_name = {
         r.name: r
@@ -803,7 +835,7 @@ def CreateStaticDashboardDataModel(repo_datas: List["RepoData"]) -> StaticDashbo
 
     return dashboard_data
 
-def LoadWeekOldData() -> StaticDashboardData:
+def load_week_old_data() -> StaticDashboardData:
     """Return the Dashboard closest to exactly 7 days ago (by hour),
     but only if within ±24 hours. Otherwise, return an empty StaticDashboardData."""
     now = datetime.now()
@@ -890,7 +922,6 @@ def dashboard_record_to_static_data(record: DashboardRecordPy) -> StaticDashboar
 
 def datetime_to_ticks(dt: datetime) -> int:
     delta = dt - DOTNET_EPOCH
-    # compute in integers to avoid float precision
     ticks = (
         delta.days * 24 * 60 * 60 * DOTNET_TICKS_PER_SECOND
         + delta.seconds * DOTNET_TICKS_PER_SECOND
@@ -899,13 +930,11 @@ def datetime_to_ticks(dt: datetime) -> int:
     return ticks
 
 def ticks_to_datetime(ticks: int) -> datetime:
-    # 1 tick = 100 ns = 0.1 µs → 10 ticks per microsecond
+    # 1 tick = 100ns -> 10 ticks per microsecond
     return DOTNET_EPOCH + timedelta(microseconds=ticks / 10)
 
 def upload_dashboard_to_database(dashboard: StaticDashboardData) -> None:
-    """Insert a DashboardRecord row into the Dashboards table."""
-    props_dict = static_dashboard_to_properties_dict(dashboard)
-    props_json = json.dumps(props_dict)
+    json_props = json.dumps(dashboard.to_dict())
 
     date_ticks = datetime_to_ticks(dashboard.date_retrieved)
 
@@ -921,7 +950,7 @@ def upload_dashboard_to_database(dashboard: StaticDashboardData) -> None:
             )
             VALUES (?, ?)
             """,
-            (date_ticks, props_json),
+            (date_ticks, json_props),
         )
 
         conn.commit()
@@ -932,43 +961,6 @@ def upload_dashboard_to_database(dashboard: StaticDashboardData) -> None:
         raise
     finally:
         conn.close()
-
-def static_dashboard_to_properties_dict(d: StaticDashboardData) -> dict[str, Any]:
-    """Build a DashboardProperties-shaped dict from StaticDashboardData."""
-
-    props: dict[str, Any] = {
-        # Totals / averages
-        "TotalLinesCoveredCount": d.total_lines_covered_count,
-        "TotalReposCount": d.total_repos_count,
-        "TotalClassesCount": d.total_classes_count,
-        "TotalMethodsCount": d.total_methods_count,
-        "TotalLinesCount": d.total_lines_count,
-        "AverageLineCoveragePercent": d.average_line_coverage_percent,
-        "AverageBranchCoveragePercent": d.average_branch_coverage_percent,
-        "TotalBranchesCoveredCount": d.total_branches_covered_count,
-        "TotalLinesUncoveredCount": d.total_lines_uncovered_count,
-
-        # Complex methods (derived)
-        "TotalComplexMethodCount": d.complex_method_count,
-        "AverageComplexMethodPercent": d.average_complex_method_percent,
-
-        # Top 5 lists
-        "HotRepos": [r.to_dict() for r in d.list_hot_repos],
-        "ComplexMethods": [m.to_dict() for m in d.list_complex_methods],
-        "HealthyRepos": [r.to_dict() for r in d.list_healthy_repos],
-        "UnhealthyRepos": [r.to_dict() for r in d.list_unhealthy_repos],
-
-        # Given properties
-        "DateRetrieved": ensure_datetime(d.date_retrieved).isoformat(),
-        "DataAge": ensure_datetime(d.data_age).isoformat(),
-        "CoverletVersion": d.coverlet_version,
-        "DashboardVersion": d.dashboard_version,
-
-        # Full repo list
-        "ListRepos": [repo.to_dict() for repo in d.list_repos],
-    }
-
-    return props
 
 def ensure_datetime(value):
     """Ensure the value is a datetime. Converts ints/unix timestamps/dotnet ticks."""
@@ -1004,7 +996,7 @@ if __name__ == "__main__":
             print("Bypassing human input, uploading to database...")
 
     start = time.perf_counter()
-    Execute()
+    execute()
     end = time.perf_counter()
 
-    print(f"Execute() took {end - start:.4f} seconds")
+    print(f"execute() took {end - start:.4f} seconds")

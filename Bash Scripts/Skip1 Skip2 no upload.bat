@@ -1,1 +1,0 @@
-.\dailyJob.bat skip1 skip2
