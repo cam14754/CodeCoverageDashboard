@@ -1,3 +1,6 @@
 <Solution>
-  <Project Path="CodeCoverageDashboard/CodeCoverageDashboard.csproj" />
+  <Project Path="CodeCoverageDashboard/CodeCoverageDashboard.csproj">
+    <BuildType Project="Release" />
+    <Deploy Solution="Debug|*" />
+  </Project>
 </Solution>

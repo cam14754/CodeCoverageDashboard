@@ -461,7 +461,7 @@
                             Margin="5,0,0,80"
                             HorizontalOptions="Center"
                             Style="{StaticResource labelBody}"
-                            Text="{Binding LatestData.TotalBracnhesCoveredCount, StringFormat='({0})'}"
+                            Text="{Binding LatestData.TotalBranchesCoveredCount, StringFormat='({0})'}"
                             VerticalOptions="End" />
                         <telerik:RadRadialGauge Grid.Row="1">
                             <telerik:RadRadialGauge.Axis>
