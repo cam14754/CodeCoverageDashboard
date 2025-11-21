@@ -17,9 +17,9 @@ namespace CodeCoverageDashboard.ViewModels;
 public partial class StaticDashboardPageViewModel(IDataHandlerService dataHandlerService) : BaseViewModel
 {
     readonly IDataHandlerService dataHandlerService = dataHandlerService;
-    public ObservableCollection<StaticDashboardData>? Data => dataHandlerService.Latest;
-    public StaticDashboardData? LatestData => Data?.FirstOrDefault();
-    public StaticDashboardData? WeekOldData { get; set; }
+    public ObservableCollection<StaticDashboardData>? AllData { get; set; }
+    [ObservableProperty] public partial StaticDashboardData? LatestData { get; set; }
+    [ObservableProperty] public partial StaticDashboardData? WeekOldData { get; set; }
 
     [RelayCommand]
     public async Task GetRepoData()
@@ -50,26 +50,13 @@ public partial class StaticDashboardPageViewModel(IDataHandlerService dataHandle
         // Start DB Call
         await Task.Run(async () =>
         {
-            await dataHandlerService.LoadLatestStaticDashboardData();
+            AllData = await dataHandlerService.GetAllData();
+            LatestData = await dataHandlerService.GetLatestData();
+            WeekOldData = await dataHandlerService.GetWeekOldData();
         });
-        
-
-        //Find week old data
-        var target = DateTime.Now.AddDays(-7);
-        var start = target.AddHours(-12);
-        var end = target.AddHours(12);
-        WeekOldData = Data?.Where(d => d.DateRetrieved >= start && d.DateRetrieved <= end).FirstOrDefault();
-
-        WeekOldData ??= new StaticDashboardData();
-
-        OnPropertyChanged(nameof(Data));
-        OnPropertyChanged(nameof(LatestData));
-        OnPropertyChanged(nameof(WeekOldData));
-
+        OnPropertyChanged(nameof(AllData));
         Debug.WriteLine("Execute finished (UI applied).");
     }
-
-    
 
     [RelayCommand]
     public async Task GoToMainPageAsync()

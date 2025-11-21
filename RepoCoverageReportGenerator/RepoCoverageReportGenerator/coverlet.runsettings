@@ -6,11 +6,17 @@
                 <Configuration>
                     <Format>cobertura</Format>
 
-                    <ExcludeByFile>**/*.g.cs</ExcludeByFile>
+                    <ExcludeByFile>**/*.g*.cs, **/obj/**/*.cs</ExcludeByFile>
 
-                    <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
-                    <IncludeTestAssembly>false</IncludeTestAssembly>
-                    <SkipAutoProps>true</SkipAutoProps>
+                    <ExcludeByAttribute>
+                        Obsolete,
+                        GeneratedCodeAttribute,
+                        CompilerGeneratedAttribute,
+                        ExcludeFromCodeCoverageAttribute
+                    </ExcludeByAttribute>
+
+                    <ExcludeAssembliesWithoutSources>MissingAll</ExcludeAssembliesWithoutSources>
+
                 </Configuration>
             </DataCollector>
         </DataCollectors>

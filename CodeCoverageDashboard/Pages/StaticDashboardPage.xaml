@@ -49,15 +49,15 @@
                                 <telerik:NumericalAxis
                                     LabelTextColor="{StaticResource TextColor}"
                                     LineColor="{StaticResource TextColor}"
-                                    MajorStep="2500"
+                                    MajorStep="1000"
                                     MajorTickBackgroundColor="{StaticResource TextColor}"
                                     Minimum="0" />
                             </telerik:RadCartesianChart.VerticalAxis>
 
                             <telerik:RadCartesianChart.Series>
                                 <telerik:LineSeries
-                                    CategoryBinding="DateRetrieved"
-                                    ItemsSource="{Binding Data}"
+                                    CategoryBinding="DataAge"
+                                    ItemsSource="{Binding AllData}"
                                     ValueBinding="TotalLinesCoveredCount" />
                             </telerik:RadCartesianChart.Series>
 
@@ -99,8 +99,8 @@
 
                             <telerik:RadCartesianChart.Series>
                                 <telerik:LineSeries
-                                    CategoryBinding="DateRetrieved"
-                                    ItemsSource="{Binding Data}"
+                                    CategoryBinding="DataAge"
+                                    ItemsSource="{Binding AllData}"
                                     ValueBinding="AverageLineCoveragePercent" />
                             </telerik:RadCartesianChart.Series>
                         </telerik:RadCartesianChart>
@@ -262,7 +262,7 @@
                                                     Margin="0,9,0,0"
                                                     FontSize="18"
                                                     HorizontalTextAlignment="Center"
-                                                    Text="{Binding Source={x:Reference StaticDashboardPageName}, Path=BindingContext.WeekOldData.DateRetrieved, StringFormat=' (since {0:MM/dd HH:mm})'}"
+                                                    Text="{Binding Source={x:Reference StaticDashboardPageName}, Path=BindingContext.WeekOldData.DataAge, StringFormat=' (since {0:MM/dd HH:mm})'}"
                                                     TextColor="LightGray"
                                                     VerticalTextAlignment="Center" />
 
@@ -576,7 +576,7 @@
                             <Image
                                 HeightRequest="100"
                                 IsAnimationPlaying="True"
-                                Source="rainbow_stickman_two.gif"
+                                Source="rainbow_stickman_four_nobg.gif"
                                 WidthRequest="100" />
 
                             <Label

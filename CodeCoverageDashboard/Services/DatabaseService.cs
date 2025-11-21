@@ -55,21 +55,22 @@ public class DatabaseService : IDatabaseService
         }
     }
 
-    public async Task<ObservableCollection<StaticDashboardData>?> GetLatestStaticDashboardData()
+    public async Task<ObservableCollection<StaticDashboardData>> GetLatestStaticDashboardData()
     {
         await Init();
+
         var DashboardDataRecord = await database.QueryAsync<DashboardRecord>(await ReadSQLAsync("GetAllStaticdashboardData.sql"));
 
         if(DashboardDataRecord is null || DashboardDataRecord.FirstOrDefault() is null)
         {
             Debug.WriteLine("No dashboard data found / DB call failed.");
-            return null;
+            return [];
         }
 
         var CollectionDashboardData = new ObservableCollection<StaticDashboardData>();
 
         foreach(var item in DashboardDataRecord)
-            {
+        {
             var ConvertedData = (StaticDashboardData)StaticDashboardRecordToStaticDashboardObject.Convert(item);
 
             if(ConvertedData is null)
@@ -80,7 +81,6 @@ public class DatabaseService : IDatabaseService
             CollectionDashboardData.Add(ConvertedData);
         }
 
-        
         return CollectionDashboardData;
     }
 }

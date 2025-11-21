@@ -45,7 +45,6 @@ public static class StaticDashboardRecordToStaticDashboardObject
             AverageLineCoveragePercent = dashboard.Properties.AverageLineCoveragePercent,
             AverageBranchCoveragePercent = dashboard.Properties.AverageBranchCoveragePercent,
             TotalBracnhesCoveredCount = dashboard.Properties.TotalBracnhesCoveredCount,
-            DateRetrieved = dashboard.Properties.DateRetrieved,
             CoverletVersion = dashboard.Properties.CoverletVersion,
             DashboardVersion = dashboard.Properties.DashboardVersion,
             DataAge = dashboard.Properties.DataAge,

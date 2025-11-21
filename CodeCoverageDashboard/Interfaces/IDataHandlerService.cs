@@ -18,8 +18,8 @@ namespace CodeCoverageDashboard.Interfaces;
 
 public interface IDataHandlerService
 {
-    public ObservableCollection<StaticDashboardData>? Latest { get; set; }
-    abstract Task LoadLatestStaticDashboardData();
-
-    public bool ClearCache();
+    public abstract Task<StaticDashboardData> GetWeekOldData();
+    public abstract Task<StaticDashboardData> GetLatestData();
+    public abstract Task<ObservableCollection<StaticDashboardData>> GetAllData();
+    public bool ClearMemory();
 }

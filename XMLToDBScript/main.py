@@ -32,12 +32,12 @@ class RepoData:
     total_covered_branches: float = 0.0
     branch_rate: float = 0.0
 
-    date_retrieved: datetime = field(default_factory=datetime.now)
+    data_age: datetime = field(default_factory=datetime.now)
 
     list_classes: List["ClassData"] = field(default_factory=list)
 
     def __str__(self):
-        return f"RepoData(Name: {self.name}, Time: {self.date_retrieved}, Coverage Percent: {self.coverage_percent})"
+        return f"RepoData(Name: {self.name}, Time: {self.data_age}, Coverage Percent: {self.coverage_percent})"
 
     def to_dict(self):
         return {
@@ -51,8 +51,8 @@ class RepoData:
             "TotalBranches": self.total_branches,
             "TotalCoveredBranches": self.total_covered_branches,
             "BranchRate": self.branch_rate,
-            "DateRetrieved": ensure_datetime(self.date_retrieved).isoformat(),
-            "ListClasses": [c.to_dict() for c in self.list_classes]
+            "ListClasses": [c.to_dict() for c in self.list_classes],
+            "DataAge": ensure_datetime(self.data_age).isoformat()
         }
 
 
@@ -66,7 +66,7 @@ class ClassData:
     total_lines: float = 0.0
     covered_lines: float = 0.0
 
-    date_retrieved: datetime = datetime.fromtimestamp(0)  # UnixEpoch
+    data_age: datetime = datetime.fromtimestamp(0)
 
     list_methods: List["MethodData"] = field(default_factory=list)
 
@@ -78,7 +78,7 @@ class ClassData:
             "BranchCoveragePercent": self.branch_coverage_percent,
             "TotalLines": self.total_lines,
             "CoveredLines": self.covered_lines,
-            "DateRetrieved": ensure_datetime(self.date_retrieved).isoformat(),
+            "DataAge": ensure_datetime(self.data_age).isoformat(),
             "ListMethods": [m.to_dict() for m in self.list_methods]
         }
 
@@ -91,6 +91,8 @@ class MethodData:
     coverage_percent: float = 0.0
     branch_coverage_percent: float = 0.0
 
+    data_age: datetime = datetime.fromtimestamp(0)
+
     complexity: float = 0.0
     list_lines: List["LineData"] = field(default_factory=list)
 
@@ -102,6 +104,7 @@ class MethodData:
         return {
             "Name": self.name,
             "Signature": self.signature,
+            "DataAge": ensure_datetime(self.data_age).isoformat(),
             "CoveragePercent": self.coverage_percent,
             "BranchCoveragePercent": self.branch_coverage_percent,
             "Complexity": self.complexity,
@@ -114,12 +117,16 @@ class MethodData:
 class LineData:
     line_number: Optional[float] = None
     hits: Optional[float] = None
+    data_age: datetime = datetime.fromtimestamp(0)
+
 
     def to_dict(self):
         return {
             "LineNumber": self.line_number,
-            "Hits": self.hits
+            "Hits": self.hits,
+            "DataAge": ensure_datetime(self.data_age).isoformat()
         }
+
 
 @dataclass
 class StaticDashboardData:
@@ -146,13 +153,12 @@ class StaticDashboardData:
     list_complex_methods: List["MethodData"] = field(default_factory=list)
 
     # Given Properties
-    date_retrieved: datetime = field(default_factory=lambda: datetime.fromtimestamp(0))
     data_age: datetime = field(default_factory=lambda: datetime.fromtimestamp(0))
     coverlet_version: str = ""
     dashboard_version: str = ""
 
     def __str__(self):
-        return f"StaticDashboardData(Total Lines: {self.total_lines_count}, Time: {self.date_retrieved}, Average Coverage Percent: {self.average_line_coverage_percent})"
+        return f"StaticDashboardData(Total Lines: {self.total_lines_count}, Time: {self.data_age}, Average Coverage Percent: {self.average_line_coverage_percent})"
     
     def to_dict(self):
         return {
@@ -177,7 +183,6 @@ class StaticDashboardData:
             "UnhealthyRepos": [r.to_dict() for r in self.list_unhealthy_repos],
 
             # Given properties
-            "DateRetrieved": ensure_datetime(self.date_retrieved).isoformat(),
             "DataAge": ensure_datetime(self.data_age).isoformat(),
             "CoverletVersion": self.coverlet_version,
             "DashboardVersion": self.dashboard_version,
@@ -557,12 +562,12 @@ class DashboardRecordPy:
 # Functions
 # ==============================================
 
-DB_LOCATION = r"\\redstorage4.esri.com\AppsBuild\CodeCoverageDashboard\CodeCoverageDataBase.db"
+DB_LOCATION = r"C:\\Users\\cam14754\\Desktop\\UnitTestingInternProject\\CodeCoverageDashboard\\CodeCoverageDataBase.db"
 REPORTS_LOCATION = r"C:\Users\cam14754\Desktop\Reports"
 DOTNET_TICKS_PER_SECOND = 10_000_000
 DOTNET_EPOCH = datetime(1, 1, 1)
 UPLOAD_TO_DB_BOOL = Boolean
-DASHBOARD_VERSION = "0.4.1"
+DASHBOARD_VERSION = "0.4.3"
 
 def execute():
     latest_full_path = get_latest_report_dir()
@@ -652,7 +657,7 @@ def analyze_coverage_dto(coverage_list: List["CoverageDTO"]) -> List["RepoData"]
 
         #Meta Data
         data.name = package.name
-        data.date_retrieved = ensure_datetime(coverage.timestamp)
+        data.data_age = ensure_datetime(coverage.timestamp)
 
 
         #Root Attributes
@@ -672,7 +677,10 @@ def analyze_coverage_dto(coverage_list: List["CoverageDTO"]) -> List["RepoData"]
             for m in c.methods:
                 # Build list of LineData
                 lines = [
-                    LineData(line_number=l.number, hits=l.hits)
+                    LineData(line_number=l.number,
+                             hits=l.hits,
+                             data_age=ensure_datetime(coverage.timestamp)
+                             )
                     for l in m.lines
                 ]
 
@@ -684,6 +692,7 @@ def analyze_coverage_dto(coverage_list: List["CoverageDTO"]) -> List["RepoData"]
                         list_lines=lines,
                         signature=m.signature,
                         complexity=m.complexity,
+                        data_age=ensure_datetime(coverage.timestamp),
                         branch_coverage_percent=m.branch_rate,
                         parent_repo=data.name
                     )
@@ -707,7 +716,7 @@ def analyze_coverage_dto(coverage_list: List["CoverageDTO"]) -> List["RepoData"]
                     branch_coverage_percent=c.branch_rate,
                     total_lines=total_lines,
                     covered_lines=covered_lines,
-                    date_retrieved=data.date_retrieved,
+                    data_age=data.data_age,
                     list_methods=list_methods,
                 )
             )
@@ -725,14 +734,13 @@ def analyze_coverage_dto(coverage_list: List["CoverageDTO"]) -> List["RepoData"]
 def create_static_dashboard_data_model(repo_datas: List["RepoData"]) -> StaticDashboardData:
     dashboard_data = StaticDashboardData()
     dashboard_data.total_repos_count = len(repo_datas)
-    dashboard_data.date_retrieved = datetime.now()
 
     # dynamically allocated
     dashboard_data.coverlet_version = "6.0.2"
     dashboard_data.dashboard_version = DASHBOARD_VERSION
 
     if repo_datas:
-        dashboard_data.data_age = repo_datas[0].date_retrieved
+        dashboard_data.data_age = repo_datas[0].data_age
 
     average_coverage_percent_sum = 0.0
     average_branch_coverage_percent_sum = 0.0
@@ -850,7 +858,7 @@ def load_week_old_data() -> StaticDashboardData:
     conn = sqlite3.connect(DB_LOCATION)
     cur = conn.cursor()
 
-    # date_retrieved is stored as INTEGER (ticks)
+    # date_retrieved is stored as int (ticks)
     cur.execute(
         """
         SELECT id, date_retrieved, properties
@@ -894,6 +902,7 @@ def dashboard_record_to_static_data(record: DashboardRecordPy) -> StaticDashboar
         total_branches_covered_count=p.get("TotalBranchesCount", 0.0),  # note spelling
 
         list_repos=p.get("ListRepos", []),
+        data_age=p.get("DataAge"),
 
         list_hot_repos=p.get("HotRepos", []),
         list_healthy_repos=p.get("HealthyRepos", []),
@@ -904,14 +913,8 @@ def dashboard_record_to_static_data(record: DashboardRecordPy) -> StaticDashboar
         dashboard_version=p.get("DashboardVersion", ""),
     )
 
-    # Date fields: prefer JSON values if present, else DB record time
-    date_retrieved_raw = p.get("DateRetrieved")
+    # Data age: prefer JSON values if present, else DB record time
     data_age_raw = p.get("DataAge")
-
-    if isinstance(date_retrieved_raw, str):
-        sd.date_retrieved = datetime.fromisoformat(date_retrieved_raw)
-    else:
-        sd.date_retrieved = record.date_retrieved
 
     if isinstance(data_age_raw, str):
         sd.data_age = datetime.fromisoformat(data_age_raw)
@@ -936,7 +939,7 @@ def ticks_to_datetime(ticks: int) -> datetime:
 def upload_dashboard_to_database(dashboard: StaticDashboardData) -> None:
     json_props = json.dumps(dashboard.to_dict())
 
-    date_ticks = datetime_to_ticks(dashboard.date_retrieved)
+    date_ticks = datetime_to_ticks(dashboard.data_age)
 
     conn = sqlite3.connect(DB_LOCATION)
     cur = conn.cursor()
@@ -989,7 +992,8 @@ if __name__ == "__main__":
     args = sys.argv[1:]
 
     if len(args) == 0:
-        UPLOAD_TO_DB_BOOL = False
+        true_values = {"y", "yes", "true", "1"}
+        UPLOAD_TO_DB_BOOL = input("Upload to DB? ").strip().lower() in true_values
     else:
         if args[0] == "--bypass-console":
             UPLOAD_TO_DB_BOOL = True

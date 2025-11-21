@@ -6,225 +6,264 @@
     xmlns:models="clr-namespace:CodeCoverageDashboard.Models"
     xmlns:telerik="http://schemas.telerik.com/2022/xaml/maui"
     xmlns:viewmodels="clr-namespace:CodeCoverageDashboard.ViewModels"
-    Padding="20"
     x:DataType="viewmodels:DrillDownDashboardPageViewModel"
     BackgroundColor="{StaticResource BackgroundColor}">
+    <Grid>
+        <Grid
+            Margin="20"
+            ColumnDefinitions="3*, *"
+            RowDefinitions="2*, *">
+            <telerik:RadBorder
+                Grid.Row="0"
+                Grid.Column="1"
+                BackgroundColor="{StaticResource CellColor}"
+                Style="{StaticResource borderRoundedStyle}">
+                <Grid ColumnDefinitions="*, *" RowDefinitions="auto, *, *, *, *, auto">
+                    <Button
+                        Margin="5"
+                        Command="{Binding RunCommand}"
+                        HeightRequest="100"
+                        HorizontalOptions="Fill"
+                        Text="Load Repositories" />
+                    <Button
+                        Grid.Column="1"
+                        Margin="5"
+                        Command="{Binding GoToStaticDashboardPageCommand}"
+                        HeightRequest="100"
+                        HorizontalOptions="Fill"
+                        Text="Go To Static Dashboard Page" />
 
-    <Grid ColumnDefinitions="3*, *" RowDefinitions="2*, *">
-        <telerik:RadBorder
-            Grid.Row="0"
-            Grid.Column="1"
-            BackgroundColor="{StaticResource CellColor}"
-            Style="{StaticResource borderRoundedStyle}">
-            <Grid ColumnDefinitions="*, *, *" RowDefinitions="auto, *, *, *, *">
-                <Button
-                    Margin="5"
-                    Command="{Binding RunCommand}"
-                    HeightRequest="100"
-                    HorizontalOptions="Fill"
-                    Text="Load Repositories" />
-                <Button
-                    Grid.Column="1"
-                    Margin="5"
-                    Command="{Binding GoToStaticDashboardPageCommand}"
-                    HeightRequest="100"
-                    HorizontalOptions="Fill"
-                    Text="Go To Static Dashboard Page" />
-                <Button
-                    Grid.Column="2"
-                    Margin="5"
-                    Command="{Binding ClearCacheCommand}"
-                    HeightRequest="100"
-                    HorizontalOptions="Fill"
-                    Text="Clear Cache" />
+                    <Label
+                        Grid.Row="1"
+                        Grid.ColumnSpan="2"
+                        HeightRequest="100"
+                        Style="{StaticResource labelBody}"
+                        Text="Other controls and settings going here..."
+                        TextColor="Gray"
+                        VerticalOptions="End"
+                        VerticalTextAlignment="End" />
+                    <Label
+                        Grid.Row="2"
+                        Grid.ColumnSpan="2"
+                        HeightRequest="100"
+                        Style="{StaticResource labelBody}"
+                        Text="Filtering..."
+                        TextColor="Gray"
+                        VerticalOptions="Center"
+                        VerticalTextAlignment="Center" />
+                    <Label
+                        Grid.Row="3"
+                        Grid.ColumnSpan="2"
+                        HeightRequest="100"
+                        Style="{StaticResource labelBody}"
+                        Text="Sorting..."
+                        TextColor="Gray"
+                        VerticalOptions="Start"
+                        VerticalTextAlignment="Start" />
 
-                <Label
-                    Grid.Row="1"
-                    Grid.ColumnSpan="3"
-                    HeightRequest="100"
-                    Style="{StaticResource labelBody}"
-                    Text="Other controls and settings going here..."
-                    TextColor="Gray"
-                    VerticalOptions="End"
-                    VerticalTextAlignment="End" />
-                <Label
-                    Grid.Row="2"
-                    Grid.ColumnSpan="3"
-                    HeightRequest="100"
-                    Style="{StaticResource labelBody}"
-                    Text="Filtering..."
-                    TextColor="Gray"
-                    VerticalOptions="Center"
-                    VerticalTextAlignment="Center" />
-                <Label
-                    Grid.Row="3"
-                    Grid.ColumnSpan="3"
-                    HeightRequest="100"
-                    Style="{StaticResource labelBody}"
-                    Text="Sorting..."
-                    TextColor="Gray"
-                    VerticalOptions="Start"
-                    VerticalTextAlignment="Start" />
+                    <Button
+                        Grid.Row="5"
+                        Grid.Column="0"
+                        Margin="5"
+                        Command="{Binding ClearMemoryCommand}"
+                        HeightRequest="30"
+                        HorizontalOptions="Fill"
+                        Text="Clear Memeory" />
 
-            </Grid>
+                    <!--  Cache not implemented yet  -->
+                    <Button
+                        Grid.Row="5"
+                        Grid.Column="1"
+                        Margin="5"
+                        HeightRequest="30"
+                        HorizontalOptions="Fill"
+                        IsEnabled="False"
+                        Text="Clear Cache" />
 
+                </Grid>
 
+            </telerik:RadBorder>
 
-        </telerik:RadBorder>
+            <telerik:RadBorder
+                Grid.Row="1"
+                Grid.Column="1"
+                BackgroundColor="{StaticResource CellColor}"
+                Style="{StaticResource borderRoundedStyle}">
+                <Grid RowDefinitions="auto,auto, auto, auto, auto, auto, auto, *">
+                    <Label
+                        Grid.Row="0"
+                        Style="{StaticResource labelSubHeading}"
+                        Text="Overall Statistics" />
+                    <Label
+                        Grid.Row="1"
+                        Style="{StaticResource labelBody}"
+                        Text="{Binding VisableData.AverageLineCoveragePercent, StringFormat='Average Line Coverage Percent: {0:P2}'}" />
+                    <Label
+                        Grid.Row="2"
+                        Style="{StaticResource labelBody}"
+                        Text="{Binding VisableData.AverageBranchCoveragePercent, StringFormat='Average Branch Coverage Percent: {0:P2}'}" />
+                    <Label
+                        Grid.Row="3"
+                        Style="{StaticResource labelBody}"
+                        Text="{Binding VisableData.TotalLinesCount, StringFormat='Total Lines: {0}'}" />
+                    <Label
+                        Grid.Row="4"
+                        Style="{StaticResource labelBody}"
+                        Text="{Binding VisableData.TotalLinesCoveredCount, StringFormat='Total Lines Covered: {0}'}" />
+                    <Label
+                        Grid.Row="5"
+                        Style="{StaticResource labelBody}"
+                        Text="{Binding VisableData.DateRetrieved, StringFormat='Date Retrieved: {0:dd/MM/yyyy h:mm tt}'}" />
+                    <Label
+                        Grid.Row="6"
+                        Style="{StaticResource labelBody}"
+                        Text="{Binding VisableData.DataAge, StringFormat='Date Data Generated: {0:dd/MM/yyyy h:mm tt}'}" />
 
-        <telerik:RadBorder
-            Grid.Row="1"
-            Grid.Column="1"
-            BackgroundColor="{StaticResource CellColor}"
-            Style="{StaticResource borderRoundedStyle}">
-            <Grid RowDefinitions="auto,auto, auto, auto, auto, auto, auto, *">
-                <Label
-                    Grid.Row="0"
-                    Style="{StaticResource labelSubHeading}"
-                    Text="Overall Statistics" />
-                <Label
-                    Grid.Row="1"
-                    Style="{StaticResource labelBody}"
-                    Text="{Binding VisableData.AverageLineCoveragePercent, StringFormat='Average Line Coverage Percent: {0:P2}'}" />
-                <Label
-                    Grid.Row="2"
-                    Style="{StaticResource labelBody}"
-                    Text="{Binding VisableData.AverageBranchCoveragePercent, StringFormat='Average Branch Coverage Percent: {0:P2}'}" />
-                <Label
-                    Grid.Row="3"
-                    Style="{StaticResource labelBody}"
-                    Text="{Binding VisableData.TotalLinesCount, StringFormat='Total Lines: {0}'}" />
-                <Label
-                    Grid.Row="4"
-                    Style="{StaticResource labelBody}"
-                    Text="{Binding VisableData.TotalLinesCoveredCount, StringFormat='Total Lines Covered: {0}'}" />
-                <Label
-                    Grid.Row="5"
-                    Style="{StaticResource labelBody}"
-                    Text="{Binding VisableData.DateRetrieved, StringFormat='Date Retrieved: {0:dd/MM/yyyy h:mm tt}'}" />
-                <Label
-                    Grid.Row="6"
-                    Style="{StaticResource labelBody}"
-                    Text="{Binding VisableData.DataAge, StringFormat='Date Data Generated: {0:dd/MM/yyyy h:mm tt}'}" />
+                    <Label
+                        Grid.Row="7"
+                        HorizontalTextAlignment="Center"
+                        Style="{StaticResource labelBody}"
+                        Text="{Binding VisableData.DashboardVersion, StringFormat='Dashboard Version: {0} | By Cameron Strachan'}"
+                        VerticalOptions="End" />
 
-                <Label
-                    Grid.Row="7"
-                    Style="{StaticResource labelBody}"
-                    Text="{Binding VisableData.DashboardVersion, StringFormat='Dashboard Version: {0} | By Cameron Strachan'}"
-                    VerticalOptions="End" />
+                </Grid>
+            </telerik:RadBorder>
 
-            </Grid>
-        </telerik:RadBorder>
+            <CollectionView
+                x:Name="SelectedRepo"
+                Grid.RowSpan="2"
+                ItemsSource="{Binding VisableData.ListRepos}">
 
-        <CollectionView
-            x:Name="SelectedRepo"
-            Grid.RowSpan="2"
-            ItemsSource="{Binding VisableRepos}">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="2" />
+                </CollectionView.ItemsLayout>
 
-            <CollectionView.ItemsLayout>
-                <GridItemsLayout Orientation="Vertical" Span="2" />
-            </CollectionView.ItemsLayout>
+                <CollectionView.EmptyView>
+                    <Label Style="{StaticResource labelHeading}" Text="No Repositories availible, press 'Load Repositories' to load repositories" />
+                </CollectionView.EmptyView>
 
-            <CollectionView.EmptyView>
-                <Label Style="{StaticResource labelHeading}" Text="No Repositories availible, press 'Load Repositories' to load repositories" />
-            </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:RepoData">
+                        <Grid Margin="20">
+                            <telerik:RadBorder
+                                Padding="20"
+                                BackgroundColor="{Binding IsHovered, Converter={StaticResource BoolToColorConverter}}"
+                                Style="{StaticResource borderRoundedStyle}">
 
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:RepoData">
-                    <Grid Margin="20">
-                        <telerik:RadBorder
-                            Padding="20"
-                            BackgroundColor="{Binding IsHovered, Converter={StaticResource BoolToColorConverter}}"
-                            Style="{StaticResource borderRoundedStyle}">
+                                <telerik:RadBorder.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DrillDownDashboardPageViewModel}}, Path=GoToRepoPageCommand}"
+                                        CommandParameter="{Binding .}"
+                                        NumberOfTapsRequired="2" />
+                                    <PointerGestureRecognizer PointerEnteredCommand="{Binding ToggleHoveredCommand}" PointerExitedCommand="{Binding ToggleHoveredCommand}" />
+                                </telerik:RadBorder.GestureRecognizers>
+                                <Grid ColumnDefinitions="*, auto">
+                                    <VerticalStackLayout Grid.Column="0">
+                                        <Label
+                                            HorizontalOptions="Start"
+                                            HorizontalTextAlignment="Start"
+                                            Style="{StaticResource labelEmphasis}"
+                                            Text="{Binding Name}" />
+                                        <Label Style="{StaticResource labelBody}" Text="{Binding CoveragePercent, StringFormat='Coverage Percent: {0:P2}'}" />
+                                        <Label Style="{StaticResource labelBody}" Text="{Binding BranchRate, StringFormat='Branch Coverage Percent: {0:P2}'}" />
+                                        <Label Style="{StaticResource labelBody}" Text="{Binding CoveredLines, StringFormat='Covered Lines: {0}'}" />
+                                        <Label Style="{StaticResource labelBody}" Text="{Binding UncoveredLines, StringFormat='Uncovered Lines: {0}'}" />
+                                        <Label Style="{StaticResource labelBody}" Text="{Binding TotalLines, StringFormat='Total Lines: {0}'}" />
+                                    </VerticalStackLayout>
 
-                            <telerik:RadBorder.GestureRecognizers>
-                                <TapGestureRecognizer
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DrillDownDashboardPageViewModel}}, Path=GoToRepoPageCommand}"
-                                    CommandParameter="{Binding .}"
-                                    NumberOfTapsRequired="2" />
-                                <PointerGestureRecognizer PointerEnteredCommand="{Binding ToggleHoveredCommand}" PointerExitedCommand="{Binding ToggleHoveredCommand}" />
-                            </telerik:RadBorder.GestureRecognizers>
-                            <Grid ColumnDefinitions="*, auto">
-                                <VerticalStackLayout Grid.Column="0">
-                                    <Label
-                                        HorizontalOptions="Start"
-                                        HorizontalTextAlignment="Start"
-                                        Style="{StaticResource labelEmphasis}"
-                                        Text="{Binding Name}" />
-                                    <Label Style="{StaticResource labelBody}" Text="{Binding CoveragePercent, StringFormat='Coverage Percent: {0:P2}'}" />
-                                    <Label Style="{StaticResource labelBody}" Text="{Binding BranchRate, StringFormat='Branch Coverage Percent: {0:P2}'}" />
-                                    <Label Style="{StaticResource labelBody}" Text="{Binding CoveredLines, StringFormat='Covered Lines: {0}'}" />
-                                    <Label Style="{StaticResource labelBody}" Text="{Binding UncoveredLines, StringFormat='Uncovered Lines: {0}'}" />
-                                    <Label Style="{StaticResource labelBody}" Text="{Binding TotalLines, StringFormat='Total Lines: {0}'}" />
-                                </VerticalStackLayout>
+                                    <telerik:RadRadialGauge
+                                        Grid.Column="1"
+                                        HeightRequest="200"
+                                        HorizontalOptions="Center"
+                                        StartAngle="90"
+                                        SweepAngle="360"
+                                        VerticalOptions="Center"
+                                        WidthRequest="200">
 
-                                <telerik:RadRadialGauge
-                                    Grid.Column="1"
-                                    HeightRequest="200"
-                                    HorizontalOptions="Center"
-                                    StartAngle="90"
-                                    SweepAngle="360"
-                                    VerticalOptions="Center"
-                                    WidthRequest="200">
+                                        <telerik:RadRadialGauge.Axis>
+                                            <telerik:GaugeLinearAxis
+                                                FontSize="0"
+                                                Maximum="100"
+                                                Minimum="0"
+                                                Step="10"
+                                                Stroke="#8f8f8f"
+                                                StrokeThickness="10"
+                                                TickOffset="100"
+                                                TickThickness="0" />
+                                        </telerik:RadRadialGauge.Axis>
 
-                                    <telerik:RadRadialGauge.Axis>
-                                        <telerik:GaugeLinearAxis
-                                            FontSize="0"
-                                            Maximum="100"
-                                            Minimum="0"
-                                            Step="10"
-                                            Stroke="#8f8f8f"
-                                            StrokeThickness="10"
-                                            TickOffset="100"
-                                            TickThickness="0" />
-                                    </telerik:RadRadialGauge.Axis>
-
-                                    <telerik:RadRadialGauge.Indicators>
-                                        <telerik:GaugeBarIndicator
-                                            EndThickness="10"
-                                            Fill="{Binding CoveragePercent, Converter={StaticResource CoveragePercentToColorGradient}}"
-                                            StartThickness="10"
-                                            Offset="-10"
-                                            Value="{Binding CoveragePercent, Converter={StaticResource DecimalPercentConverter}}" />
-
-
-                                    </telerik:RadRadialGauge.Indicators>
-
-
-
-                                </telerik:RadRadialGauge>
-                                <VerticalStackLayout
-                                    Grid.Column="1"
-                                    HorizontalOptions="Center"
-                                    VerticalOptions="Center">
-                                    <Image
-                                        Aspect="AspectFit"
-                                        HeightRequest="50"
-                                        IsAnimationPlaying="True"
-                                        IsVisible="{Binding CoveragePercent, Converter={StaticResource ZeroToBoolConverter}}"
-                                        Source="warning_gif_two.gif"
-                                        WidthRequest="50" />
-                                    <Label
-                                        Margin="5,0,0,0"
-                                        HorizontalTextAlignment="Center"
-                                        Style="{StaticResource labelEmphasis}"
-                                        Text="{Binding CoveragePercent, StringFormat='{0:P1}'}"
-                                        VerticalTextAlignment="Center" />
-                                </VerticalStackLayout>
+                                        <telerik:RadRadialGauge.Indicators>
+                                            <telerik:GaugeBarIndicator
+                                                EndThickness="10"
+                                                Fill="{Binding CoveragePercent, Converter={StaticResource CoveragePercentToColorGradient}}"
+                                                StartThickness="10"
+                                                Offset="-10"
+                                                Value="{Binding CoveragePercent, Converter={StaticResource DecimalPercentConverter}}" />
 
 
-                            </Grid>
-
-                        </telerik:RadBorder>
-
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                                        </telerik:RadRadialGauge.Indicators>
 
 
 
+                                    </telerik:RadRadialGauge>
+                                    <VerticalStackLayout
+                                        Grid.Column="1"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center">
+                                        <Image
+                                            Aspect="AspectFit"
+                                            HeightRequest="50"
+                                            IsAnimationPlaying="True"
+                                            IsVisible="{Binding CoveragePercent, Converter={StaticResource ZeroToBoolConverter}}"
+                                            Source="warning_gif_two.gif"
+                                            WidthRequest="50" />
+                                        <Label
+                                            Margin="5,0,0,0"
+                                            HorizontalTextAlignment="Center"
+                                            Style="{StaticResource labelEmphasis}"
+                                            Text="{Binding CoveragePercent, StringFormat='{0:P1}'}"
+                                            VerticalTextAlignment="Center" />
+                                    </VerticalStackLayout>
 
+
+                                </Grid>
+
+                            </telerik:RadBorder>
+
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </Grid>
+        <!--  SCRIM OVERLAY  -->
+        <Grid
+            BackgroundColor="#80000000"
+            HorizontalOptions="Fill"
+            InputTransparent="False"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Fill">
+            <telerik:RadBusyIndicator IsBusy="{Binding IsBusy}">
+
+                <telerik:RadBusyIndicator.BusyContentTemplate>
+                    <ControlTemplate>
+                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image
+                                HeightRequest="100"
+                                IsAnimationPlaying="True"
+                                Source="rainbow_stickman_four_nobg.gif"
+                                WidthRequest="100" />
+
+                            <Label
+                                Style="{StaticResource labelEmphasis}"
+                                Text="Loading Data..."
+                                TextColor="White" />
+
+                        </VerticalStackLayout>
+                    </ControlTemplate>
+                </telerik:RadBusyIndicator.BusyContentTemplate>
+            </telerik:RadBusyIndicator>
+        </Grid>
     </Grid>
 
 </ContentPage>

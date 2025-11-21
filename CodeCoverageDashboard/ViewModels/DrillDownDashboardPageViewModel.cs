@@ -20,10 +20,8 @@ namespace CodeCoverageDashboard.ViewModels;
 
 public partial class DrillDownDashboardPageViewModel(IDataHandlerService dataHandlerService) : BaseViewModel
 {
-    public ObservableCollection<RepoData>? LatestRepos { get; set; }
-    public ObservableCollection<RepoData>? VisableRepos { get; set; }
-    public StaticDashboardData? LatestData { get; set; }
-    public StaticDashboardData? VisableData { get; set; }
+    [ObservableProperty] public partial StaticDashboardData? LatestData { get; set; }
+    [ObservableProperty] public partial StaticDashboardData? VisableData { get; set; }
 
     readonly IDataHandlerService datahandlerService = dataHandlerService;
 
@@ -39,33 +37,19 @@ public partial class DrillDownDashboardPageViewModel(IDataHandlerService dataHan
             IsBusy = true;
             Debug.WriteLine("Loading repos... \n");
 
-            await datahandlerService.LoadLatestStaticDashboardData();
+            // Get latest data from service
+            LatestData = await Task.Run(datahandlerService.GetLatestData);
 
-            if (datahandlerService.Latest is null)
-            {
-                Debug.WriteLine("DB call failed");
-                return;
-            }
+            //Perform calculations off UI thread
+            var Stats = await Task.Run(() => { return CalculatedStatsOnVisableRepos([.. LatestData.ListRepos]);});
 
-            if (datahandlerService.Latest.FirstOrDefault() is null)
-            {
-                Debug.WriteLine("DB call completed, but no repos loaded");
-                return;
-            }
-
-            //Save all data to memory
-            LatestData = datahandlerService.Latest.FirstOrDefault()!;
+            // Assign processed data to properties
+            (LatestData.TotalLinesCount, LatestData.TotalLinesCoveredCount, LatestData.AverageLineCoveragePercent, LatestData.AverageBranchCoveragePercent) = Stats;
             VisableData = LatestData;
-            LatestRepos = new ObservableCollection<RepoData>([.. LatestData.ListRepos.OrderBy(r => r.Name)]);
-            VisableRepos = LatestRepos;
 
-            CalculatePropertiesBasedOnCurrentVisableRepos(VisableRepos, VisableData);
-
-            OnPropertyChanged(nameof(VisableRepos));
             OnPropertyChanged(nameof(VisableData));
 
             Debug.WriteLine("Repos loaded successfully.");
-
         }
         catch (Exception ex)
         {
@@ -77,25 +61,20 @@ public partial class DrillDownDashboardPageViewModel(IDataHandlerService dataHan
         }
     }
 
-    public static void CalculatePropertiesBasedOnCurrentVisableRepos(ObservableCollection<RepoData> repos, StaticDashboardData dashs)
+    public static (double, double, double, double) CalculatedStatsOnVisableRepos(IReadOnlyList<RepoData> ListRepos)
     {
-
-        if (repos == null || repos.Count == 0)
+        if(ListRepos.Count == 0)
         {
-            // Reset values for empty view
-            dashs.TotalLinesCount = 0;
-            dashs.TotalLinesCoveredCount = 0;
-            dashs.AverageLineCoveragePercent = 0;
-            dashs.AverageBranchCoveragePercent = 0;
-            return;
+            return (0, 0, 0, 0);
         }
 
+        // Perform calculations off UI thread
         double totalLines = 0;
         double coveredLines = 0;
         double sumLineCoverage = 0;
         double sumBranchCoverage = 0;
 
-        foreach (var r in repos)
+        foreach (var r in ListRepos)
         {
             totalLines += r.TotalLines;
             coveredLines += r.CoveredLines;
@@ -104,18 +83,15 @@ public partial class DrillDownDashboardPageViewModel(IDataHandlerService dataHan
             sumBranchCoverage += r.BranchRate;
         }
 
-        double count = repos.Count;
+        double count = ListRepos.Count;
 
-        dashs.TotalLinesCount = totalLines;
-        dashs.TotalLinesCoveredCount = coveredLines;
+        double AverageLineCoveragePercent = count > 0 ? sumLineCoverage / count : 0;
 
-        dashs.AverageLineCoveragePercent =
-            count > 0 ? sumLineCoverage / count : 0;
+        double AverageBranchCoveragePercent = count > 0 ? sumBranchCoverage / count : 0;
 
-        dashs.AverageBranchCoveragePercent =
-            count > 0 ? sumBranchCoverage / count : 0;
+        //Return processed data back to UI thread
+        return (totalLines, coveredLines, AverageLineCoveragePercent, AverageBranchCoveragePercent);
     }
-
 
     [RelayCommand]
     public async Task GoToRepoPageAsync(RepoData repoData)
@@ -169,24 +145,20 @@ public partial class DrillDownDashboardPageViewModel(IDataHandlerService dataHan
     }
 
     [RelayCommand]
-    public async Task ClearCache()
+    public async Task ClearMemory()
     {
-        if (datahandlerService.ClearCache())
+        if (datahandlerService.ClearMemory())
         {
-            VisableRepos = null;
             VisableData = null;
-            LatestRepos = null;
             LatestData = null;
 
-            OnPropertyChanged(nameof(VisableRepos));
             OnPropertyChanged(nameof(VisableData));
 
-            await Shell.Current.ShowPopupAsync(new Label { Text = "Cache cleared successfully." });
-            
+            await Shell.Current.ShowPopupAsync(new Label { Text = "Memory cleared successfully." });
         }
         else
         {
-            await Shell.Current.ShowPopupAsync(new Label { Text = "No cache to clear or something went wrong." });
+            await Shell.Current.ShowPopupAsync(new Label { Text = "No memory to clear or something went wrong." });
         }
     }
 }

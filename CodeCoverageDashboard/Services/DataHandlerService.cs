@@ -12,48 +12,96 @@
 //
 // email: contracts@esri.com
 
-
 namespace CodeCoverageDashboard.Services;
 
 public class DataHandlerService(IDatabaseService databaseService) : IDataHandlerService
 {
-    public ObservableCollection<StaticDashboardData>? Latest { get; set; }
+    private ObservableCollection<StaticDashboardData>? Data { get; set; }
 
-    public async Task LoadLatestStaticDashboardData()
+    private async Task LoadLatestStaticDashboardData()
     {
         
-        if (Latest is null || Latest.Count == 0)
+        if (Data is null || Data.Count == 0)
         {
             // First load, no cache
-            Latest = await databaseService.GetLatestStaticDashboardData();
-            Latest.FirstOrDefault()!.DateRetrieved = DateTime.Now;
+            Data = await databaseService.GetLatestStaticDashboardData();
+            foreach(StaticDashboardData dash in Data)
+            {
+                dash.DateRetrieved = DateTime.Now;
+            }
             return;
         }
 
         // Cache exists
-        var latest = Latest.First();
+        var latest = Data.First();
 
         if (latest.DateRetrieved < DateTime.Now.AddHours(-12))
         {
             // stale cache, reload
-            Latest = await databaseService.GetLatestStaticDashboardData();
-            Latest.FirstOrDefault()!.DateRetrieved = DateTime.Now;
+            Data = await databaseService.GetLatestStaticDashboardData();
+            foreach (StaticDashboardData dash in Data)
+            {
+                dash.DateRetrieved = DateTime.Now;
+            }
             return;
         }
 
         // Cache is still fresh, do nothing
     }
 
-    public bool ClearCache()
+    public bool ClearMemory()
     {
-        if(Latest is null || Latest.Count is 0)
+        if(Data is null || Data.Count is 0)
         {
             return false;
         }
 
-        Latest.Clear();
-        Latest = null;
+        Data.Clear();
+        Data = null;
         return true;
+    }
+
+    public async Task<StaticDashboardData> GetWeekOldData()
+    {
+        await LoadLatestStaticDashboardData();
+
+        var target = DateTime.Now.AddDays(-7);
+        var start = target.AddHours(-6);
+        var end = target.AddHours(6);
+        StaticDashboardData? WeekOldData = Data?.Where(d => d.DateRetrieved >= start && d.DateRetrieved <= end).FirstOrDefault();
+
+        if(WeekOldData is null)
+        {
+            return new StaticDashboardData();
+        }
+
+        return WeekOldData;
+    }
+
+    public async Task<StaticDashboardData> GetLatestData()
+    {
+        await LoadLatestStaticDashboardData();
+
+        StaticDashboardData? LatestData = Data?.MaxBy(d => d.DataAge);
+
+        if (LatestData is null)
+        {
+            return new StaticDashboardData();
+        }
+
+        return LatestData;
+    }
+
+    public async Task<ObservableCollection<StaticDashboardData>> GetAllData()
+    {
+        await LoadLatestStaticDashboardData();
+
+        if(Data is null)
+        {
+            return new ObservableCollection<StaticDashboardData>();
+        }
+
+        return Data;
     }
 }
 
