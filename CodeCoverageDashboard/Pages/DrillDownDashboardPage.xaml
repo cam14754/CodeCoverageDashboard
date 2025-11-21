@@ -68,7 +68,7 @@
                         Command="{Binding ClearMemoryCommand}"
                         HeightRequest="30"
                         HorizontalOptions="Fill"
-                        Text="Clear Memeory" />
+                        Text="Clear Memory" />
 
                     <!--  Cache not implemented yet  -->
                     <Button
