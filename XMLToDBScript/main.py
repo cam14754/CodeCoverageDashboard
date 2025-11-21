@@ -567,7 +567,7 @@ REPORTS_LOCATION = r"C:\Users\cam14754\Desktop\Reports"
 DOTNET_TICKS_PER_SECOND = 10_000_000
 DOTNET_EPOCH = datetime(1, 1, 1)
 UPLOAD_TO_DB_BOOL = Boolean
-DASHBOARD_VERSION = "0.4.3"
+DASHBOARD_VERSION = "0.5.1"
 
 def execute():
     latest_full_path = get_latest_report_dir()
