@@ -24,7 +24,7 @@ public class DashboardProperties
     [JsonPropertyName("TotalLinesCount")] public double TotalLinesCount { get; set; } = 0;
     [JsonPropertyName("AverageLineCoveragePercent")] public double AverageLineCoveragePercent { get; set; } = 0;
     [JsonPropertyName("AverageBranchCoveragePercent")] public double AverageBranchCoveragePercent { get; set; } = 0;
-    [JsonPropertyName("TotalBranchesCoveredCount")] public double TotalBracnhesCoveredCount { get; set; } = 0;
+    [JsonPropertyName("TotalBranchesCoveredCount")] public double TotalBranchesCoveredCount { get; set; } = 0;
     [JsonPropertyName("AverageComplexMethodPercent")] public double AverageComplexMethodPercent { get; set; } = 0;
     [JsonPropertyName("HotRepos")] public ObservableCollection<RepoData> HotRepos { get; set; } = [];
     [JsonPropertyName("ComplexMethods")] public ObservableCollection<MethodData> ComplexMethods { get; set; } = [];

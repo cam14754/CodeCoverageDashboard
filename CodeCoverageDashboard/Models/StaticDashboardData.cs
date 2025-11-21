@@ -30,15 +30,13 @@ public partial class StaticDashboardData : ObservableObject
     [ObservableProperty] public partial double TotalLinesCount { get; set; } = 0;
     [ObservableProperty] public partial double AverageBranchCoveragePercent { get; set; } = 0;
     [ObservableProperty] public partial double AverageLineCoveragePercent { get; set; } = 0;
-    [ObservableProperty] public partial double TotalBracnhesCoveredCount { get; set; } = 0;
+    [ObservableProperty] public partial double TotalBranchesCoveredCount { get; set; } = 0;
 
     public ObservableCollection<RepoData> ListRepos { get; set; } = [];
     public ObservableCollection<RepoData> HealthyRepos { get; set; } = [];
     public ObservableCollection<RepoData> UnhealthyRepos { get; set; } = [];
     public ObservableCollection<RepoData> HotRepos { get; set; } = [];
     public ObservableCollection<MethodData> ComplexMethods { get; set; } = [];
-
-
 
     [ObservableProperty] public partial DateTime DateRetrieved { get; set; } = DateTime.UnixEpoch;
     [ObservableProperty] public partial DateTime DataAge { get; set; } = DateTime.UnixEpoch;
