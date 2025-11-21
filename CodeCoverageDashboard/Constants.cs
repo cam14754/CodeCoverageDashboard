@@ -24,5 +24,5 @@ public static class Constants
         // enable multi-threaded database access
         SQLite.SQLiteOpenFlags.SharedCache;
 
-    public const string DatabasePath = $"C:\\Users\\cam14754\\Desktop\\UnitTestingInternProject\\CodeCoverageDashboard\\CodeCoverageDataBase.db";
+    public const string DatabasePath = $"\\\\redstorage4.esri.com\\AppsBuild\\CodeCoverageDashboard\\CodeCoverageDataBase.db";
 }

@@ -562,7 +562,7 @@ class DashboardRecordPy:
 # Functions
 # ==============================================
 
-DB_LOCATION = r"C:\\Users\\cam14754\\Desktop\\UnitTestingInternProject\\CodeCoverageDashboard\\CodeCoverageDataBase.db"
+DB_LOCATION = r"\\redstorage4.esri.com\AppsBuild\CodeCoverageDashboard\CodeCoverageDataBase.db"
 REPORTS_LOCATION = r"C:\Users\cam14754\Desktop\Reports"
 DOTNET_TICKS_PER_SECOND = 10_000_000
 DOTNET_EPOCH = datetime(1, 1, 1)
